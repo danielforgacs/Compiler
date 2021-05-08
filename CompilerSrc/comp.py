@@ -79,15 +79,18 @@ def expression(source):
     tokens = tokenise(source)
     token_left, tokens = pop_next_token(tokens)
     assert token_left.type_ == INTEGER
-    operator, tokens = pop_next_token(tokens)
-    assert operator in [ADD_TOKEN, SUB_TOKEN]
-    token_right, tokens = pop_next_token(tokens)
-    assert token_left.type_ == INTEGER
+    result = token_left.value
 
-    if operator == ADD_TOKEN:
-        result = token_left.value + token_right.value
-    elif operator == SUB_TOKEN:
-        result = token_left.value - token_right.value
+    while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
+        operator, tokens = pop_next_token(tokens)
+        assert operator in (ADD_TOKEN, SUB_TOKEN)
+        token_right, tokens = pop_next_token(tokens)
+        assert token_right.type_ == INTEGER
+
+        if operator == ADD_TOKEN:
+            result += token_right.value
+        elif operator == SUB_TOKEN:
+            result -= token_right.value
 
     return result
 

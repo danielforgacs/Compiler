@@ -154,6 +154,10 @@ def test_tokenize(source, expected):
     '1+2',
     '1234  +    8765    ',
     '1234  -    8765    ',
+
+    '1+2+3',
+    '11   + 222   - 44   + 5555',
+    '11   + 222   - 44   + 5555    +  11   - 222   + 44   + 13243',
 ])
 def test_expression(source):
     assert cmp.expression(source) == eval(source)
