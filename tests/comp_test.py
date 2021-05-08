@@ -153,6 +153,7 @@ def test_tokenize(source, expected):
 @pytest.mark.parametrize('source', [
     '1+2',
     '1234  +    8765    ',
+    '1234  -    8765    ',
 ])
 def test_expression(source):
     assert cmp.expression(source) == eval(source)
