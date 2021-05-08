@@ -72,4 +72,10 @@ def tokenise(source):
 
 
 def expression(source, index):
-    return 1
+    tokens = tokenise(source)
+    result = 0
+
+    while tokens[0] != EOF:
+        pass
+
+    return result

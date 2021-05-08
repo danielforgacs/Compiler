@@ -131,6 +131,7 @@ def test_tokenize(source, expected):
 
 @pytest.mark.parametrize('source', [
     '1',
+    '12',
 ])
 def test_expression(source):
     assert cmp.expression(source, 0) == eval(source)
