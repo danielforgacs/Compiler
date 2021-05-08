@@ -100,6 +100,27 @@ def test_find_int_token(source, expected):
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
+    [
+        (
+            '  1 + 22 -- 333   *   ** 456 //   /'
+        ),
+        (
+            cmp.Token(cmp.INTEGER, 1),
+            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.INTEGER, 22),
+            cmp.Token(cmp.SUB, cmp.SUB),
+            cmp.Token(cmp.SUB, cmp.SUB),
+            cmp.Token(cmp.INTEGER, 333),
+            cmp.Token(cmp.MULT, cmp.MULT),
+            cmp.Token(cmp.MULT, cmp.MULT),
+            cmp.Token(cmp.MULT, cmp.MULT),
+            cmp.Token(cmp.INTEGER, 456),
+            cmp.Token(cmp.DIV, cmp.DIV),
+            cmp.Token(cmp.DIV, cmp.DIV),
+            cmp.Token(cmp.DIV, cmp.DIV),
+            cmp.Token(cmp.EOF, cmp.EOF),
+        )
+    ],
 ])
 def test_tokenize(source, expected):
     tokens = cmp.tokenise(source)
