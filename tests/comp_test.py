@@ -25,3 +25,18 @@ def test_Token():
 def test_find_int_token(source, expected):
     token, _ = cmp.find_int_token(source, 0)
     assert  token == expected
+
+
+@pytest.mark.parametrize('source, expected', [
+    [
+        (
+            ''
+        ),
+        (
+            cmp.Token(cmp.EOF, cmp.EOF),
+        )
+    ],
+])
+def test_tokenize(source, expected):
+    tokens = cmp.tokenise(source)
+    assert tokens == expected
