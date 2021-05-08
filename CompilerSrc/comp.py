@@ -1,8 +1,9 @@
 INTEGER = 'INTEGER'
 EOF = 'EOF'
-
+ADD = 'ADD'
 
 is_digit = lambda x: x in '0123456789'
+is_add = lambda x: x == '+'
 
 
 class Token:
@@ -16,6 +17,7 @@ class Token:
 
 
 EOF_TOKEN = Token(EOF, EOF)
+ADD_TOKEN = Token(ADD, ADD)
 
 
 
@@ -42,6 +44,8 @@ def tokenise(source):
         if is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
+        elif is_add(char):
+            tokens += (ADD_TOKEN,)
 
         index += 1
 
