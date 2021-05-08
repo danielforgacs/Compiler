@@ -42,6 +42,7 @@ def find_int_token(src, index):
             break
         char = src[index]
     token = Token(INTEGER, int(result))
+    index -= 1
     return token, index
 
 
@@ -71,11 +72,18 @@ def tokenise(source):
     return tokens
 
 
-def expression(source, index):
+pop_next_token = lambda x: (x[0], x[1:])
+
+
+def expression(source):
     tokens = tokenise(source)
-    result = 0
+    token_left, tokens = pop_next_token(tokens)
+    assert token_left.type_ == INTEGER
+    operator, tokens = pop_next_token(tokens)
+    assert operator in [ADD_TOKEN, SUB_TOKEN]
+    right_token, tokens = pop_next_token(tokens)
+    assert token_left.type_ == INTEGER
 
-    while tokens[0] != EOF:
-        pass
 
-    return result
+
+# expression('123+567')

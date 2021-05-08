@@ -121,6 +121,27 @@ def test_find_int_token(source, expected):
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
+    [
+        (
+            '123+567'
+        ),
+        (
+            cmp.Token(cmp.INTEGER, 123),
+            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.INTEGER, 567),
+            cmp.Token(cmp.EOF, cmp.EOF),
+        )
+    ],
+    [
+        (
+            '123+'
+        ),
+        (
+            cmp.Token(cmp.INTEGER, 123),
+            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.EOF, cmp.EOF),
+        )
+    ],
 ])
 def test_tokenize(source, expected):
     tokens = cmp.tokenise(source)
@@ -130,8 +151,8 @@ def test_tokenize(source, expected):
 
 
 @pytest.mark.parametrize('source', [
-    '1',
-    '12',
+    # '1',
+    # '12',
 ])
 def test_expression(source):
-    assert cmp.expression(source, 0) == eval(source)
+    assert cmp.expression(source) == eval(source)
