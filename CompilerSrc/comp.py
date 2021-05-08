@@ -2,7 +2,7 @@ INTEGER = 'INTEGER'
 EOF = 'EOF'
 
 
-is_integer = lambda x: x in '0123456789'
+is_digit = lambda x: x in '0123456789'
 
 
 class Token:
@@ -20,7 +20,7 @@ class Token:
 def find_int_token(src, index):
     result = ''
     char = src[index]
-    while is_integer(char):
+    while is_digit(char):
         result += char
         index += 1
         if index == len(src):
@@ -35,6 +35,12 @@ def tokenise(source):
     tokens = ()
 
     while index < len(source):
+        char = source[index]
+
+        if is_digit(char):
+            token, index = find_int_token(source, index)
+            tokens += (token,)
+
         index += 1
 
     tokens += (Token(EOF, EOF),)

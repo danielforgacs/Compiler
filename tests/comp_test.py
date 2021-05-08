@@ -36,6 +36,15 @@ def test_find_int_token(source, expected):
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
+    [
+        (
+            '1'
+        ),
+        (
+            cmp.Token(cmp.INTEGER, 1),
+            cmp.Token(cmp.EOF, cmp.EOF),
+        )
+    ],
 ])
 def test_tokenize(source, expected):
     tokens = cmp.tokenise(source)
