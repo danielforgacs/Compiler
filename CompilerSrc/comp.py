@@ -1,15 +1,18 @@
-INTEGER = 'INTEGER'
 EOF = 'EOF'
-ADD = 'ADD'
-SUB = 'SUB'
-MULT = 'MULT'
-DIV = 'SUB'
 
-is_digit = lambda x: x in '0123456789'
-is_add = lambda x: x == '+'
-is_sub = lambda x: x == '-'
-is_mult = lambda x: x == '*'
-is_div = lambda x: x == '/'
+INTEGER = '0123456789'
+
+ADD = '+'
+SUB = '-'
+MULT = '*'
+DIV = '/'
+
+
+is_digit = lambda x: x in INTEGER
+is_add = lambda x: x == ADD
+is_sub = lambda x: x == SUB
+is_mult = lambda x: x == MULT
+is_div = lambda x: x == DIV
 
 
 class Token:
