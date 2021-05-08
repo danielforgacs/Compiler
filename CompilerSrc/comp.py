@@ -1,9 +1,15 @@
 INTEGER = 'INTEGER'
 EOF = 'EOF'
 ADD = 'ADD'
+SUB = 'SUB'
+MULT = 'MULT'
+DIV = 'SUB'
 
 is_digit = lambda x: x in '0123456789'
 is_add = lambda x: x == '+'
+is_sub = lambda x: x == '-'
+is_mult = lambda x: x == '*'
+is_div = lambda x: x == '/'
 
 
 class Token:
@@ -18,7 +24,9 @@ class Token:
 
 EOF_TOKEN = Token(EOF, EOF)
 ADD_TOKEN = Token(ADD, ADD)
-
+SUB_TOKEN = Token(SUB, SUB)
+MULT_TOKEN = Token(MULT, MULT)
+DIV_TOKEN = Token(DIV, DIV)
 
 
 def find_int_token(src, index):
@@ -46,6 +54,12 @@ def tokenise(source):
             tokens += (token,)
         elif is_add(char):
             tokens += (ADD_TOKEN,)
+        elif is_sub(char):
+            tokens += (SUB_TOKEN,)
+        elif is_mult(char):
+            tokens += (MULT_TOKEN,)
+        elif is_div(char):
+            tokens += (DIV_TOKEN,)
 
         index += 1
 
