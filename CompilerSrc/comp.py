@@ -15,6 +15,8 @@ class Token:
         return '<Token:{}:{}>'.format(self.type_, self.value)
 
 
+EOF_TOKEN = Token(EOF, EOF)
+
 
 
 def find_int_token(src, index):
@@ -43,6 +45,6 @@ def tokenise(source):
 
         index += 1
 
-    tokens += (Token(EOF, EOF),)
+    tokens += (EOF_TOKEN,)
 
     return tokens
