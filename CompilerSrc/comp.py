@@ -69,3 +69,7 @@ def tokenise(source):
     tokens += (EOF_TOKEN,)
 
     return tokens
+
+
+def expression(source, index):
+    return 1
