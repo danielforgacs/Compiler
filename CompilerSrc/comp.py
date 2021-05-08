@@ -81,9 +81,17 @@ def expression(source):
     assert token_left.type_ == INTEGER
     operator, tokens = pop_next_token(tokens)
     assert operator in [ADD_TOKEN, SUB_TOKEN]
-    right_token, tokens = pop_next_token(tokens)
+    token_right, tokens = pop_next_token(tokens)
     assert token_left.type_ == INTEGER
 
+    if operator == ADD_TOKEN:
+        result = token_left.value + token_right.value
+    elif operator == SUB_TOKEN:
+        result = token_left.value - token_right.value
+
+    return result
 
 
-# expression('123+567')
+
+if __name__ == '__main__':
+    print(expression('123+567'), eval('123+567'))
