@@ -19,6 +19,7 @@ MULT = 'MULT'
 DIV = 'DIV'
 
 
+is_space = lambda x: x == ' '
 is_digit = lambda x: x in '0123456789'
 is_add = lambda x: x == '+'
 is_sub = lambda x: x == '-'
@@ -64,7 +65,9 @@ def tokenise(source):
     while index < len(source):
         char = source[index]
 
-        if is_digit(char):
+        if is_space(char):
+            pass
+        elif is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
         elif is_add(char):
@@ -75,6 +78,8 @@ def tokenise(source):
             tokens += (MULT_TOKEN,)
         elif is_div(char):
             tokens += (DIV_TOKEN,)
+        else:
+            raise Exception('[ERROR] Bad tokenL', char)
 
         index += 1
 
