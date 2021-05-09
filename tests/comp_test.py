@@ -158,7 +158,7 @@ def test_tokenize(source, expected):
     '11   + 222   - 44   + 5555    +  11   - 222   + 44   + 13243',
 ])
 def test_expression(source):
-    assert cmp.expression(source) == eval(source)
+    assert cmp.run(source) == eval(source)
 
 
 @pytest.mark.parametrize('source', [
@@ -166,11 +166,11 @@ def test_expression(source):
     '    23 *   31  *    5  ',
 ])
 def test_term(source):
-    assert cmp.expression(source) == eval(source)
+    assert cmp.run(source) == eval(source)
 
 
 @pytest.mark.parametrize('source', [
     '(0)',
 ])
 def test_parenthesis(source):
-    assert cmp.expression(source) == eval(source)
+    assert cmp.run(source) == eval(source)

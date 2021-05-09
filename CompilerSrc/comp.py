@@ -124,9 +124,7 @@ def term(result, tokens):
     return Token(INTEGER, result), tokens
 
 
-def expression(source):
-    tokens = tokenise(source)
-    result = 0
+def expression(result, tokens):
     token_left, tokens = term(result, tokens)
     assert token_left.type_ == INTEGER
     result = token_left.value
@@ -145,8 +143,14 @@ def expression(source):
     return result
 
 
+def run(source):
+    tokens = tokenise(source)
+    result = expression(0, tokens)
+
+    return result
+
 
 if __name__ == '__main__':
     # code = '2*3*4*5'
     code = '2+3'
-    print(expression(code), eval(code))
+    print(run(code), eval(code))
