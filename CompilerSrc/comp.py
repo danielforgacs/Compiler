@@ -40,6 +40,23 @@ class Token:
         return '<Token:{}:{}>'.format(self.type_, self.value)
 
 
+class AST:
+    pass
+
+
+class BinOp(AST):
+    def __init__(self, left, operator, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
+
+
+class Num(ASR):
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+
+
 EOF_TOKEN = Token(EOF, EOF)
 ADD_TOKEN = Token(ADD, ADD)
 SUB_TOKEN = Token(SUB, SUB)
