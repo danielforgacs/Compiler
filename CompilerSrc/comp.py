@@ -100,20 +100,27 @@ def tokenise(source):
 pop_next_token = lambda x: (x[0], x[1:])
 
 
-def factor(tokens):
+def factor(result, tokens):
     token, tokens = pop_next_token(tokens)
+    if token.type_ == INTEGER:
+        pass
+    elif token == PAREN_L_TOKEN:
+        token, tokens = expression(result, tokens)
+        paren_r, tokens = pop_next_token(tokens)
+        assert paren_r == PAREN_R_TOKEN
+
     return token, tokens
 
 
 def term(result, tokens):
-    token_left, tokens = factor(tokens)
+    token_left, tokens = factor(result, tokens)
     assert token_left.type_ == INTEGER
     result = token_left.value
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
         assert operator in (MULT_TOKEN, DIV_TOKEN)
-        token_right, tokens = factor(tokens)
+        token_right, tokens = factor(result, tokens)
         assert token_right.type_ == INTEGER
 
         if operator == MULT_TOKEN:
@@ -140,14 +147,14 @@ def expression(result, tokens):
         elif operator == SUB_TOKEN:
             result -= token_right.value
 
-    return result
+    return Token(INTEGER, result), tokens
 
 
 def run(source):
     tokens = tokenise(source)
-    result = expression(0, tokens)
+    token, _ = expression(0, tokens)
 
-    return result
+    return token.value
 
 
 if __name__ == '__main__':
