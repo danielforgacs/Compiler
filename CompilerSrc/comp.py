@@ -8,19 +8,25 @@ FACTOR: INTEGER
 
 EOF = 'EOF'
 
-INTEGER = '0123456789'
+# INTEGER = '0123456789'
+INTEGER = 'INTEGER'
 
-ADD = '+'
-SUB = '-'
-MULT = '*'
-DIV = '/'
+ADD = 'ADD'
+SUB = 'SUB'
+MULT = 'MULT'
+DIV = 'DIV'
 
 
-is_digit = lambda x: x in INTEGER
-is_add = lambda x: x == ADD
-is_sub = lambda x: x == SUB
-is_mult = lambda x: x == MULT
-is_div = lambda x: x == DIV
+# is_digit = lambda x: x in INTEGER
+is_digit = lambda x: x in '0123456789'
+# is_add = lambda x: x == ADD
+is_add = lambda x: x == '+'
+# is_sub = lambda x: x == SUB
+is_sub = lambda x: x == '-'
+# is_mult = lambda x: x == MULT
+is_mult = lambda x: x == '*'
+# is_div = lambda x: x == DIV
+is_div = lambda x: x == '/'
 
 
 class Token:
@@ -83,16 +89,41 @@ def tokenise(source):
 pop_next_token = lambda x: (x[0], x[1:])
 
 
+def factor(tokens):
+    token, tokens = pop_next_token(tokens)
+    return token, tokens
+
+
+def term(result, tokens):
+    token_left, tokens = factor(tokens)
+    assert token_left.type_ == INTEGER
+    result += token_left.value
+
+    while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
+        operator, tokens = pop_next_token(tokens)
+        assert operator in (MULT_TOKEN, DIV_TOKEN)
+        token_right, tokens = factor(tokens)
+        assert token_right.type_ == INTEGER
+
+        if operator == MULT_TOKEN:
+            result *= token_right.value
+        elif operator == DIV_TOKEN:
+            result /= token_right.value
+
+    return Token(INTEGER, result), tokens
+
+
 def expression(source):
     tokens = tokenise(source)
-    token_left, tokens = pop_next_token(tokens)
+    result = 0
+    token_left, tokens = term(result, tokens)
     assert token_left.type_ == INTEGER
     result = token_left.value
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
         assert operator in (ADD_TOKEN, SUB_TOKEN)
-        token_right, tokens = pop_next_token(tokens)
+        token_right, tokens = term(result, tokens)
         assert token_right.type_ == INTEGER
 
         if operator == ADD_TOKEN:
@@ -105,4 +136,5 @@ def expression(source):
 
 
 if __name__ == '__main__':
-    print(expression('123+567'), eval('123+567'))
+    code = '2*3'
+    print(expression(code), eval(code))

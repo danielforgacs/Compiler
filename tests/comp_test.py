@@ -148,8 +148,6 @@ def test_tokenize(source, expected):
     assert tokens == expected
 
 
-
-
 @pytest.mark.parametrize('source', [
     '1+2',
     '1234  +    8765    ',
@@ -160,4 +158,11 @@ def test_tokenize(source, expected):
     '11   + 222   - 44   + 5555    +  11   - 222   + 44   + 13243',
 ])
 def test_expression(source):
+    assert cmp.expression(source) == eval(source)
+
+
+@pytest.mark.parametrize('source', [
+    '2*3*4',
+])
+def test_term(source):
     assert cmp.expression(source) == eval(source)
