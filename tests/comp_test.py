@@ -163,6 +163,7 @@ def test_expression(source):
 
 @pytest.mark.parametrize('source', [
     '2*3*4',
+    '    23 *   31  *    5  ',
 ])
 def test_term(source):
     assert cmp.expression(source) == eval(source)

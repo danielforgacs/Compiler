@@ -97,7 +97,7 @@ def factor(tokens):
 def term(result, tokens):
     token_left, tokens = factor(tokens)
     assert token_left.type_ == INTEGER
-    result += token_left.value
+    result = token_left.value
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
@@ -136,5 +136,6 @@ def expression(source):
 
 
 if __name__ == '__main__':
-    code = '2*3*4*5'
+    # code = '2*3*4*5'
+    code = '2+3'
     print(expression(code), eval(code))
