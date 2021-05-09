@@ -124,21 +124,17 @@ def factor(result, tokens):
     elif token == PAREN_L_TOKEN:
         token, tokens = expression(result, tokens)
         paren_r, tokens = pop_next_token(tokens)
-        assert paren_r == PAREN_R_TOKEN
 
     return token, tokens
 
 
 def term(result, tokens):
     token_left, tokens = factor(result, tokens)
-    assert token_left.type_ == INTEGER
     result = token_left.value
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        assert operator in (MULT_TOKEN, DIV_TOKEN)
         token_right, tokens = factor(result, tokens)
-        assert token_right.type_ == INTEGER
 
         if operator == MULT_TOKEN:
             result *= token_right.value
@@ -150,14 +146,11 @@ def term(result, tokens):
 
 def expression(result, tokens):
     token_left, tokens = term(result, tokens)
-    assert token_left.type_ == INTEGER
     result = token_left.value
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        assert operator in (ADD_TOKEN, SUB_TOKEN)
         token_right, tokens = term(result, tokens)
-        assert token_right.type_ == INTEGER
 
         if operator == ADD_TOKEN:
             result += token_right.value
