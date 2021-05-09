@@ -171,6 +171,14 @@ def test_term(source):
 
 @pytest.mark.parametrize('source', [
     '(0)',
+    '(123)',
+    '(123+456)',
+    '((((5))))',
+    '((((5  +  56))))',
+    '2+(3*4)-5',
+    '2+((3*4)-5) * 2+(3*4)-5',
+    '10 / 5 / 2',
+    '10 / (5 / 2)',
 ])
 def test_parenthesis(source):
     assert cmp.run(source) == eval(source)
