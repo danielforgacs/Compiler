@@ -1,14 +1,16 @@
 """
-EXPRESSION: TERM ((MULT | DIV) TERM) *
-TERM: FACTOR ((MULT | DIV) FACTOR) *
-FACTOR: INTEGER
+expression:     term ((ADD | SUB) term) *
+term:           factor ((MULT | DIV) factor) *
+factor:         INTEGER | PAREN_L expression PAREN_R
+
+ADD, SUB:           +, -
+MULT, DIV:          *, /
+PAREN_L, PAREN_R:   (, )
+INTEGER:            0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 """
-
-
 
 EOF = 'EOF'
 
-# INTEGER = '0123456789'
 INTEGER = 'INTEGER'
 
 ADD = 'ADD'
@@ -17,15 +19,10 @@ MULT = 'MULT'
 DIV = 'DIV'
 
 
-# is_digit = lambda x: x in INTEGER
 is_digit = lambda x: x in '0123456789'
-# is_add = lambda x: x == ADD
 is_add = lambda x: x == '+'
-# is_sub = lambda x: x == SUB
 is_sub = lambda x: x == '-'
-# is_mult = lambda x: x == MULT
 is_mult = lambda x: x == '*'
-# is_div = lambda x: x == DIV
 is_div = lambda x: x == '/'
 
 
