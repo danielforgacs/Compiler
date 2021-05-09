@@ -17,6 +17,7 @@ ADD = 'ADD'
 SUB = 'SUB'
 MULT = 'MULT'
 DIV = 'DIV'
+PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
 
 
 is_space = lambda x: x == ' '
@@ -25,6 +26,8 @@ is_add = lambda x: x == '+'
 is_sub = lambda x: x == '-'
 is_mult = lambda x: x == '*'
 is_div = lambda x: x == '/'
+is_paren_l = lambda x: x == '('
+is_paren_r = lambda x: x == ')'
 
 
 class Token:
@@ -42,6 +45,8 @@ ADD_TOKEN = Token(ADD, ADD)
 SUB_TOKEN = Token(SUB, SUB)
 MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
+PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
+PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 
 
 def find_int_token(src, index):
@@ -78,8 +83,12 @@ def tokenise(source):
             tokens += (MULT_TOKEN,)
         elif is_div(char):
             tokens += (DIV_TOKEN,)
+        elif is_paren_l(char):
+            tokens += (PAREN_L_TOKEN,)
+        elif is_paren_r(char):
+            tokens += (PAREN_R_TOKEN,)
         else:
-            raise Exception('[ERROR] Bad tokenL', char)
+            raise Exception('[ERROR] Bad token', char)
 
         index += 1
 
