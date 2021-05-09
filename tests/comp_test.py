@@ -167,3 +167,10 @@ def test_expression(source):
 ])
 def test_term(source):
     assert cmp.expression(source) == eval(source)
+
+
+@pytest.mark.parametrize('source', [
+    '(0)',
+])
+def test_parenthesis(source):
+    assert cmp.expression(source) == eval(source)
