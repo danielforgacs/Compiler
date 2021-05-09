@@ -136,5 +136,5 @@ def expression(source):
 
 
 if __name__ == '__main__':
-    code = '2*3'
+    code = '2*3*4*5'
     print(expression(code), eval(code))
