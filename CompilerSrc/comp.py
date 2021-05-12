@@ -57,6 +57,27 @@ class Num(AST):
         self.value = token.value
 
 
+class NodeVisitor:
+    def visit(self, node):
+        visitor = getattr(self, node.__class__.__name__)
+        return visitor(node)
+
+    def Num(self, node):
+        return node.value
+
+    def BinOp(self, node):
+        if node.operator == ADD_TOKEN:
+            return self.visit(node.left) + self.visit(node.right)
+        elif node.operator == SUB_TOKEN:
+            return self.visit(node.left) - self.visit(node.right)
+        elif node.operator == MULT_TOKEN:
+            return self.visit(node.left) * self.visit(node.right)
+        elif node.operator == DIV_TOKEN:
+            return self.visit(node.left) / self.visit(node.right)
+
+
+
+
 EOF_TOKEN = Token(EOF, EOF)
 ADD_TOKEN = Token(ADD, ADD)
 SUB_TOKEN = Token(SUB, SUB)
@@ -167,12 +188,13 @@ def run(source):
     tokens = tokenise(source)
     token, _, node = expression(0, tokens)
 
-    print(node)
+    print(NodeVisitor().visit(node))
 
-    return token.value
+    # return token.value
+    return NodeVisitor().visit(node)
 
 
 if __name__ == '__main__':
-    # code = '2*3*4*5'
-    code = '2+3'
+    code = '2*3*4*5'
+    # code = '2+3'
     print(run(code), eval(code))
