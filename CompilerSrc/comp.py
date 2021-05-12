@@ -120,49 +120,52 @@ pop_next_token = lambda x: (x[0], x[1:])
 def factor(result, tokens):
     token, tokens = pop_next_token(tokens)
     if token.type_ == INTEGER:
+        node = Num(token)
         pass
     elif token == PAREN_L_TOKEN:
-        token, tokens = expression(result, tokens)
+        token, tokens, node = expression(result, tokens)
         paren_r, tokens = pop_next_token(tokens)
 
-    return token, tokens
+    return token, tokens, node
 
 
 def term(result, tokens):
-    token_left, tokens = factor(result, tokens)
+    token_left, tokens, node = factor(result, tokens)
     result = token_left.value
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens = factor(result, tokens)
+        token_right, tokens, node = factor(result, tokens)
 
         if operator == MULT_TOKEN:
             result *= token_right.value
         elif operator == DIV_TOKEN:
             result /= token_right.value
 
-    return Token(INTEGER, result), tokens
+        node = BinOp(token_left, operator, token_right)
+    return Token(INTEGER, result), tokens, node
 
 
 def expression(result, tokens):
-    token_left, tokens = term(result, tokens)
+    token_left, tokens, node = term(result, tokens)
     result = token_left.value
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens = term(result, tokens)
+        token_right, tokens, node = term(result, tokens)
 
         if operator == ADD_TOKEN:
             result += token_right.value
         elif operator == SUB_TOKEN:
             result -= token_right.value
 
-    return Token(INTEGER, result), tokens
+        node = BinOp(token_left, operator, token_right)
+    return Token(INTEGER, result), tokens, node
 
 
 def run(source):
     tokens = tokenise(source)
-    token, _ = expression(0, tokens)
+    token, _, node = expression(0, tokens)
 
     return token.value
 
