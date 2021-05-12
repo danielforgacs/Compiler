@@ -135,14 +135,14 @@ def term(result, tokens):
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens, node = factor(result, tokens)
+        token_right, tokens, node_r = factor(result, tokens)
 
         if operator == MULT_TOKEN:
             result *= token_right.value
         elif operator == DIV_TOKEN:
             result /= token_right.value
 
-        node = BinOp(token_left, operator, token_right)
+        node = BinOp(node, operator, node_r)
     return Token(INTEGER, result), tokens, node
 
 
@@ -152,20 +152,22 @@ def expression(result, tokens):
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens, node = term(result, tokens)
+        token_right, tokens, node_r = term(result, tokens)
 
         if operator == ADD_TOKEN:
             result += token_right.value
         elif operator == SUB_TOKEN:
             result -= token_right.value
 
-        node = BinOp(token_left, operator, token_right)
+        node = BinOp(node, operator, node_r)
     return Token(INTEGER, result), tokens, node
 
 
 def run(source):
     tokens = tokenise(source)
     token, _, node = expression(0, tokens)
+
+    print(node)
 
     return token.value
 
