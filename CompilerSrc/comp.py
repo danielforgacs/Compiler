@@ -153,7 +153,7 @@ def factor(tokens):
 
     elif token == PAREN_L_TOKEN:
         token, tokens, node = expression(tokens)
-        paren_r, tokens = pop_next_token(tokens)
+        _, tokens = pop_next_token(tokens)
 
     # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
 
@@ -164,8 +164,7 @@ def factor(tokens):
 
 
 def term(tokens):
-    token_left, tokens, node = factor(tokens)
-    # result = token_left.value
+    _, tokens, node = factor(tokens)
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
@@ -176,8 +175,7 @@ def term(tokens):
 
 
 def expression(tokens):
-    token_left, tokens, node = term(tokens)
-    # result = token_left.value
+    _, tokens, node = term(tokens)
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
