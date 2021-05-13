@@ -147,6 +147,7 @@ def factor(tokens):
     factor: (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
     """
     token, tokens = pop_next_token(tokens)
+
     if token.type_ == INTEGER:
         node = Num(token)
 
@@ -156,7 +157,6 @@ def factor(tokens):
 
     # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
 
-
     else:
         raise Exception(f'[ERROR] Unecpeted token: {token}')
 
@@ -165,26 +165,26 @@ def factor(tokens):
 
 def term(tokens):
     token_left, tokens, node = factor(tokens)
-    result = token_left.value
+    # result = token_left.value
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
         token_right, tokens, node_r = factor(tokens)
         node = BinOp(node, operator, node_r)
 
-    return Token(INTEGER, result), tokens, node
+    return Token(INTEGER, -123), tokens, node
 
 
 def expression(tokens):
     token_left, tokens, node = term(tokens)
-    result = token_left.value
+    # result = token_left.value
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
         token_right, tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
 
-    return Token(INTEGER, result), tokens, node
+    return Token(INTEGER, 'result123'), tokens, node
 
 
 def run(source):
