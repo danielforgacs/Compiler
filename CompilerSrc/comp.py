@@ -1,7 +1,7 @@
 """
 expression:     term ((ADD | SUB) term) *
 term:           factor ((MULT | DIV) factor) *
-factor:         INTEGER | PAREN_L expression PAREN_R
+factor:         (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
 
 ADD, SUB:           +, -
 MULT, DIV:          *, /
