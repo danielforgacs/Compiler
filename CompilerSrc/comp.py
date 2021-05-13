@@ -142,7 +142,7 @@ def tokenise(source):
     return tokens
 
 
-def factor(result, tokens):
+def factor(tokens):
     """
     factor: (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
     """
@@ -151,7 +151,7 @@ def factor(result, tokens):
         node = Num(token)
 
     elif token == PAREN_L_TOKEN:
-        token, tokens, node = expression(result, tokens)
+        token, tokens, node = expression(tokens)
         paren_r, tokens = pop_next_token(tokens)
 
     # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
@@ -163,25 +163,25 @@ def factor(result, tokens):
     return token, tokens, node
 
 
-def term(result, tokens):
-    token_left, tokens, node = factor(result, tokens)
+def term(tokens):
+    token_left, tokens, node = factor(tokens)
     result = token_left.value
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens, node_r = factor(result, tokens)
+        token_right, tokens, node_r = factor(tokens)
         node = BinOp(node, operator, node_r)
 
     return Token(INTEGER, result), tokens, node
 
 
-def expression(result, tokens):
-    token_left, tokens, node = term(result, tokens)
+def expression(tokens):
+    token_left, tokens, node = term(tokens)
     result = token_left.value
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens, node_r = term(result, tokens)
+        token_right, tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
 
     return Token(INTEGER, result), tokens, node
@@ -189,7 +189,7 @@ def expression(result, tokens):
 
 def run(source):
     tokens = tokenise(source)
-    token, _, node = expression(0, tokens)
+    _, _, node = expression(tokens)
 
     return NodeVisitor().visit(node)
 
