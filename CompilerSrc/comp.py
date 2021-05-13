@@ -62,6 +62,12 @@ class BinOp(AST):
         self.right = right
 
 
+class UnaryOp(AST):
+    def __init__(self, operator, expression):
+        self.token = operator
+        self.expression = expression
+
+
 class Num(AST):
     def __init__(self, token):
         self.token = token
@@ -144,6 +150,9 @@ def factor(result, tokens):
         token, tokens, node = expression(result, tokens)
         paren_r, tokens = pop_next_token(tokens)
 
+    else:
+        raise Exception(f'[ERROR] Unecpeted token: {token}')
+
     return token, tokens, node
 
 
@@ -179,6 +188,9 @@ def run(source):
 
 
 if __name__ == '__main__':
-    code = '2*3*4*5'
+    code = '-1'
     # code = '2+3'
-    print(run(code), eval(code))
+    print(
+        run(code),
+        eval(code)
+    )

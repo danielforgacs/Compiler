@@ -182,3 +182,10 @@ def test_term(source):
 ])
 def test_parenthesis(source):
     assert cmp.run(source) == eval(source)
+
+
+@pytest.mark.parametrize('source', [
+    '-1',
+])
+def test_unary_op(source):
+    assert cmp.run(source) == eval(source)
