@@ -1,7 +1,6 @@
 """
 expression:     term ((ADD | SUB) term) *
 term:           factor ((MULT | DIV) factor) *
-factor:         (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
 
 ADD, SUB:           +, -
 MULT, DIV:          *, /
@@ -144,6 +143,9 @@ def tokenise(source):
 
 
 def factor(result, tokens):
+    """
+    factor: (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
+    """
     token, tokens = pop_next_token(tokens)
     if token.type_ == INTEGER:
         node = Num(token)
@@ -151,6 +153,9 @@ def factor(result, tokens):
     elif token == PAREN_L_TOKEN:
         token, tokens, node = expression(result, tokens)
         paren_r, tokens = pop_next_token(tokens)
+
+    # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
+
 
     else:
         raise Exception(f'[ERROR] Unecpeted token: {token}')
@@ -191,7 +196,7 @@ def run(source):
 
 if __name__ == '__main__':
     code = '2+3'
-    # code = '-1'
+    code = '-1'
     # code = '#'
     print(
         run(code),
