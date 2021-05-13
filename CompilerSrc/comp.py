@@ -91,6 +91,8 @@ class NodeVisitor:
             return self.visit(node.left) * self.visit(node.right)
         elif node.operator == DIV_TOKEN:
             return self.visit(node.left) / self.visit(node.right)
+        else:
+            raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
 
 
 def find_int_token(src, index):
@@ -132,7 +134,7 @@ def tokenise(source):
         elif is_paren_r(char):
             tokens += (PAREN_R_TOKEN,)
         else:
-            raise Exception('[ERROR] Bad token', char)
+            raise Exception(f'[ERROR] Bad char: {char}')
 
         index += 1
 
@@ -188,8 +190,9 @@ def run(source):
 
 
 if __name__ == '__main__':
-    code = '-1'
-    # code = '2+3'
+    code = '2+3'
+    # code = '-1'
+    # code = '#'
     print(
         run(code),
         eval(code)
