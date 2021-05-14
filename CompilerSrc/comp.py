@@ -152,7 +152,7 @@ def factor(tokens):
         node = Num(token)
 
     elif token == PAREN_L_TOKEN:
-        token, tokens, node = expression(tokens)
+        tokens, node = expression(tokens)
         _, tokens = pop_next_token(tokens)
 
     # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
@@ -182,12 +182,12 @@ def expression(tokens):
         token_right, tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
 
-    return Token(INTEGER, 'result123'), tokens, node
+    return tokens, node
 
 
 def run(source):
     tokens = tokenise(source)
-    _, _, node = expression(tokens)
+    _, node = expression(tokens)
 
     return NodeVisitor().visit(node)
 
