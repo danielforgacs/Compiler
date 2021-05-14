@@ -171,15 +171,15 @@ def term(tokens):
         token_right, tokens, node_r = factor(tokens)
         node = BinOp(node, operator, node_r)
 
-    return Token(INTEGER, -123), tokens, node
+    return tokens, node
 
 
 def expression(tokens):
-    _, tokens, node = term(tokens)
+    tokens, node = term(tokens)
 
     while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens, node_r = term(tokens)
+        tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
 
     return tokens, node
