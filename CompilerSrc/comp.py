@@ -55,10 +55,10 @@ class AST:
 
 
 class BinOp(AST):
-    def __init__(self, left, operator, right):
-        self.left = left
+    def __init__(self, node_l, operator, node_r):
+        self.node_l = node_l
         self.operator = operator
-        self.right = right
+        self.node_r = node_r
 
 
 class UnaryOp(AST):
@@ -83,13 +83,13 @@ class NodeVisitor:
 
     def BinOp(self, node):
         if node.operator == ADD_TOKEN:
-            return self.visit(node.left) + self.visit(node.right)
+            return self.visit(node.node_l) + self.visit(node.node_r)
         elif node.operator == SUB_TOKEN:
-            return self.visit(node.left) - self.visit(node.right)
+            return self.visit(node.node_l) - self.visit(node.node_r)
         elif node.operator == MULT_TOKEN:
-            return self.visit(node.left) * self.visit(node.right)
+            return self.visit(node.node_l) * self.visit(node.node_r)
         elif node.operator == DIV_TOKEN:
-            return self.visit(node.left) / self.visit(node.right)
+            return self.visit(node.node_l) / self.visit(node.node_r)
         else:
             raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
 
