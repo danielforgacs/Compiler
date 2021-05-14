@@ -153,7 +153,10 @@ def factor(tokens):
 
     elif token == PAREN_L_TOKEN:
         tokens, node = expression(tokens)
-        _, tokens = pop_next_token(tokens)
+        paren_r, tokens = pop_next_token(tokens)
+
+        if paren_r != PAREN_R_TOKEN:
+            raise Exception(f'[ERROR] Expected token: {PAREN_R_TOKEN}')
 
     # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
 
