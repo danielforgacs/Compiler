@@ -186,6 +186,15 @@ def test_parenthesis(source):
 
 @pytest.mark.parametrize('source', [
     '-1',
+    '--1',
+    '----1',
+    '-+-+-+-1',
+
+    '+--+-+123  --++--++-+-++ 432',
+    '+-(-+-+123)  --++--+(+-+-++ 432)',
+    '+-(-+-+123)  --++--+(+-+-++ 432)',
+
+    '+-(-+-+123) * --++--+(+-+-++ 432)',
 ])
 def test_unary_op(source):
     assert cmp.run(source) == eval(source)
