@@ -160,15 +160,15 @@ def factor(tokens):
     else:
         raise Exception(f'[ERROR] Unecpeted token: {token}')
 
-    return token, tokens, node
+    return tokens, node
 
 
 def term(tokens):
-    _, tokens, node = factor(tokens)
+    tokens, node = factor(tokens)
 
     while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
-        token_right, tokens, node_r = factor(tokens)
+        tokens, node_r = factor(tokens)
         node = BinOp(node, operator, node_r)
 
     return tokens, node
