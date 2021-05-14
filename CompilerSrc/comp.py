@@ -75,7 +75,10 @@ class Num(AST):
 
 class NodeVisitor:
     def visit(self, node):
-        visitor = getattr(self, node.__class__.__name__)
+        nodeclassname = node.__class__.__name__
+        if not hasattr(self, nodeclassname):
+            raise Exception(f'[ERROR] Unknown node to visit: {nodeclassname}')
+        visitor = getattr(self, nodeclassname)
         return visitor(node)
 
     def Num(self, node):
@@ -158,7 +161,8 @@ def factor(tokens):
         if paren_r != PAREN_R_TOKEN:
             raise Exception(f'[ERROR] Expected token: {PAREN_R_TOKEN}')
 
-    # elif token in [SUB_TOKEN, ADD_TOKEN, MULT_TOKEN, DIV_TOKEN]:
+    elif token in [SUB_TOKEN, ADD_TOKEN]:
+        node = UnaryOp(token, factor(tokens))
 
     else:
         raise Exception(f'[ERROR] Unecpeted token: {token}')
