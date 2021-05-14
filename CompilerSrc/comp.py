@@ -63,7 +63,7 @@ class BinOp(AST):
 
 class UnaryOp(AST):
     def __init__(self, operator, expression):
-        self.token = operator
+        self.operator = operator
         self.expression = expression
 
 
@@ -83,6 +83,14 @@ class NodeVisitor:
 
     def Num(self, node):
         return node.value
+
+    def UnaryOp(self, node):
+        if node.operator == ADD_TOKEN:
+            return self.visit(node.expression)
+        elif node.operator == SUB_TOKEN:
+            return self.visit(node.expression)
+        else:
+            raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
 
     def BinOp(self, node):
         if node.operator == ADD_TOKEN:
