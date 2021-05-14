@@ -88,7 +88,7 @@ class NodeVisitor:
         if node.operator == ADD_TOKEN:
             return self.visit(node.expression)
         elif node.operator == SUB_TOKEN:
-            return self.visit(node.expression)
+            return self.visit(node.expression) * -1
         else:
             raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
 
@@ -170,7 +170,8 @@ def factor(tokens):
             raise Exception(f'[ERROR] Expected token: {PAREN_R_TOKEN}')
 
     elif token in [SUB_TOKEN, ADD_TOKEN]:
-        node = UnaryOp(token, factor(tokens))
+        tokens, node = factor(tokens)
+        node = UnaryOp(token, node)
 
     else:
         raise Exception(f'[ERROR] Unecpeted token: {token}')
