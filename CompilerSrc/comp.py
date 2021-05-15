@@ -9,6 +9,7 @@ INTEGER:            0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 """
 
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+DOT = 'DOT'
 EOF = 'EOF'
 
 INTEGER = 'INTEGER'
@@ -29,8 +30,10 @@ is_add = lambda x: x == '+'
 is_sub = lambda x: x == '-'
 is_mult = lambda x: x == '*'
 is_div = lambda x: x == '/'
+
 is_paren_l = lambda x: x == '('
 is_paren_r = lambda x: x == ')'
+is_dot = lambda x: x == '.'
 
 is_aplha = lambda x: x in ALPHA
 
@@ -57,6 +60,7 @@ PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
+DOT_TOKEN = Token(DOT, DOT)
 
 
 class AST:
@@ -173,6 +177,8 @@ def tokenise(source):
         elif is_aplha(char):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
+        elif is_dot(char):
+            tokens += (DOT_TOKEN,)
         else:
             raise Exception(f'[ERROR] Bad char: {char}')
 
