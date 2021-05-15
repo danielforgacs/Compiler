@@ -198,3 +198,10 @@ def test_parenthesis(source):
 ])
 def test_unary_op(source):
     assert cmp.run(source) == eval(source)
+
+
+@pytest.mark.parametrize('source, expected', [
+    ('BEGIN', (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)),
+])
+def test_new_tokens(source, expected):
+    assert cmp.tokenise(source) == expected

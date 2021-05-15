@@ -8,6 +8,7 @@ PAREN_L, PAREN_R:   (, )
 INTEGER:            0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 """
 
+ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 EOF = 'EOF'
 
 INTEGER = 'INTEGER'
@@ -18,6 +19,8 @@ MULT = 'MULT'
 DIV = 'DIV'
 PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
 
+BEGIN = 'BEGIN'
+
 
 is_space = lambda x: x == ' '
 is_digit = lambda x: x in '0123456789'
@@ -27,6 +30,8 @@ is_mult = lambda x: x == '*'
 is_div = lambda x: x == '/'
 is_paren_l = lambda x: x == '('
 is_paren_r = lambda x: x == ')'
+
+is_aplha = lambda x: x in ALPHA
 
 pop_next_token = lambda x: (x[0], x[1:])
 
@@ -48,6 +53,8 @@ MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
+
+BEGIN_TOKEN = Token(BEGIN, BEGIN)
 
 
 class AST:
@@ -119,6 +126,22 @@ def find_int_token(src, index):
     return token, index
 
 
+def find_alpha_token(src, index):
+    result = ''
+    char = src[index]
+    while is_aplha(char):
+        result += char
+        index += 1
+        if index == len(src):
+            break
+        char = src[index]
+    if result == BEGIN:
+        token = BEGIN_TOKEN
+    index -= 1
+    return token, index
+
+
+
 def tokenise(source):
     index = 0
     tokens = ()
@@ -143,6 +166,10 @@ def tokenise(source):
             tokens += (PAREN_L_TOKEN,)
         elif is_paren_r(char):
             tokens += (PAREN_R_TOKEN,)
+        elif is_aplha(char):
+            token, index = find_alpha_token(source, index)
+            tokens += (BEGIN_TOKEN,)
+            index = 100
         else:
             raise Exception(f'[ERROR] Bad char: {char}')
 
