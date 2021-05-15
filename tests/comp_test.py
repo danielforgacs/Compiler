@@ -204,6 +204,7 @@ def test_unary_op(source):
     ('BEGIN', (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)),
     ('END', (cmp.END_TOKEN, cmp.EOF_TOKEN)),
     ('.', (cmp.DOT_TOKEN, cmp.EOF_TOKEN)),
+    (':=', (cmp.ASSIGN_TOKEN, cmp.EOF_TOKEN)),
     (
         'BEGIN END.',
         (

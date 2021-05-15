@@ -22,6 +22,8 @@ PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
 
 BEGIN = 'BEGIN'
 END = 'END'
+EQUAL = '='
+ASSIGN = ':='
 
 
 is_space = lambda x: x == ' '
@@ -34,6 +36,9 @@ is_div = lambda x: x == '/'
 is_paren_l = lambda x: x == '('
 is_paren_r = lambda x: x == ')'
 is_dot = lambda x: x == '.'
+is_colon = lambda x: x == ':'
+is_semi_colon = lambda x: x == ';'
+is_equal = lambda x: x == '='
 
 is_aplha = lambda x: x in ALPHA
 
@@ -61,6 +66,7 @@ PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
 DOT_TOKEN = Token(DOT, DOT)
+ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 
 
 class AST:
@@ -156,6 +162,10 @@ def tokenise(source):
 
     while index < len(source):
         char = source[index]
+        nextchar = None
+
+        if index + 1 < len(source):
+            nextchar = source[index+1]
 
         if is_space(char):
             pass
@@ -179,6 +189,9 @@ def tokenise(source):
             tokens += (token,)
         elif is_dot(char):
             tokens += (DOT_TOKEN,)
+        elif is_colon(char) and is_equal(nextchar):
+            index += 1
+            tokens += (ASSIGN_TOKEN,)
         else:
             raise Exception(f'[ERROR] Bad char: {char}')
 
