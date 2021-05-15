@@ -20,6 +20,7 @@ DIV = 'DIV'
 PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
 
 BEGIN = 'BEGIN'
+END = 'END'
 
 
 is_space = lambda x: x == ' '
@@ -55,6 +56,7 @@ PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
+END_TOKEN = Token(END, END)
 
 
 class AST:
@@ -137,6 +139,8 @@ def find_alpha_token(src, index):
         char = src[index]
     if result == BEGIN:
         token = BEGIN_TOKEN
+    elif result == END:
+        token = END_TOKEN
     index -= 1
     return token, index
 
@@ -168,8 +172,7 @@ def tokenise(source):
             tokens += (PAREN_R_TOKEN,)
         elif is_aplha(char):
             token, index = find_alpha_token(source, index)
-            tokens += (BEGIN_TOKEN,)
-            index = 100
+            tokens += (token,)
         else:
             raise Exception(f'[ERROR] Bad char: {char}')
 

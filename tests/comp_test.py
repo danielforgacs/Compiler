@@ -202,6 +202,7 @@ def test_unary_op(source):
 
 @pytest.mark.parametrize('source, expected', [
     ('BEGIN', (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)),
+    ('END', (cmp.END_TOKEN, cmp.EOF_TOKEN)),
 ])
 def test_new_tokens(source, expected):
     assert cmp.tokenise(source) == expected
