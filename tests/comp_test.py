@@ -204,6 +204,30 @@ def test_unary_op(source):
     ('BEGIN', (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)),
     ('END', (cmp.END_TOKEN, cmp.EOF_TOKEN)),
     ('.', (cmp.DOT_TOKEN, cmp.EOF_TOKEN)),
+    (
+        'BEGIN END.',
+        (
+            cmp.BEGIN_TOKEN,
+            cmp.END_TOKEN,
+            cmp.DOT_TOKEN,
+            cmp.EOF_TOKEN
+        )
+    ),
+    (
+        'BEGIN END   BEGIN    END END.BEGIN.END',
+        (
+            cmp.BEGIN_TOKEN,
+            cmp.END_TOKEN,
+            cmp.BEGIN_TOKEN,
+            cmp.END_TOKEN,
+            cmp.END_TOKEN,
+            cmp.DOT_TOKEN,
+            cmp.BEGIN_TOKEN,
+            cmp.DOT_TOKEN,
+            cmp.END_TOKEN,
+            cmp.EOF_TOKEN
+        )
+    ),
 ])
 def test_new_tokens(source, expected):
     assert cmp.tokenise(source) == expected
