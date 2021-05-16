@@ -228,13 +228,13 @@ def program(tokens):
 
 
 def compound_statement(tokens):
-    # node = Compound()
+    node = Compound()
 
     token, tokens = pop_next_token(tokens)
     assert token == BEGIN_TOKEN, f'[ERROR][compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
-    # tokens, node.children = statement_list(tokens)
-    tokens, node = statement(tokens)
+    tokens, node.children = statement_list(tokens)
+    # tokens, node = statement(tokens)
 
     token, tokens = pop_next_token(tokens)
     assert token == END_TOKEN, f'[ERROR][compound_statement] expected: {END_TOKEN} got: {token}'
@@ -243,16 +243,16 @@ def compound_statement(tokens):
 
 
 
-# def statement_list(tokens):
-#     tokens, node = statement(tokens)
-#     nodelist = [node]
+def statement_list(tokens):
+    tokens, node = statement(tokens)
+    nodelist = [node]
 #
 #     # token, tokens = pop_next_token(tokens)
 #     # if token == SEMI_TOKEN:
 #     #     tokens, node = statement(tokens)
 #     #     nodelist += [node]
 #
-#     return tokens, nodelist
+    return tokens, nodelist
 
 
 
