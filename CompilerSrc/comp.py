@@ -229,12 +229,18 @@ def compound_statement(tokens):
     token, tokens = pop_next_token(tokens)
     assert token == BEGIN_TOKEN, f'[ERROR][Program] expected: {BEGIN_TOKEN} got: {token}'
 
-    # tokens, node.children = stae
+    tokens, node.children = statement_list(tokens)
 
     token, tokens = pop_next_token(tokens)
     assert token == END_TOKEN, f'[ERROR][Program] expected: {END_TOKEN} got: {token}'
 
     return tokens, node
+
+
+
+def statement_list(tokens):
+    nodelist = []
+    return tokens, nodelist
 
 
 
