@@ -1,3 +1,4 @@
+SPACE = ' '
 DIGITS = '0123456789'
 PLUS = '+'
 MINUS = '-'
@@ -26,7 +27,7 @@ ASSIGN = ':='
 ID = 'ID'
 
 
-is_space = lambda x: x == ' '
+is_space = lambda x: x == SPACE
 is_digit = lambda x: x in DIGITS
 is_plus = lambda x: x == PLUS
 is_minus = lambda x: x == MINUS
