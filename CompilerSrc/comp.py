@@ -1,5 +1,6 @@
 DIGITS = '0123456789'
 PLUS = '+'
+MINUS = '-'
 
 
 
@@ -11,7 +12,7 @@ EOF = 'EOF'
 INTEGER = 'INTEGER'
 
 # PLUS = 'ADD'
-SUB = 'SUB'
+# MINUS = 'SUB'
 MULT = 'MULT'
 DIV = 'DIV'
 PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
@@ -26,7 +27,7 @@ ID = 'ID'
 is_space = lambda x: x == ' '
 is_digit = lambda x: x in DIGITS
 is_plus = lambda x: x == PLUS
-is_sub = lambda x: x == '-'
+is_minus = lambda x: x == MINUS
 is_mult = lambda x: x == '*'
 is_div = lambda x: x == '/'
 
@@ -54,7 +55,7 @@ class Token:
 
 EOF_TOKEN = Token(EOF, EOF)
 ADD_TOKEN = Token(PLUS, PLUS)
-SUB_TOKEN = Token(SUB, SUB)
+SUB_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
@@ -173,7 +174,7 @@ def tokenise(source):
             tokens += (token,)
         elif is_plus(char):
             tokens += (ADD_TOKEN,)
-        elif is_sub(char):
+        elif is_minus(char):
             tokens += (SUB_TOKEN,)
         elif is_mult(char):
             tokens += (MULT_TOKEN,)
