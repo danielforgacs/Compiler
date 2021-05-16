@@ -1,17 +1,13 @@
 SPACE = ' '
 DIGITS = '0123456789'
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-PLUS = '+'
-MINUS = '-'
-MULT = '*'
-DIV = '/'
-PAREN_L = '('
-PAREN_R = ')'
-DOT = '.'
+PLUS, MINUS = '+', '-'
+MULT, DIV = '*', '/'
+PAREN_L, PAREN_R = '(', ')'
+EQUAL = '='
 COLON = ':'
 SEMICOLON = ';'
-EQUAL = '='
-
+DOT = '.'
 
 ASSIGN = COLON + EQUAL
 ID = 'ID'
@@ -26,6 +22,9 @@ is_alpha = lambda char: char in ALPHA
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
 
 
+
+
+
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
@@ -36,6 +35,8 @@ class Token:
 
     def __repr__(self):
         return '<Token:{}:{}>'.format(self.type_, self.value)
+
+
 
 
 EOF_TOKEN = Token(EOF, EOF)
@@ -52,92 +53,56 @@ DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 
 
-class AST:
-    pass
 
-
-class BinOp(AST):
-    def __init__(self, node_l, operator, node_r):
-        self.node_l = node_l
-        self.operator = operator
-        self.node_r = node_r
-
-
-class UnaryOp(AST):
-    def __init__(self, operator, expression):
-        self.operator = operator
-        self.expression = expression
-
-
-class Num(AST):
-    def __init__(self, token):
-        self.token = token
-        self.value = token.value
-
-
-class NodeVisitor:
-    def visit(self, node):
-        nodeclassname = node.__class__.__name__
-        if not hasattr(self, nodeclassname):
-            raise Exception(f'[ERROR] Unknown node to visit: {nodeclassname}')
-        visitor = getattr(self, nodeclassname)
-        return visitor(node)
-
-    def Num(self, node):
-        return node.value
-
-    def UnaryOp(self, node):
-        if node.operator == PLUS_TOKEN:
-            return self.visit(node.expression)
-        elif node.operator == MINUS_TOKEN:
-            return self.visit(node.expression) * -1
-        else:
-            raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
-
-    def BinOp(self, node):
-        if node.operator == PLUS_TOKEN:
-            return self.visit(node.node_l) + self.visit(node.node_r)
-        elif node.operator == MINUS_TOKEN:
-            return self.visit(node.node_l) - self.visit(node.node_r)
-        elif node.operator == MULT_TOKEN:
-            return self.visit(node.node_l) * self.visit(node.node_r)
-        elif node.operator == DIV_TOKEN:
-            return self.visit(node.node_l) / self.visit(node.node_r)
-        else:
-            raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
 
 
 def find_int_token(src, index):
     result = ''
     char = src[index]
+
     while is_digit(char):
         result += char
         index += 1
+
         if index == len(src):
             break
+
         char = src[index]
+
     token = Token(INTEGER, int(result))
     index -= 1
+
     return token, index
+
+
+
 
 
 def find_alpha_token(src, index):
     result = ''
     char = src[index]
+
     while is_alpha(char):
         result += char
         index += 1
+
         if index == len(src):
             break
+
         char = src[index]
+
     if result == BEGIN:
         token = BEGIN_TOKEN
     elif result == END:
         token = END_TOKEN
     else:
         token = Token(ID, result)
+
     index -= 1
+
     return token, index
+
+
 
 
 
@@ -174,7 +139,6 @@ def tokenise(source):
             tokens += (token,)
         elif char == DOT:
             tokens += (DOT_TOKEN,)
-        # elif (char == COLON) and (nextchar == EQUAL):
         elif char + nextchar == ASSIGN:
             index += 1
             tokens += (ASSIGN_TOKEN,)
@@ -234,6 +198,61 @@ def expression(tokens):
         node = BinOp(node, operator, node_r)
 
     return tokens, node
+
+
+class AST:
+    pass
+
+
+class BinOp(AST):
+    def __init__(self, node_l, operator, node_r):
+        self.node_l = node_l
+        self.operator = operator
+        self.node_r = node_r
+
+
+class UnaryOp(AST):
+    def __init__(self, operator, expression):
+        self.operator = operator
+        self.expression = expression
+
+
+class Num(AST):
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+
+
+class NodeVisitor:
+    def visit(self, node):
+        nodeclassname = node.__class__.__name__
+        if not hasattr(self, nodeclassname):
+            raise Exception(f'[ERROR] Unknown node to visit: {nodeclassname}')
+        visitor = getattr(self, nodeclassname)
+        return visitor(node)
+
+    def Num(self, node):
+        return node.value
+
+    def UnaryOp(self, node):
+        if node.operator == PLUS_TOKEN:
+            return self.visit(node.expression)
+        elif node.operator == MINUS_TOKEN:
+            return self.visit(node.expression) * -1
+        else:
+            raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
+
+    def BinOp(self, node):
+        if node.operator == PLUS_TOKEN:
+            return self.visit(node.node_l) + self.visit(node.node_r)
+        elif node.operator == MINUS_TOKEN:
+            return self.visit(node.node_l) - self.visit(node.node_r)
+        elif node.operator == MULT_TOKEN:
+            return self.visit(node.node_l) * self.visit(node.node_r)
+        elif node.operator == DIV_TOKEN:
+            return self.visit(node.node_l) / self.visit(node.node_r)
+        else:
+            raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
 
 
 def run(source):
