@@ -62,10 +62,10 @@ def test_find_int_token(source, expected):
             '+   +   ++    '
         ),
         (
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
@@ -74,20 +74,20 @@ def test_find_int_token(source, expected):
             '+   -   +--+    ++--++  */*//**   '
         ),
         (
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.SUB, cmp.SUB),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
 
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
 
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
 
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.DIV, cmp.DIV),
@@ -106,10 +106,10 @@ def test_find_int_token(source, expected):
         ),
         (
             cmp.Token(cmp.INTEGER, 1),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.INTEGER, 22),
-            cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.SUB, cmp.SUB),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
+            cmp.Token(cmp.MINUS, cmp.MINUS),
             cmp.Token(cmp.INTEGER, 333),
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.MULT, cmp.MULT),
@@ -127,7 +127,7 @@ def test_find_int_token(source, expected):
         ),
         (
             cmp.Token(cmp.INTEGER, 123),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.INTEGER, 567),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
@@ -138,7 +138,7 @@ def test_find_int_token(source, expected):
         ),
         (
             cmp.Token(cmp.INTEGER, 123),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
@@ -198,3 +198,40 @@ def test_parenthesis(source):
 ])
 def test_unary_op(source):
     assert cmp.run(source) == eval(source)
+
+
+@pytest.mark.parametrize('source, expected', [
+    ('BEGIN', (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)),
+    ('END', (cmp.END_TOKEN, cmp.EOF_TOKEN)),
+    ('.', (cmp.DOT_TOKEN, cmp.EOF_TOKEN)),
+    (':=', (cmp.ASSIGN_TOKEN, cmp.EOF_TOKEN)),
+    ('ubuntu', (cmp.Token(cmp.ID, 'ubuntu'), cmp.EOF_TOKEN)),
+    (
+        'BEGIN END.',
+        (
+            cmp.BEGIN_TOKEN,
+            cmp.END_TOKEN,
+            cmp.DOT_TOKEN,
+            cmp.EOF_TOKEN
+        )
+    ),
+    (
+        'BEGIN END   BEGIN    aaa  bbb  END END.BEGIN.END',
+        (
+            cmp.BEGIN_TOKEN,
+            cmp.END_TOKEN,
+            cmp.BEGIN_TOKEN,
+            cmp.Token(cmp.ID, 'aaa'),
+            cmp.Token(cmp.ID, 'bbb'),
+            cmp.END_TOKEN,
+            cmp.END_TOKEN,
+            cmp.DOT_TOKEN,
+            cmp.BEGIN_TOKEN,
+            cmp.DOT_TOKEN,
+            cmp.END_TOKEN,
+            cmp.EOF_TOKEN
+        )
+    ),
+])
+def test_new_tokens(source, expected):
+    assert cmp.tokenise(source) == expected
