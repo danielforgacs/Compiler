@@ -62,10 +62,10 @@ def test_find_int_token(source, expected):
             '+   +   ++    '
         ),
         (
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
@@ -74,20 +74,20 @@ def test_find_int_token(source, expected):
             '+   -   +--+    ++--++  */*//**   '
         ),
         (
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.SUB, cmp.SUB),
 
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.SUB, cmp.SUB),
             cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
 
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.SUB, cmp.SUB),
             cmp.Token(cmp.SUB, cmp.SUB),
-            cmp.Token(cmp.ADD, cmp.ADD),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
 
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.DIV, cmp.DIV),
@@ -106,7 +106,7 @@ def test_find_int_token(source, expected):
         ),
         (
             cmp.Token(cmp.INTEGER, 1),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.INTEGER, 22),
             cmp.Token(cmp.SUB, cmp.SUB),
             cmp.Token(cmp.SUB, cmp.SUB),
@@ -127,7 +127,7 @@ def test_find_int_token(source, expected):
         ),
         (
             cmp.Token(cmp.INTEGER, 123),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.INTEGER, 567),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
@@ -138,7 +138,7 @@ def test_find_int_token(source, expected):
         ),
         (
             cmp.Token(cmp.INTEGER, 123),
-            cmp.Token(cmp.ADD, cmp.ADD),
+            cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],

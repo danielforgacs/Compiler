@@ -1,12 +1,8 @@
-"""
-expression:     term ((ADD | SUB) term) *
-term:           factor ((MULT | DIV) factor) *
+DIGITS = '0123456789'
+PLUS = '+'
 
-ADD, SUB:           +, -
-MULT, DIV:          *, /
-PAREN_L, PAREN_R:   (, )
-INTEGER:            0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-"""
+
+
 
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 DOT = 'DOT'
@@ -14,7 +10,7 @@ EOF = 'EOF'
 
 INTEGER = 'INTEGER'
 
-ADD = 'ADD'
+# PLUS = 'ADD'
 SUB = 'SUB'
 MULT = 'MULT'
 DIV = 'DIV'
@@ -28,8 +24,8 @@ ID = 'ID'
 
 
 is_space = lambda x: x == ' '
-is_digit = lambda x: x in '0123456789'
-is_add = lambda x: x == '+'
+is_digit = lambda x: x in DIGITS
+is_plus = lambda x: x == PLUS
 is_sub = lambda x: x == '-'
 is_mult = lambda x: x == '*'
 is_div = lambda x: x == '/'
@@ -57,7 +53,7 @@ class Token:
 
 
 EOF_TOKEN = Token(EOF, EOF)
-ADD_TOKEN = Token(ADD, ADD)
+ADD_TOKEN = Token(PLUS, PLUS)
 SUB_TOKEN = Token(SUB, SUB)
 MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
@@ -175,7 +171,7 @@ def tokenise(source):
         elif is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
-        elif is_add(char):
+        elif is_plus(char):
             tokens += (ADD_TOKEN,)
         elif is_sub(char):
             tokens += (SUB_TOKEN,)
