@@ -200,6 +200,9 @@ def expression(tokens):
     return tokens, node
 
 
+
+
+
 class AST:
     pass
 
@@ -221,6 +224,28 @@ class Num(AST):
     def __init__(self, token):
         self.token = token
         self.value = token.value
+
+
+class BeginEnd_Compound(AST):
+    def __init__(self):
+        self.children = ()
+
+
+class Assign(AST):
+    def __init__(self, left, operator, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
+
+
+class Variable(AST):
+    def __init__(self, name):
+        self.name = name
+
+
+class NoOp(AST):
+    pass
+
 
 
 class NodeVisitor:
