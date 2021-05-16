@@ -248,10 +248,10 @@ BEGIN END.""",
     ),
     ("""
 BEGIN
-END
-BEGIN
-END
-BEGIN
+    BEGIN
+        BEGIN
+        END
+    END
 END
 .
 """,

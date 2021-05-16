@@ -220,47 +220,48 @@ def program(tokens):
     token, tokens = pop_next_token(tokens)
     assert token == DOT_TOKEN, f'[ERROR][Program] expected: {DOT_TOKEN} got: {token}'
 
+    token, tokens = pop_next_token(tokens)
+    assert token == EOF_TOKEN, f'[ERROR][Program] expected: {EOF_TOKEN} got: {token}'
+
     return tokens, node
 
 
 
 def compound_statement(tokens):
-    node = Compound()
+    # node = Compound()
 
     token, tokens = pop_next_token(tokens)
-    assert token == BEGIN_TOKEN, f'[ERROR][Program] expected: {BEGIN_TOKEN} got: {token}'
+    assert token == BEGIN_TOKEN, f'[ERROR][compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
-    tokens, node.children = statement_list(tokens)
+    # tokens, node.children = statement_list(tokens)
+    tokens, node = statement(tokens)
 
     token, tokens = pop_next_token(tokens)
-    assert token == END_TOKEN, f'[ERROR][Program] expected: {END_TOKEN} got: {token}'
+    assert token == END_TOKEN, f'[ERROR][compound_statement] expected: {END_TOKEN} got: {token}'
 
     return tokens, node
 
 
 
-def statement_list(tokens):
-    tokens, node = statement(tokens)
-    nodelist = [node]
-
-    # token, tokens = pop_next_token(tokens)
-    # if token == SEMI_TOKEN:
-    #     tokens, node = statement(tokens)
-    #     nodelist += [node]
-
-    return tokens, nodelist
+# def statement_list(tokens):
+#     tokens, node = statement(tokens)
+#     nodelist = [node]
+#
+#     # token, tokens = pop_next_token(tokens)
+#     # if token == SEMI_TOKEN:
+#     #     tokens, node = statement(tokens)
+#     #     nodelist += [node]
+#
+#     return tokens, nodelist
 
 
 
 def statement(tokens):
-#     token, tokens = pop_next_token(tokens)
-#
-#     if token == BEGIN_TOKEN:
-#         tokens = put_back_token(token, tokens)
+    if nexttoken(tokens) == BEGIN_TOKEN:
+        tokens, node = compound_statement(tokens)
+    else:
+        node = NoOp()
 
-
-
-    node = None
     return tokens, node
 
 
@@ -365,10 +366,12 @@ if __name__ == '__main__':
 
     code = """
 BEGIN
+    BEGIN
+    END
 END
 .
 """
     tokens = tokenise(code)
-    print(tokens)
-
+#     print(tokens)
+#
     program(tokens)
