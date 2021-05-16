@@ -239,12 +239,9 @@ def test_new_tokens(source, expected):
 
 @pytest.mark.parametrize('source, expected', [
     (
-"""
-BEGIN
-END.
-""",
-''
+        'BEGIN END.',
+        '',
     ),
 ])
 def test_begin_end(source, expected):
-    pass
+    cmp.program(cmp.tokenise(source))

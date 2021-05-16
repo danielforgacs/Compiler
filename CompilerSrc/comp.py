@@ -201,6 +201,26 @@ def expression(tokens):
 
 
 
+def program(tokens):
+    tokens, node = begin_end_compound_stmt(tokens)
+    token, _ = pop_next_token(tokens)
+    if token != DOT_TOKEN:
+        raise Exception('[ERROR] expected token: "."')
+
+    return node
+
+
+def begin_end_compound_stmt(tokens):
+    token, tokens = pop_next_token(tokens)
+    if token != BEGIN_TOKEN:
+        raise Exception(f'[ERROR] expected token: f{BEGIN_TOKEN}')
+    token, tokens = pop_next_token(tokens)
+    if token != END_TOKEN:
+        raise Exception(f'[ERROR] expected token: f{END_TOKEN}')
+
+
+    return tokens, None
+
 
 
 class AST:
@@ -288,10 +308,13 @@ def run(source):
 
 
 if __name__ == '__main__':
-    code = '2+3'
-    code = '-1'
-    # code = '#'
-    print(
-        run(code),
-        eval(code)
-    )
+    # code = '2+3'
+    # code = '-1'
+    # # code = '#'
+    # print(
+    #     run(code),
+    #     eval(code)
+    # )
+
+    code = """BEGIN END."""
+    program(tokenise(code))
