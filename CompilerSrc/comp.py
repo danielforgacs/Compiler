@@ -4,12 +4,14 @@ PLUS = '+'
 MINUS = '-'
 MULT = '*'
 DIV = '/'
+PAREN_L = '('
+PAREN_R = ')'
+DOT = '.'
 
 
 
 
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-DOT = 'DOT'
 EOF = 'EOF'
 
 INTEGER = 'INTEGER'
@@ -18,7 +20,7 @@ INTEGER = 'INTEGER'
 # MINUS = 'SUB'
 # MULT = 'MULT'
 # DIV = 'DIV'
-PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
+# PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
 
 BEGIN = 'BEGIN'
 END = 'END'
@@ -34,9 +36,9 @@ is_minus = lambda x: x == MINUS
 is_mult = lambda x: x == MULT
 is_div = lambda x: x == DIV
 
-is_paren_l = lambda x: x == '('
-is_paren_r = lambda x: x == ')'
-is_dot = lambda x: x == '.'
+is_paren_l = lambda x: x == PAREN_L
+is_paren_r = lambda x: x == PAREN_R
+is_dot = lambda x: x == DOT
 is_colon = lambda x: x == ':'
 is_semi_colon = lambda x: x == ';'
 is_equal = lambda x: x == '='
