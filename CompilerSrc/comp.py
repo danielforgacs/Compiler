@@ -21,22 +21,6 @@ END = 'END'
 EOF = 'EOF'
 
 
-is_space = lambda x: x == SPACE
-is_digit = lambda x: x in DIGITS
-is_plus = lambda x: x == PLUS
-is_minus = lambda x: x == MINUS
-is_mult = lambda x: x == MULT
-is_div = lambda x: x == DIV
-
-is_paren_l = lambda x: x == PAREN_L
-is_paren_r = lambda x: x == PAREN_R
-is_dot = lambda x: x == DOT
-is_colon = lambda x: x == COLON
-is_semi_colon = lambda x: x == SEMICOLON
-is_equal = lambda x: x == EQUAL
-
-is_aplha = lambda x: x in ALPHA
-
 pop_next_token = lambda x: (x[0], x[1:])
 
 
@@ -122,7 +106,7 @@ class NodeVisitor:
 def find_int_token(src, index):
     result = ''
     char = src[index]
-    while is_digit(char):
+    while char in DIGITS:
         result += char
         index += 1
         if index == len(src):
@@ -136,7 +120,7 @@ def find_int_token(src, index):
 def find_alpha_token(src, index):
     result = ''
     char = src[index]
-    while is_aplha(char):
+    while char in ALPHA:
         result += char
         index += 1
         if index == len(src):
@@ -164,29 +148,30 @@ def tokenise(source):
         if index + 1 < len(source):
             nextchar = source[index+1]
 
-        if is_space(char):
+        if char == SPACE:
             pass
-        elif is_digit(char):
+        elif char in DIGITS:
             token, index = find_int_token(source, index)
             tokens += (token,)
-        elif is_plus(char):
+        elif char == PLUS:
             tokens += (ADD_TOKEN,)
-        elif is_minus(char):
+        elif char == MINUS:
             tokens += (SUB_TOKEN,)
-        elif is_mult(char):
+        elif char == MULT:
             tokens += (MULT_TOKEN,)
-        elif is_div(char):
+        elif char == DIV:
             tokens += (DIV_TOKEN,)
-        elif is_paren_l(char):
+        elif char == PAREN_L:
             tokens += (PAREN_L_TOKEN,)
-        elif is_paren_r(char):
+        elif char == PAREN_R:
             tokens += (PAREN_R_TOKEN,)
-        elif is_aplha(char):
+        elif char in ALPHA:
             token, index = find_alpha_token(source, index)
             tokens += (token,)
-        elif is_dot(char):
+        elif char == DOT:
             tokens += (DOT_TOKEN,)
-        elif is_colon(char) and is_equal(nextchar):
+        # elif (char == COLON) and (nextchar == EQUAL):
+        elif char + nextchar == ASSIGN:
             index += 1
             tokens += (ASSIGN_TOKEN,)
         else:
