@@ -47,6 +47,7 @@ MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
+SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
@@ -226,12 +227,10 @@ def begin_end_compound_stmt(tokens):
     if token != BEGIN_TOKEN:
         raise Exception(f'[ERROR] expected token: f{BEGIN_TOKEN}')
 
-    tokens, nodelist = statement_list(tokens)
     node = BeginEnd_Compound()
-    node.children = nodelist
+    tokens, node.children = statement_list(tokens)
 
     token, tokens = pop_next_token(tokens)
-
     if token != END_TOKEN:
         raise Exception(f'[ERROR] expected token: f{END_TOKEN}')
 
@@ -240,7 +239,24 @@ def begin_end_compound_stmt(tokens):
 
 
 def statement_list(tokens):
-    node = None
+    statementlist = []
+
+    node = statement(tokens)
+    statementlist += [node]
+
+    token, tokens = pop_next_token(tokens)
+    while token == SEMI_TOKEN:
+        node = statement(tokens)
+        statementlist += [node]
+        token, tokens = pop_next_token(tokens)
+    tokens = (token,)+tokens
+
+    return tokens, statementlist
+
+
+
+def statement(tokens):
+    node = 0
     return tokens, node
 
 
