@@ -242,6 +242,10 @@ def test_new_tokens(source, expected):
         'BEGIN END.',
         '',
     ),
+    ("""
+BEGIN END.""",
+        '',
+    ),
 ])
 def test_begin_end(source, expected):
     cmp.program(cmp.tokenise(source))

@@ -8,6 +8,7 @@ EQUAL = '='
 COLON = ':'
 SEMICOLON = ';'
 DOT = '.'
+NEWLINE = '\n'
 
 ASSIGN = COLON + EQUAL
 ID = 'ID'
@@ -119,6 +120,8 @@ def tokenise(source):
 
         if char == SPACE:
             pass
+        elif char == NEWLINE:
+            pass
         elif is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
@@ -143,7 +146,7 @@ def tokenise(source):
             index += 1
             tokens += (ASSIGN_TOKEN,)
         else:
-            raise Exception(f'[ERROR] Bad char: {char}')
+            raise Exception(f'[ERROR] Bad char: "{char}", ord: {ord(char)}')
 
         index += 1
 
@@ -316,5 +319,6 @@ if __name__ == '__main__':
     #     eval(code)
     # )
 
-    code = """BEGIN END."""
+    code = """
+    BEGIN END."""
     program(tokenise(code))
