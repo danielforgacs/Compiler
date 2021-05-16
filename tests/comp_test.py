@@ -253,11 +253,30 @@ BEGIN
             BEGIN
                 BEGIN
                     BEGIN
-                    END
-                END
-            END
-        END
-    END
+                    END;
+                END;
+            END;
+        END;
+    END;
+END
+.
+""",
+        '',
+    ),
+    ("""
+BEGIN
+    BEGIN
+        BEGIN
+        END;
+    END;
+    BEGIN
+        BEGIN
+        END;
+    END;
+    BEGIN
+        BEGIN
+        END;
+    END;
 END
 .
 """,
