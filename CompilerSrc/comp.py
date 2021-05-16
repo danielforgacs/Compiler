@@ -229,6 +229,8 @@ def compound_statement(tokens):
     token, tokens = pop_next_token(tokens)
     assert token == BEGIN_TOKEN, f'[ERROR][Program] expected: {BEGIN_TOKEN} got: {token}'
 
+    # tokens, node.children = stae
+
     token, tokens = pop_next_token(tokens)
     assert token == END_TOKEN, f'[ERROR][Program] expected: {END_TOKEN} got: {token}'
 
