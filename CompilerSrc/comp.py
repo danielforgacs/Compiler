@@ -1,6 +1,8 @@
 DIGITS = '0123456789'
 PLUS = '+'
 MINUS = '-'
+MULT = '*'
+DIV = '/'
 
 
 
@@ -13,8 +15,8 @@ INTEGER = 'INTEGER'
 
 # PLUS = 'ADD'
 # MINUS = 'SUB'
-MULT = 'MULT'
-DIV = 'DIV'
+# MULT = 'MULT'
+# DIV = 'DIV'
 PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
 
 BEGIN = 'BEGIN'
@@ -28,8 +30,8 @@ is_space = lambda x: x == ' '
 is_digit = lambda x: x in DIGITS
 is_plus = lambda x: x == PLUS
 is_minus = lambda x: x == MINUS
-is_mult = lambda x: x == '*'
-is_div = lambda x: x == '/'
+is_mult = lambda x: x == MULT
+is_div = lambda x: x == DIV
 
 is_paren_l = lambda x: x == '('
 is_paren_r = lambda x: x == ')'
