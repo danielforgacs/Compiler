@@ -1,5 +1,6 @@
 SPACE = ' '
 DIGITS = '0123456789'
+ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS = '+'
 MINUS = '-'
 MULT = '*'
@@ -12,24 +13,12 @@ SEMICOLON = ';'
 EQUAL = '='
 
 
-
-
-ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-EOF = 'EOF'
-
+ASSIGN = COLON + EQUAL
+ID = 'ID'
 INTEGER = 'INTEGER'
-
-# PLUS = 'ADD'
-# MINUS = 'SUB'
-# MULT = 'MULT'
-# DIV = 'DIV'
-# PAREN_L, PAREN_R = 'PAREN_L', 'PAREN_R'
-
 BEGIN = 'BEGIN'
 END = 'END'
-# EQUAL = '='
-ASSIGN = ':='
-ID = 'ID'
+EOF = 'EOF'
 
 
 is_space = lambda x: x == SPACE
