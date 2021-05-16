@@ -250,6 +250,12 @@ BEGIN END.""",
 BEGIN
     BEGIN
         BEGIN
+            BEGIN
+                BEGIN
+                    BEGIN
+                    END
+                END
+            END
         END
     END
 END

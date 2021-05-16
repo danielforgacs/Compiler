@@ -368,6 +368,10 @@ if __name__ == '__main__':
 BEGIN
     BEGIN
     END
+    BEGIN
+    END
+    BEGIN
+    END
 END
 .
 """
