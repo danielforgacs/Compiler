@@ -21,6 +21,7 @@ EOF = 'EOF'
 is_digit = lambda char: char in DIGITS
 is_alpha = lambda char: char in ALPHA
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
+put_back_token = lambda token, tokens: (token,) + tokens
 
 
 
@@ -213,51 +214,26 @@ def expression(tokens):
 
 
 def program(tokens):
-    tokens, node = begin_end_compound_stmt(tokens)
-    token, _ = pop_next_token(tokens)
-
-    if token != DOT_TOKEN:
-        raise Exception('[ERROR] expected token: "."')
-
-    return node
-
-
-def begin_end_compound_stmt(tokens):
-    token, tokens = pop_next_token(tokens)
-    if token != BEGIN_TOKEN:
-        raise Exception(f'[ERROR] expected token: f{BEGIN_TOKEN}')
-
-    node = BeginEnd_Compound()
-    tokens, node.children = statement_list(tokens)
+    tokens, node = compound_statement(tokens)
 
     token, tokens = pop_next_token(tokens)
-    if token != END_TOKEN:
-        raise Exception(f'[ERROR] expected token: f{END_TOKEN}')
+    assert token == DOT_TOKEN, f'[ERROR][Program] expected: {DOT_TOKEN} got: {token}'
 
     return tokens, node
 
 
 
-def statement_list(tokens):
-    statementlist = []
-
-    node = statement(tokens)
-    statementlist += [node]
+def compound_statement(tokens):
+    node = Compound()
 
     token, tokens = pop_next_token(tokens)
-    while token == SEMI_TOKEN:
-        node = statement(tokens)
-        statementlist += [node]
-        token, tokens = pop_next_token(tokens)
-    tokens = (token,)+tokens
+    assert token == BEGIN_TOKEN, f'[ERROR][Program] expected: {BEGIN_TOKEN} got: {token}'
 
-    return tokens, statementlist
+    token, tokens = pop_next_token(tokens)
+    assert token == END_TOKEN, f'[ERROR][Program] expected: {END_TOKEN} got: {token}'
 
-
-
-def statement(tokens):
-    node = 0
     return tokens, node
+
 
 
 
@@ -284,7 +260,7 @@ class Num(AST):
         self.value = token.value
 
 
-class BeginEnd_Compound(AST):
+class Compound(AST):
     def __init__(self):
         self.children = ()
 
@@ -354,6 +330,17 @@ if __name__ == '__main__':
     #     eval(code)
     # )
 
+    # code = """
+    # BEGIN END."""
+    # tokens = tokenise(code)
+    # print(tokens)
+
     code = """
-    BEGIN END."""
-    program(tokenise(code))
+BEGIN
+END
+.
+"""
+    tokens = tokenise(code)
+    print(tokens)
+
+    program(tokens)
