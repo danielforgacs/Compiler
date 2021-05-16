@@ -22,6 +22,7 @@ is_digit = lambda char: char in DIGITS
 is_alpha = lambda char: char in ALPHA
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
 put_back_token = lambda token, tokens: (token,) + tokens
+nexttoken = lambda tokens: tokens[0]
 
 
 
@@ -239,9 +240,28 @@ def compound_statement(tokens):
 
 
 def statement_list(tokens):
-    nodelist = []
+    tokens, node = statement(tokens)
+    nodelist = [node]
+
+    # token, tokens = pop_next_token(tokens)
+    # if token == SEMI_TOKEN:
+    #     tokens, node = statement(tokens)
+    #     nodelist += [node]
+
     return tokens, nodelist
 
+
+
+def statement(tokens):
+#     token, tokens = pop_next_token(tokens)
+#
+#     if token == BEGIN_TOKEN:
+#         tokens = put_back_token(token, tokens)
+
+
+
+    node = None
+    return tokens, node
 
 
 
