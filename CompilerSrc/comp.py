@@ -140,6 +140,8 @@ def tokenise(source):
             tokens += (PAREN_L_TOKEN,)
         elif char == PAREN_R:
             tokens += (PAREN_R_TOKEN,)
+        elif char == SEMICOLON:
+            tokens += (SEMI_TOKEN,)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
@@ -234,7 +236,6 @@ def compound_statement(tokens):
     assert token == BEGIN_TOKEN, f'[ERROR][compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
     tokens, node.children = statement_list(tokens)
-    # tokens, node = statement(tokens)
 
     token, tokens = pop_next_token(tokens)
     assert token == END_TOKEN, f'[ERROR][compound_statement] expected: {END_TOKEN} got: {token}'
@@ -246,12 +247,18 @@ def compound_statement(tokens):
 def statement_list(tokens):
     tokens, node = statement(tokens)
     nodelist = [node]
-#
-#     # token, tokens = pop_next_token(tokens)
-#     # if token == SEMI_TOKEN:
-#     #     tokens, node = statement(tokens)
-#     #     nodelist += [node]
-#
+
+    # if nexttoken(tokens) == SEMI_TOKEN:
+    while nexttoken(tokens) == SEMI_TOKEN:
+        token, tokens = pop_next_token(tokens)
+        tokens, node = statement(tokens)
+        nodelist += [node]
+
+    # token, tokens = pop_next_token(tokens)
+    # if token == SEMI_TOKEN:
+    #     tokens, node = statement(tokens)
+    #     nodelist += [node]
+
     return tokens, nodelist
 
 
@@ -367,11 +374,9 @@ if __name__ == '__main__':
     code = """
 BEGIN
     BEGIN
-    END
+    END;
     BEGIN
-    END
-    BEGIN
-    END
+    END;
 END
 .
 """
