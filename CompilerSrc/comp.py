@@ -21,6 +21,8 @@ END = 'END'
 EOF = 'EOF'
 
 
+is_digit = lambda char: char in DIGITS
+is_alpha = lambda char: char in ALPHA
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
 
 
@@ -28,15 +30,17 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
+
     def __eq__(self, other):
         return (self.type_ == other.type_) and (self.value == other.value)
+
     def __repr__(self):
         return '<Token:{}:{}>'.format(self.type_, self.value)
 
 
 EOF_TOKEN = Token(EOF, EOF)
-ADD_TOKEN = Token(PLUS, PLUS)
-SUB_TOKEN = Token(MINUS, MINUS)
+PLUS_TOKEN = Token(PLUS, PLUS)
+MINUS_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
@@ -83,17 +87,17 @@ class NodeVisitor:
         return node.value
 
     def UnaryOp(self, node):
-        if node.operator == ADD_TOKEN:
+        if node.operator == PLUS_TOKEN:
             return self.visit(node.expression)
-        elif node.operator == SUB_TOKEN:
+        elif node.operator == MINUS_TOKEN:
             return self.visit(node.expression) * -1
         else:
             raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
 
     def BinOp(self, node):
-        if node.operator == ADD_TOKEN:
+        if node.operator == PLUS_TOKEN:
             return self.visit(node.node_l) + self.visit(node.node_r)
-        elif node.operator == SUB_TOKEN:
+        elif node.operator == MINUS_TOKEN:
             return self.visit(node.node_l) - self.visit(node.node_r)
         elif node.operator == MULT_TOKEN:
             return self.visit(node.node_l) * self.visit(node.node_r)
@@ -106,7 +110,7 @@ class NodeVisitor:
 def find_int_token(src, index):
     result = ''
     char = src[index]
-    while char in DIGITS:
+    while is_digit(char):
         result += char
         index += 1
         if index == len(src):
@@ -120,7 +124,7 @@ def find_int_token(src, index):
 def find_alpha_token(src, index):
     result = ''
     char = src[index]
-    while char in ALPHA:
+    while is_alpha(char):
         result += char
         index += 1
         if index == len(src):
@@ -150,13 +154,13 @@ def tokenise(source):
 
         if char == SPACE:
             pass
-        elif char in DIGITS:
+        elif is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
         elif char == PLUS:
-            tokens += (ADD_TOKEN,)
+            tokens += (PLUS_TOKEN,)
         elif char == MINUS:
-            tokens += (SUB_TOKEN,)
+            tokens += (MINUS_TOKEN,)
         elif char == MULT:
             tokens += (MULT_TOKEN,)
         elif char == DIV:
@@ -165,7 +169,7 @@ def tokenise(source):
             tokens += (PAREN_L_TOKEN,)
         elif char == PAREN_R:
             tokens += (PAREN_R_TOKEN,)
-        elif char in ALPHA:
+        elif is_alpha(char):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
         elif char == DOT:
@@ -200,7 +204,7 @@ def factor(tokens):
         if paren_r != PAREN_R_TOKEN:
             raise Exception(f'[ERROR] Expected token: {PAREN_R_TOKEN}')
 
-    elif token in [SUB_TOKEN, ADD_TOKEN]:
+    elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
         node = UnaryOp(token, node)
 
@@ -224,7 +228,7 @@ def term(tokens):
 def expression(tokens):
     tokens, node = term(tokens)
 
-    while tokens[0] in (ADD_TOKEN, SUB_TOKEN):
+    while tokens[0] in (PLUS_TOKEN, MINUS_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
