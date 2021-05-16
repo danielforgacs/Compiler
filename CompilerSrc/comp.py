@@ -21,7 +21,7 @@ END = 'END'
 EOF = 'EOF'
 
 
-pop_next_token = lambda x: (x[0], x[1:])
+pop_next_token = lambda tokens: (tokens[0], tokens[1:])
 
 
 class Token:
