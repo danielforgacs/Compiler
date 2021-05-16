@@ -7,6 +7,9 @@ DIV = '/'
 PAREN_L = '('
 PAREN_R = ')'
 DOT = '.'
+COLON = ':'
+SEMICOLON = ';'
+EQUAL = '='
 
 
 
@@ -24,7 +27,7 @@ INTEGER = 'INTEGER'
 
 BEGIN = 'BEGIN'
 END = 'END'
-EQUAL = '='
+# EQUAL = '='
 ASSIGN = ':='
 ID = 'ID'
 
@@ -39,9 +42,9 @@ is_div = lambda x: x == DIV
 is_paren_l = lambda x: x == PAREN_L
 is_paren_r = lambda x: x == PAREN_R
 is_dot = lambda x: x == DOT
-is_colon = lambda x: x == ':'
-is_semi_colon = lambda x: x == ';'
-is_equal = lambda x: x == '='
+is_colon = lambda x: x == COLON
+is_semi_colon = lambda x: x == SEMICOLON
+is_equal = lambda x: x == EQUAL
 
 is_aplha = lambda x: x in ALPHA
 
