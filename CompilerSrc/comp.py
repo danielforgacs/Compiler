@@ -155,6 +155,10 @@ def tokenise(source):
     return tokens
 
 
+
+
+
+
 def factor(tokens):
     """
     factor: (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
@@ -204,9 +208,13 @@ def expression(tokens):
 
 
 
+
+
+
 def program(tokens):
     tokens, node = begin_end_compound_stmt(tokens)
     token, _ = pop_next_token(tokens)
+
     if token != DOT_TOKEN:
         raise Exception('[ERROR] expected token: "."')
 
@@ -217,12 +225,23 @@ def begin_end_compound_stmt(tokens):
     token, tokens = pop_next_token(tokens)
     if token != BEGIN_TOKEN:
         raise Exception(f'[ERROR] expected token: f{BEGIN_TOKEN}')
+
+    tokens, nodelist = statement_list(tokens)
+    node = BeginEnd_Compound()
+    node.children = nodelist
+
     token, tokens = pop_next_token(tokens)
+
     if token != END_TOKEN:
         raise Exception(f'[ERROR] expected token: f{END_TOKEN}')
 
+    return tokens, node
 
-    return tokens, None
+
+
+def statement_list(tokens):
+    node = None
+    return tokens, node
 
 
 
