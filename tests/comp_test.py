@@ -205,6 +205,7 @@ def test_unary_op(source):
     ('END', (cmp.END_TOKEN, cmp.EOF_TOKEN)),
     ('.', (cmp.DOT_TOKEN, cmp.EOF_TOKEN)),
     (':=', (cmp.ASSIGN_TOKEN, cmp.EOF_TOKEN)),
+    ('ubuntu', (cmp.Token(cmp.ID, 'ubuntu'), cmp.EOF_TOKEN)),
     (
         'BEGIN END.',
         (
@@ -215,11 +216,13 @@ def test_unary_op(source):
         )
     ),
     (
-        'BEGIN END   BEGIN    END END.BEGIN.END',
+        'BEGIN END   BEGIN    aaa  bbb  END END.BEGIN.END',
         (
             cmp.BEGIN_TOKEN,
             cmp.END_TOKEN,
             cmp.BEGIN_TOKEN,
+            cmp.Token(cmp.ID, 'aaa'),
+            cmp.Token(cmp.ID, 'bbb'),
             cmp.END_TOKEN,
             cmp.END_TOKEN,
             cmp.DOT_TOKEN,

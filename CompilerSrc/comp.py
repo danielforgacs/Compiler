@@ -24,6 +24,7 @@ BEGIN = 'BEGIN'
 END = 'END'
 EQUAL = '='
 ASSIGN = ':='
+ID = 'ID'
 
 
 is_space = lambda x: x == ' '
@@ -151,6 +152,8 @@ def find_alpha_token(src, index):
         token = BEGIN_TOKEN
     elif result == END:
         token = END_TOKEN
+    else:
+        token = Token(ID, result)
     index -= 1
     return token, index
 
