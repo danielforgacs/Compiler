@@ -137,14 +137,14 @@ def tokenise(source):
             tokens += (PAREN_R_TOKEN,)
         elif char == SEMICOLON:
             tokens += (SEMI_TOKEN,)
+        elif char == DOT:
+            tokens += (DOT_TOKEN,)
         elif is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
-        elif char == DOT:
-            tokens += (DOT_TOKEN,)
         elif char + nextchar == ASSIGN:
             index += 1
             tokens += (ASSIGN_TOKEN,)
