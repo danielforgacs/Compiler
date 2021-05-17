@@ -121,9 +121,7 @@ def tokenise(source):
         if index + 1 < len(source):
             nextchar = source[index+1]
 
-        if char == SPACE:
-            pass
-        elif char == NEWLINE:
+        if char in [SPACE, NEWLINE]:
             pass
         elif is_digit(char):
             token, index = find_int_token(source, index)
