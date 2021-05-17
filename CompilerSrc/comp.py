@@ -123,9 +123,6 @@ def tokenise(source):
 
         if char in [SPACE, NEWLINE]:
             pass
-        elif is_digit(char):
-            token, index = find_int_token(source, index)
-            tokens += (token,)
         elif char == PLUS:
             tokens += (PLUS_TOKEN,)
         elif char == MINUS:
@@ -140,6 +137,9 @@ def tokenise(source):
             tokens += (PAREN_R_TOKEN,)
         elif char == SEMICOLON:
             tokens += (SEMI_TOKEN,)
+        elif is_digit(char):
+            token, index = find_int_token(source, index)
+            tokens += (token,)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
