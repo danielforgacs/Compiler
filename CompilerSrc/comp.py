@@ -248,16 +248,10 @@ def statement_list(tokens):
     tokens, node = statement(tokens)
     nodelist = [node]
 
-    # if nexttoken(tokens) == SEMI_TOKEN:
     while nexttoken(tokens) == SEMI_TOKEN:
-        token, tokens = pop_next_token(tokens)
+        _, tokens = pop_next_token(tokens)
         tokens, node = statement(tokens)
         nodelist += [node]
-
-    # token, tokens = pop_next_token(tokens)
-    # if token == SEMI_TOKEN:
-    #     tokens, node = statement(tokens)
-    #     nodelist += [node]
 
     return tokens, nodelist
 
