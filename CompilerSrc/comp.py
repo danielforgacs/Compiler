@@ -116,7 +116,7 @@ def tokenise(source):
 
     while index < len(source):
         char = source[index]
-        nextchar = None
+        nextchar = ''
 
         if index + 1 < len(source):
             nextchar = source[index+1]
@@ -139,15 +139,15 @@ def tokenise(source):
             tokens += (SEMI_TOKEN,)
         elif char == DOT:
             tokens += (DOT_TOKEN,)
+        elif char + nextchar == ASSIGN:
+            index += 1
+            tokens += (ASSIGN_TOKEN,)
         elif is_digit(char):
             token, index = find_int_token(source, index)
             tokens += (token,)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
-        elif char + nextchar == ASSIGN:
-            index += 1
-            tokens += (ASSIGN_TOKEN,)
         else:
             raise Exception(f'[ERROR] Bad char: "{char}", ord: {ord(char)}')
 
