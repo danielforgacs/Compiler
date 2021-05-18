@@ -340,7 +340,7 @@ class NodeVisitor:
     def visit(self, node):
         nodeclassname = node.__class__.__name__
         if not hasattr(self, nodeclassname):
-            raise Exception(f'[ERROR] Unknown node to visit: {nodeclassname}')
+            raise Exception(f'[NodeVisitor] Unknown node to visit: {nodeclassname}')
         visitor = getattr(self, nodeclassname)
         return visitor(node)
 
@@ -375,6 +375,13 @@ def run(source):
     return NodeVisitor().visit(node)
 
 
+def run_program(source):
+    tokens = tokenise(source)
+    _, node = program(tokens)
+
+    return NodeVisitor().visit(node)
+
+
 if __name__ == '__main__':
     code = """
 BEGIN
@@ -391,3 +398,4 @@ END.
     for token in tokens:
         print(token)
     program(tokens)
+    run_program(code)
