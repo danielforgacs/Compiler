@@ -369,7 +369,13 @@ class NodeVisitor:
 
     def Compound(self, node):
         for child in node.children:
-            print(child)
+            self.visit(child)
+
+    def Assign(self, node):
+        pass
+
+    def NoOp(self, node):
+        pass
 
 
 def run(source):
