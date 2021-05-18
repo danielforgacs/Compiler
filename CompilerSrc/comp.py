@@ -278,7 +278,7 @@ def assign_statement(tokens):
         f' {ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
     node = Assign(varnode, assigntoken, expressionnode)
-    return tokens, None
+    return tokens, node
 
 
 
@@ -366,6 +366,10 @@ class NodeVisitor:
             return self.visit(node.node_l) / self.visit(node.node_r)
         else:
             raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
+
+    def Compound(self, node):
+        for child in node.children:
+            print(child)
 
 
 def run(source):
