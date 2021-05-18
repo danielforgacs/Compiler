@@ -312,7 +312,7 @@ END.
 
 
 
-def test_program():
+def test_program_ID_variable_Assignment_NoOp():
     source = """
 BEGIN
     BEGIN

@@ -380,9 +380,11 @@ if __name__ == '__main__':
 BEGIN
     BEGIN
         number := 2;
-        a := 2;
-        b := a
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
     END;
+    x := 11;
 END.
 """
     tokens = tokenise(code)
