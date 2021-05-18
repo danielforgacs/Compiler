@@ -149,7 +149,7 @@ def tokenise(source):
             token, index = find_alpha_token(source, index)
             tokens += (token,)
         else:
-            raise Exception(f'[ERROR] Bad char: "{char}", ord: {ord(char)}')
+            raise Exception(f'[ERROR][tokenise] Bad char: "{char}", ord: {ord(char)}')
 
         index += 1
 
@@ -174,16 +174,14 @@ def factor(tokens):
     elif token == PAREN_L_TOKEN:
         tokens, node = expression(tokens)
         paren_r, tokens = pop_next_token(tokens)
-
-        if paren_r != PAREN_R_TOKEN:
-            raise Exception(f'[ERROR] Expected token: {PAREN_R_TOKEN}')
+        assert paren_r == PAREN_R_TOKEN, f'[ERROR][factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
 
     elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
         node = UnaryOp(token, node)
 
     else:
-        raise Exception(f'[ERROR] Unecpeted token: {token}')
+        raise Exception(f'[ERROR][factor] Unecpeted token: {token}')
 
     return tokens, node
 
@@ -191,7 +189,7 @@ def factor(tokens):
 def term(tokens):
     tokens, node = factor(tokens)
 
-    while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
+    while nexttoken(tokens) in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = factor(tokens)
         node = BinOp(node, operator, node_r)
@@ -202,7 +200,7 @@ def term(tokens):
 def expression(tokens):
     tokens, node = term(tokens)
 
-    while tokens[0] in (PLUS_TOKEN, MINUS_TOKEN):
+    while nexttoken(tokens) in (PLUS_TOKEN, MINUS_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
