@@ -395,7 +395,11 @@ def run_program(source):
     tokens = tokenise(source)
     _, node = program(tokens)
 
-    return NodeVisitor().visit(node)
+    nodevisitor =  NodeVisitor()
+    result = nodevisitor.visit(node)
+    print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
+    return result
+
 
 
 if __name__ == '__main__':
@@ -414,4 +418,4 @@ END.
     for token in tokens:
         print(token)
     program(tokens)
-    run_program(code)
+    print(run_program(code))
