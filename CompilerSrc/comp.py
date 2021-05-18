@@ -258,8 +258,29 @@ def statement_list(tokens):
 def statement(tokens):
     if nexttoken(tokens) == BEGIN_TOKEN:
         tokens, node = compound_statement(tokens)
+    elif nexttoken(tokens).type_ == ID:
+        tokens, node = assign_statement(tokens)
     else:
         node = NoOp()
+
+    return tokens, node
+
+
+
+def assign_statement(tokens):
+    tokens, varnode = do_variable(tokens)
+    assigntoken, tokens = pop_next_token(tokens)
+    assert assigntoken == ASSIGN_TOKEN, (f'[ERROR][assign_statement] expected:'
+        f' {ASSIGN_TOKEN} got: {assigntoken}')
+    tokens, expressionnode = expression(tokens)
+    node = Assign(varnode, assigntoken, expressionnode)
+    return tokens, None
+
+
+
+def do_variable(tokens):
+    token, tokens = pop_next_token(tokens)
+    node = Variable(token)
 
     return tokens, node
 

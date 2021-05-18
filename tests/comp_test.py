@@ -285,3 +285,12 @@ END
 ])
 def test_begin_end(source, expected):
     cmp.program(cmp.tokenise(source))
+
+
+def test_begin_end():
+    source = """
+BEGIN
+    VARIABLE := 1;
+END.
+"""
+    cmp.program(cmp.tokenise(source))
