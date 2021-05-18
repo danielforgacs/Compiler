@@ -8,6 +8,7 @@ EQUAL = '='
 COLON = ':'
 SEMICOLON = ';'
 DOT = '.'
+NEWLINE = '\n'
 
 ASSIGN = COLON + EQUAL
 ID = 'ID'
@@ -20,6 +21,8 @@ EOF = 'EOF'
 is_digit = lambda char: char in DIGITS
 is_alpha = lambda char: char in ALPHA
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
+put_back_token = lambda token, tokens: (token,) + tokens
+nexttoken = lambda tokens: tokens[0]
 
 
 
@@ -46,6 +49,7 @@ MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
+SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
@@ -112,44 +116,52 @@ def tokenise(source):
 
     while index < len(source):
         char = source[index]
-        nextchar = None
+        nextchar = ''
 
-        if index + 1 < len(source):
+        if index < len(source) - 1:
             nextchar = source[index+1]
 
-        if char == SPACE:
-            pass
-        elif is_digit(char):
-            token, index = find_int_token(source, index)
-            tokens += (token,)
+        if char in [SPACE, NEWLINE]:
+            token = None
         elif char == PLUS:
-            tokens += (PLUS_TOKEN,)
+            token = PLUS_TOKEN
         elif char == MINUS:
-            tokens += (MINUS_TOKEN,)
+            token = MINUS_TOKEN
         elif char == MULT:
-            tokens += (MULT_TOKEN,)
+            token = MULT_TOKEN
         elif char == DIV:
-            tokens += (DIV_TOKEN,)
+            token = DIV_TOKEN
         elif char == PAREN_L:
-            tokens += (PAREN_L_TOKEN,)
+            token = PAREN_L_TOKEN
         elif char == PAREN_R:
-            tokens += (PAREN_R_TOKEN,)
-        elif is_alpha(char):
-            token, index = find_alpha_token(source, index)
-            tokens += (token,)
+            token = PAREN_R_TOKEN
+        elif char == SEMICOLON:
+            token = SEMI_TOKEN
         elif char == DOT:
-            tokens += (DOT_TOKEN,)
+            token = DOT_TOKEN
         elif char + nextchar == ASSIGN:
             index += 1
-            tokens += (ASSIGN_TOKEN,)
+            token = ASSIGN_TOKEN
+        elif is_digit(char):
+            token, index = find_int_token(source, index)
+        elif is_alpha(char):
+            token, index = find_alpha_token(source, index)
         else:
-            raise Exception(f'[ERROR] Bad char: {char}')
+            raise Exception(f'[ERROR][tokenise] Bad char: "{char}", ord: {ord(char)}')
+
+        if token:
+            tokens += (token,)
 
         index += 1
 
-    tokens += (EOF_TOKEN,)
+    token = EOF_TOKEN
+    tokens += (token,)
 
     return tokens
+
+
+
+
 
 
 def factor(tokens):
@@ -164,16 +176,18 @@ def factor(tokens):
     elif token == PAREN_L_TOKEN:
         tokens, node = expression(tokens)
         paren_r, tokens = pop_next_token(tokens)
-
-        if paren_r != PAREN_R_TOKEN:
-            raise Exception(f'[ERROR] Expected token: {PAREN_R_TOKEN}')
+        assert paren_r == PAREN_R_TOKEN, f'[ERROR][factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
 
     elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
         node = UnaryOp(token, node)
 
+    elif token.type_ == 'ID':
+        tokens = put_back_token(token, tokens)
+        tokens, node = do_variable(tokens)
+
     else:
-        raise Exception(f'[ERROR] Unecpeted token: {token}')
+        raise Exception(f'[ERROR][factor] Unecpeted token: {token}')
 
     return tokens, node
 
@@ -181,7 +195,7 @@ def factor(tokens):
 def term(tokens):
     tokens, node = factor(tokens)
 
-    while tokens[0] in (MULT_TOKEN, DIV_TOKEN):
+    while nexttoken(tokens) in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = factor(tokens)
         node = BinOp(node, operator, node_r)
@@ -192,12 +206,89 @@ def term(tokens):
 def expression(tokens):
     tokens, node = term(tokens)
 
-    while tokens[0] in (PLUS_TOKEN, MINUS_TOKEN):
+    while nexttoken(tokens) in (PLUS_TOKEN, MINUS_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = term(tokens)
         node = BinOp(node, operator, node_r)
 
     return tokens, node
+
+
+
+
+
+
+def program(tokens):
+    tokens, node = compound_statement(tokens)
+
+    token, tokens = pop_next_token(tokens)
+    assert token == DOT_TOKEN, f'[ERROR][Program] expected: {DOT_TOKEN} got: {token}'
+
+    token, tokens = pop_next_token(tokens)
+    assert token == EOF_TOKEN, f'[ERROR][Program] expected: {EOF_TOKEN} got: {token}'
+
+    return tokens, node
+
+
+
+def compound_statement(tokens):
+    node = Compound()
+
+    token, tokens = pop_next_token(tokens)
+    assert token == BEGIN_TOKEN, f'[ERROR][compound_statement] expected: {BEGIN_TOKEN} got: {token}'
+
+    tokens, node.children = statement_list(tokens)
+
+    token, tokens = pop_next_token(tokens)
+    assert token == END_TOKEN, f'[ERROR][compound_statement] expected: {END_TOKEN} got: {token}'
+
+    return tokens, node
+
+
+
+def statement_list(tokens):
+    tokens, node = statement(tokens)
+    nodelist = [node]
+
+    while nexttoken(tokens) == SEMI_TOKEN:
+        _, tokens = pop_next_token(tokens)
+        tokens, node = statement(tokens)
+        nodelist += [node]
+
+    return tokens, nodelist
+
+
+
+def statement(tokens):
+    if nexttoken(tokens) == BEGIN_TOKEN:
+        tokens, node = compound_statement(tokens)
+    elif nexttoken(tokens).type_ == ID:
+        tokens, node = assign_statement(tokens)
+    else:
+        node = NoOp()
+
+    return tokens, node
+
+
+
+def assign_statement(tokens):
+    tokens, varnode = do_variable(tokens)
+    assigntoken, tokens = pop_next_token(tokens)
+    assert assigntoken == ASSIGN_TOKEN, (f'[ERROR][assign_statement] expected:'
+        f' {ASSIGN_TOKEN} got: {assigntoken}')
+    tokens, expressionnode = expression(tokens)
+    node = Assign(varnode, assigntoken, expressionnode)
+    return tokens, None
+
+
+
+def do_variable(tokens):
+    token, tokens = pop_next_token(tokens)
+    assert token.type_ == ID, f'[do_variable] expected: {ID}, got: {token}'
+    node = Variable(token)
+
+    return tokens, node
+
 
 
 class AST:
@@ -221,6 +312,28 @@ class Num(AST):
     def __init__(self, token):
         self.token = token
         self.value = token.value
+
+
+class Compound(AST):
+    def __init__(self):
+        self.children = ()
+
+
+class Assign(AST):
+    def __init__(self, left, operator, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
+
+
+class Variable(AST):
+    def __init__(self, name):
+        self.name = name
+
+
+class NoOp(AST):
+    pass
+
 
 
 class NodeVisitor:
@@ -263,10 +376,18 @@ def run(source):
 
 
 if __name__ == '__main__':
-    code = '2+3'
-    code = '-1'
-    # code = '#'
-    print(
-        run(code),
-        eval(code)
-    )
+    code = """
+BEGIN
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
+    x := 11;
+END.
+"""
+    tokens = tokenise(code)
+    for token in tokens:
+        print(token)
+    program(tokens)

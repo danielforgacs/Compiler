@@ -235,3 +235,93 @@ def test_unary_op(source):
 ])
 def test_new_tokens(source, expected):
     assert cmp.tokenise(source) == expected
+
+
+@pytest.mark.parametrize('source, expected', [
+    (
+        'BEGIN END.',
+        '',
+    ),
+    ("""
+BEGIN END.""",
+        '',
+    ),
+    ("""
+BEGIN
+    BEGIN
+        BEGIN
+            BEGIN
+                BEGIN
+                    BEGIN
+                    END;
+                END;
+            END;
+        END;
+    END;
+END
+.
+""",
+        '',
+    ),
+    ("""
+BEGIN
+    BEGIN
+        BEGIN
+        END;
+    END;
+    BEGIN
+        BEGIN
+        END;
+    END;
+    BEGIN
+        BEGIN
+        END;
+    END;
+END
+.
+""",
+        '',
+    ),
+])
+def test_begin_end(source, expected):
+    cmp.program(cmp.tokenise(source))
+
+
+def test_begin_end():
+    source = """
+BEGIN
+    varone := 1;
+    vartwo := 2+3;
+    BEGIN
+        varthree := (4+5)*6;
+        varthree := (4+5)*6;
+        varthree := (4+5)*6
+    END;
+BEGIN
+    varone := 1;
+    vartwo := 2+3;
+    BEGIN
+        varthree := (4+5)*6;
+        varthree := (4+5)*6;
+        varthree := (4+5)*6
+    END
+END
+END.
+"""
+    cmp.program(cmp.tokenise(source))
+
+
+
+def test_program_ID_variable_Assignment_NoOp():
+    source = """
+BEGIN
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
+    x := 11;
+END.
+"""
+    cmp.program(cmp.tokenise(source))
