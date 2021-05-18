@@ -183,6 +183,7 @@ def factor(tokens):
         node = UnaryOp(token, node)
 
     elif token.type_ == 'ID':
+        tokens = put_back_token(token, tokens)
         tokens, node = do_variable(tokens)
 
     else:
