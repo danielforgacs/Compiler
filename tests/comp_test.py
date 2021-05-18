@@ -290,7 +290,22 @@ def test_begin_end(source, expected):
 def test_begin_end():
     source = """
 BEGIN
-    VARIABLE := 1;
+    varone := 1;
+    vartwo := 2+3;
+    BEGIN
+        varthree := (4+5)*6;
+        varthree := (4+5)*6;
+        varthree := (4+5)*6
+    END;
+BEGIN
+    varone := 1;
+    vartwo := 2+3;
+    BEGIN
+        varthree := (4+5)*6;
+        varthree := (4+5)*6;
+        varthree := (4+5)*6
+    END
+END
 END.
 """
     cmp.program(cmp.tokenise(source))
