@@ -278,7 +278,7 @@ def assign_statement(tokens):
         f' {ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
     node = Assign(varnode, assigntoken, expressionnode)
-    return tokens, None
+    return tokens, node
 
 
 
@@ -337,10 +337,13 @@ class NoOp(AST):
 
 
 class NodeVisitor:
+    GLOBAL_SCOPE = {}
+
+
     def visit(self, node):
         nodeclassname = node.__class__.__name__
         if not hasattr(self, nodeclassname):
-            raise Exception(f'[ERROR] Unknown node to visit: {nodeclassname}')
+            raise Exception(f'[NodeVisitor] Unknown node to visit: {nodeclassname}')
         visitor = getattr(self, nodeclassname)
         return visitor(node)
 
@@ -367,12 +370,36 @@ class NodeVisitor:
         else:
             raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
 
+    def Compound(self, node):
+        for child in node.children:
+            self.visit(child)
+
+    def Assign(self, node):
+        self.GLOBAL_SCOPE[node.left.name.value] = self.visit(node.right)
+
+    def Variable(self, node):
+        return self.GLOBAL_SCOPE[node.name.value]
+
+    def NoOp(self, node):
+        pass
+
 
 def run(source):
     tokens = tokenise(source)
     _, node = expression(tokens)
 
     return NodeVisitor().visit(node)
+
+
+def run_program(source):
+    tokens = tokenise(source)
+    _, node = program(tokens)
+
+    nodevisitor =  NodeVisitor()
+    result = nodevisitor.visit(node)
+    print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
+    return result
+
 
 
 if __name__ == '__main__':
@@ -391,3 +418,4 @@ END.
     for token in tokens:
         print(token)
     program(tokens)
+    print(run_program(code))

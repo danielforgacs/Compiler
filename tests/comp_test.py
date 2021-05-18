@@ -325,3 +325,18 @@ BEGIN
 END.
 """
     cmp.program(cmp.tokenise(source))
+
+
+def test_program_ID_variable_Assignment_NoOp_program_run():
+    source = """
+BEGIN
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
+    x := 11;
+END.
+"""
+    cmp.run_program(source=source)
