@@ -118,42 +118,44 @@ def tokenise(source):
         char = source[index]
         nextchar = ''
 
-        if index + 1 < len(source):
+        if index < len(source) - 1:
             nextchar = source[index+1]
 
         if char in [SPACE, NEWLINE]:
-            pass
+            token = None
         elif char == PLUS:
-            tokens += (PLUS_TOKEN,)
+            token = PLUS_TOKEN
         elif char == MINUS:
-            tokens += (MINUS_TOKEN,)
+            token = MINUS_TOKEN
         elif char == MULT:
-            tokens += (MULT_TOKEN,)
+            token = MULT_TOKEN
         elif char == DIV:
-            tokens += (DIV_TOKEN,)
+            token = DIV_TOKEN
         elif char == PAREN_L:
-            tokens += (PAREN_L_TOKEN,)
+            token = PAREN_L_TOKEN
         elif char == PAREN_R:
-            tokens += (PAREN_R_TOKEN,)
+            token = PAREN_R_TOKEN
         elif char == SEMICOLON:
-            tokens += (SEMI_TOKEN,)
+            token = SEMI_TOKEN
         elif char == DOT:
-            tokens += (DOT_TOKEN,)
+            token = DOT_TOKEN
         elif char + nextchar == ASSIGN:
             index += 1
-            tokens += (ASSIGN_TOKEN,)
+            token = ASSIGN_TOKEN
         elif is_digit(char):
             token, index = find_int_token(source, index)
-            tokens += (token,)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
-            tokens += (token,)
         else:
             raise Exception(f'[ERROR][tokenise] Bad char: "{char}", ord: {ord(char)}')
 
+        if token:
+            tokens += (token,)
+
         index += 1
 
-    tokens += (EOF_TOKEN,)
+    token = EOF_TOKEN
+    tokens += (token,)
 
     return tokens
 
@@ -179,6 +181,9 @@ def factor(tokens):
     elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
         node = UnaryOp(token, node)
+
+    elif token.type_ == 'ID':
+        tokens, node = do_variable(tokens)
 
     else:
         raise Exception(f'[ERROR][factor] Unecpeted token: {token}')
@@ -278,6 +283,7 @@ def assign_statement(tokens):
 
 def do_variable(tokens):
     token, tokens = pop_next_token(tokens)
+    assert token.type_ == ID, f'[do_variable] expected: {ID}, got: {token}'
     node = Variable(token)
 
     return tokens, node
@@ -369,29 +375,16 @@ def run(source):
 
 
 if __name__ == '__main__':
-    # code = '2+3'
-    # code = '-1'
-    # # code = '#'
-    # print(
-    #     run(code),
-    #     eval(code)
-    # )
-
-    # code = """
-    # BEGIN END."""
-    # tokens = tokenise(code)
-    # print(tokens)
-
     code = """
 BEGIN
     BEGIN
+        number := 2;
+        a := 2;
+        b := a
     END;
-    BEGIN
-    END;
-END
-.
+END.
 """
     tokens = tokenise(code)
-#     print(tokens)
-#
+    for token in tokens:
+        print(token)
     program(tokens)
