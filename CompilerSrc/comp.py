@@ -337,6 +337,9 @@ class NoOp(AST):
 
 
 class NodeVisitor:
+    GLOBAL_SCOPE = {}
+
+
     def visit(self, node):
         nodeclassname = node.__class__.__name__
         if not hasattr(self, nodeclassname):
@@ -372,7 +375,10 @@ class NodeVisitor:
             self.visit(child)
 
     def Assign(self, node):
-        pass
+        self.GLOBAL_SCOPE[node.left.name.value] = self.visit(node.right)
+
+    def Variable(self, node):
+        return self.GLOBAL_SCOPE[node.name.value]
 
     def NoOp(self, node):
         pass
