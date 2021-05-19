@@ -12,11 +12,13 @@ DOT = '.'
 NEWLINE = '\n'
 
 ASSIGN = COLON + EQUAL
+
 ID = 'ID'
 INTEGER = 'INTEGER'
 BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
+PROGRAM = 'PROGRAM'
 
 
 is_digit = lambda char: char in DIGITS
@@ -56,6 +58,7 @@ BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
 DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
+PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 
 
 
@@ -100,6 +103,8 @@ def find_alpha_token(src, index):
         token = BEGIN_TOKEN
     elif result == END:
         token = END_TOKEN
+    elif result == PROGRAM:
+        token = PROGRAM_TOKEN
     else:
         token = Token(ID, result)
 
