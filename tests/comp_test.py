@@ -345,3 +345,11 @@ BEGIN
 END.
 """
     cmp.run_program(source=source)
+
+
+
+@pytest.mark.parametrize('source', [
+    ''
+])
+def test_comment(source):
+    cmp.run_program(source)
