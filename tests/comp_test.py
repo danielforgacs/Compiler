@@ -354,6 +354,23 @@ BEGIN
 {@@@@@@@@@@@}
 END.
 """,
+    """
+BEGIN
+{@@@@@@}{@@@@@}
+END.
+""",
+    """
+BEGIN
+{
+    @@@@@@
+    }
+      {      @@@@@
+            }
+            BEGIN
+    {                   }
+        END
+END.
+""",
 ])
 def test_comment(source):
     cmp.run_program(source)

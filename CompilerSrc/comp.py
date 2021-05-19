@@ -4,6 +4,7 @@ ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS, MINUS = '+', '-'
 MULT, DIV = '*', '/'
 PAREN_L, PAREN_R = '(', ')'
+CURLY_L, CURLY_R = '{', '}'
 EQUAL = '='
 COLON = ':'
 SEMICOLON = ';'
@@ -109,12 +110,19 @@ def find_alpha_token(src, index):
 
 
 
-
 def tokenise(source):
     index = 0
     tokens = ()
 
     while index < len(source):
+        if source[index] == CURLY_L:
+            index += 1
+            while source[index] != CURLY_R:
+                index += 1
+            index += 1
+
+            continue
+
         char = source[index]
         nextchar = ''
 
@@ -403,19 +411,10 @@ def run_program(source):
 
 
 if __name__ == '__main__':
-    code = """
-BEGIN
-    BEGIN
-        number := 2;
-        a := number;
-        b := 10 * a + 10 * number / 4;
-        c := a - - b
-    END;
-    x := 11;
-END.
-"""
+    code =     """BEGIN{@@@@@@}{@@@@@}END."""
+
     tokens = tokenise(code)
-    for token in tokens:
-        print(token)
-    program(tokens)
-    print(run_program(code))
+    # for token in tokens:
+    #     print(token)
+    # program(tokens)
+    # print(run_program(code))
