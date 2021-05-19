@@ -12,11 +12,13 @@ DOT = '.'
 NEWLINE = '\n'
 
 ASSIGN = COLON + EQUAL
+
 ID = 'ID'
 INTEGER = 'INTEGER'
 BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
+PROGRAM = 'PROGRAM'
 
 
 is_digit = lambda char: char in DIGITS
@@ -56,6 +58,7 @@ BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
 DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
+PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 
 
 
@@ -100,6 +103,8 @@ def find_alpha_token(src, index):
         token = BEGIN_TOKEN
     elif result == END:
         token = END_TOKEN
+    elif result == PROGRAM:
+        token = PROGRAM_TOKEN
     else:
         token = Token(ID, result)
 
@@ -155,7 +160,7 @@ def tokenise(source):
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
         else:
-            raise Exception(f'[ERROR][tokenise] Bad char: "{char}", ord: {ord(char)}')
+            raise Exception(f'[tokenise] Bad char: "{char}", ord: {ord(char)}')
 
         if token:
             tokens += (token,)
@@ -184,7 +189,7 @@ def factor(tokens):
     elif token == PAREN_L_TOKEN:
         tokens, node = expression(tokens)
         paren_r, tokens = pop_next_token(tokens)
-        assert paren_r == PAREN_R_TOKEN, f'[ERROR][factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
+        assert paren_r == PAREN_R_TOKEN, f'[factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
 
     elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
@@ -195,7 +200,7 @@ def factor(tokens):
         tokens, node = do_variable(tokens)
 
     else:
-        raise Exception(f'[ERROR][factor] Unecpeted token: {token}')
+        raise Exception(f'[factor] Unecpeted token: {token}')
 
     return tokens, node
 
@@ -230,25 +235,24 @@ def program(tokens):
     tokens, node = compound_statement(tokens)
 
     token, tokens = pop_next_token(tokens)
-    assert token == DOT_TOKEN, f'[ERROR][Program] expected: {DOT_TOKEN} got: {token}'
+    assert token == DOT_TOKEN, f'[Program] expected: {DOT_TOKEN} got: {token}'
 
     token, tokens = pop_next_token(tokens)
-    assert token == EOF_TOKEN, f'[ERROR][Program] expected: {EOF_TOKEN} got: {token}'
+    assert token == EOF_TOKEN, f'[Program] expected: {EOF_TOKEN} got: {token}'
 
     return tokens, node
 
 
 
 def compound_statement(tokens):
-    node = Compound()
-
     token, tokens = pop_next_token(tokens)
-    assert token == BEGIN_TOKEN, f'[ERROR][compound_statement] expected: {BEGIN_TOKEN} got: {token}'
+    assert token == BEGIN_TOKEN, f'[compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
+    node = Compound()
     tokens, node.children = statement_list(tokens)
 
     token, tokens = pop_next_token(tokens)
-    assert token == END_TOKEN, f'[ERROR][compound_statement] expected: {END_TOKEN} got: {token}'
+    assert token == END_TOKEN, f'[compound_statement] expected: {END_TOKEN} got: {token}'
 
     return tokens, node
 
@@ -282,7 +286,7 @@ def statement(tokens):
 def assign_statement(tokens):
     tokens, varnode = do_variable(tokens)
     assigntoken, tokens = pop_next_token(tokens)
-    assert assigntoken == ASSIGN_TOKEN, (f'[ERROR][assign_statement] expected:'
+    assert assigntoken == ASSIGN_TOKEN, (f'[assign_statement] expected:'
         f' {ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
     node = Assign(varnode, assigntoken, expressionnode)
@@ -364,7 +368,7 @@ class NodeVisitor:
         elif node.operator == MINUS_TOKEN:
             return self.visit(node.expression) * -1
         else:
-            raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
+            raise Exception(f'[visit_UnaryOp] Bad unary op operator: {node.operator}')
 
     def BinOp(self, node):
         if node.operator == PLUS_TOKEN:
@@ -376,7 +380,7 @@ class NodeVisitor:
         elif node.operator == DIV_TOKEN:
             return self.visit(node.node_l) / self.visit(node.node_r)
         else:
-            raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
+            raise Exception(f'[visit_BinOp Unexpected BinOp node: {node.operator}')
 
     def Compound(self, node):
         for child in node.children:
@@ -411,7 +415,30 @@ def run_program(source):
 
 
 if __name__ == '__main__':
-    code =     """BEGIN{@@@@@@}{@@@@@}END."""
+    code = """
+PROGRAM Part10;
+VAR
+   number     : INTEGER;
+   a, b, c, x : INTEGER;
+   y          : REAL;
+
+BEGIN {Part10}
+   BEGIN
+      number := 2;
+      a := number;
+      b := 10 * a + 10 * number DIV 4;
+      c := a - - b
+   END;
+   x := 11;
+   y := 20 / 7 + 3.14;
+   { writeln('a = ', a); }
+   { writeln('b = ', b); }
+   { writeln('c = ', c); }
+   { writeln('number = ', number); }
+   { writeln('x = ', x); }
+   { writeln('y = ', y); }
+END.  {Part10}
+"""
 
     tokens = tokenise(code)
     # for token in tokens:

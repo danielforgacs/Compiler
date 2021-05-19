@@ -232,6 +232,12 @@ def test_unary_op(source):
             cmp.EOF_TOKEN
         )
     ),
+    (
+        'PROGRAM',
+        (   cmp.PROGRAM_TOKEN,
+            cmp.EOF_TOKEN,
+        )
+    ),
 ])
 def test_new_tokens(source, expected):
     assert cmp.tokenise(source) == expected
