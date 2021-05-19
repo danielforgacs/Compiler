@@ -380,3 +380,23 @@ END.
 ])
 def test_comment(source):
     cmp.run_program(source)
+
+
+
+
+@pytest.fixture
+def fx_src_program():
+    return 'PROGRAM', (cmp.PROGRAM_TOKEN, cmp.EOF_TOKEN)
+
+@pytest.fixture
+def fx_src_begin(fx_src_program):
+    src = fx_src_program[0] + ' BEGIN'
+    tokens = fx_src_program[1][:-1]
+    tokens += (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)
+    return src, tokens
+
+def test_program_token(fx_src_program):
+    assert cmp.tokenise(fx_src_program[0]) == fx_src_program[1]
+
+def test_begin_token(fx_src_begin):
+    assert cmp.tokenise(fx_src_begin[0]) == fx_src_begin[1]
