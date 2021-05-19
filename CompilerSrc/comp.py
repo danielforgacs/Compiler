@@ -4,7 +4,6 @@ ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS, MINUS = '+', '-'
 MULT, DIV = '*', '/'
 PAREN_L, PAREN_R = '(', ')'
-CURLY_L, CURLY_R = '{', '}'
 EQUAL = '='
 COLON = ':'
 SEMICOLON = ';'
@@ -114,7 +113,6 @@ def find_alpha_token(src, index):
 def tokenise(source):
     index = 0
     tokens = ()
-    is_comment = False
 
     while index < len(source):
         char = source[index]
@@ -122,20 +120,6 @@ def tokenise(source):
 
         if index < len(source) - 1:
             nextchar = source[index+1]
-
-        if char == CURLY_L:
-            is_comment = True
-
-        if char == CURLY_R:
-            index += 1
-            is_comment = False
-
-            continue
-
-        if is_comment:
-            index += 1
-
-            continue
 
         if char in [SPACE, NEWLINE]:
             token = None
@@ -420,7 +404,18 @@ def run_program(source):
 
 if __name__ == '__main__':
     code = """
-{aaa := }123
+BEGIN
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
+    x := 11;
+END.
 """
     tokens = tokenise(code)
-    print(tokens)
+    for token in tokens:
+        print(token)
+    program(tokens)
+    print(run_program(code))
