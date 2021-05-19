@@ -285,6 +285,9 @@ END
 ])
 def test_begin_end(source, expected):
     cmp.program(cmp.tokenise(source))
+    cmp.run_program(source)
+
+
 
 
 def test_begin_end():
@@ -309,6 +312,7 @@ END
 END.
 """
     cmp.program(cmp.tokenise(source))
+    cmp.run_program(source)
 
 
 
@@ -325,6 +329,7 @@ BEGIN
 END.
 """
     cmp.program(cmp.tokenise(source))
+    cmp.run_program(source)
 
 
 def test_program_ID_variable_Assignment_NoOp_program_run():
@@ -340,3 +345,32 @@ BEGIN
 END.
 """
     cmp.run_program(source=source)
+
+
+
+@pytest.mark.parametrize('source', [
+    """
+BEGIN
+{@@@@@@@@@@@}
+END.
+""",
+    """
+BEGIN
+{@@@@@@}{@@@@@}
+END.
+""",
+    """
+BEGIN
+{
+    @@@@@@
+    }
+      {      @@@@@
+            }
+            BEGIN
+    {                   }
+        END
+END.
+""",
+])
+def test_comment(source):
+    cmp.run_program(source)
