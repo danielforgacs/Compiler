@@ -160,7 +160,7 @@ def tokenise(source):
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
         else:
-            raise Exception(f'[ERROR][tokenise] Bad char: "{char}", ord: {ord(char)}')
+            raise Exception(f'[tokenise] Bad char: "{char}", ord: {ord(char)}')
 
         if token:
             tokens += (token,)
@@ -189,7 +189,7 @@ def factor(tokens):
     elif token == PAREN_L_TOKEN:
         tokens, node = expression(tokens)
         paren_r, tokens = pop_next_token(tokens)
-        assert paren_r == PAREN_R_TOKEN, f'[ERROR][factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
+        assert paren_r == PAREN_R_TOKEN, f'[factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
 
     elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
@@ -200,7 +200,7 @@ def factor(tokens):
         tokens, node = do_variable(tokens)
 
     else:
-        raise Exception(f'[ERROR][factor] Unecpeted token: {token}')
+        raise Exception(f'[factor] Unecpeted token: {token}')
 
     return tokens, node
 
@@ -235,10 +235,10 @@ def program(tokens):
     tokens, node = compound_statement(tokens)
 
     token, tokens = pop_next_token(tokens)
-    assert token == DOT_TOKEN, f'[ERROR][Program] expected: {DOT_TOKEN} got: {token}'
+    assert token == DOT_TOKEN, f'[Program] expected: {DOT_TOKEN} got: {token}'
 
     token, tokens = pop_next_token(tokens)
-    assert token == EOF_TOKEN, f'[ERROR][Program] expected: {EOF_TOKEN} got: {token}'
+    assert token == EOF_TOKEN, f'[Program] expected: {EOF_TOKEN} got: {token}'
 
     return tokens, node
 
@@ -248,12 +248,12 @@ def compound_statement(tokens):
     node = Compound()
 
     token, tokens = pop_next_token(tokens)
-    assert token == BEGIN_TOKEN, f'[ERROR][compound_statement] expected: {BEGIN_TOKEN} got: {token}'
+    assert token == BEGIN_TOKEN, f'[compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
     tokens, node.children = statement_list(tokens)
 
     token, tokens = pop_next_token(tokens)
-    assert token == END_TOKEN, f'[ERROR][compound_statement] expected: {END_TOKEN} got: {token}'
+    assert token == END_TOKEN, f'[compound_statement] expected: {END_TOKEN} got: {token}'
 
     return tokens, node
 
@@ -287,7 +287,7 @@ def statement(tokens):
 def assign_statement(tokens):
     tokens, varnode = do_variable(tokens)
     assigntoken, tokens = pop_next_token(tokens)
-    assert assigntoken == ASSIGN_TOKEN, (f'[ERROR][assign_statement] expected:'
+    assert assigntoken == ASSIGN_TOKEN, (f'[assign_statement] expected:'
         f' {ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
     node = Assign(varnode, assigntoken, expressionnode)
@@ -369,7 +369,7 @@ class NodeVisitor:
         elif node.operator == MINUS_TOKEN:
             return self.visit(node.expression) * -1
         else:
-            raise Exception(f'[ERROR] Bad unary op operator: {node.operator}')
+            raise Exception(f'[visit_UnaryOp] Bad unary op operator: {node.operator}')
 
     def BinOp(self, node):
         if node.operator == PLUS_TOKEN:
@@ -381,7 +381,7 @@ class NodeVisitor:
         elif node.operator == DIV_TOKEN:
             return self.visit(node.node_l) / self.visit(node.node_r)
         else:
-            raise Exception(f'[ERROR] Unexpected BinOp node: {node.operator}')
+            raise Exception(f'[visit_BinOp Unexpected BinOp node: {node.operator}')
 
     def Compound(self, node):
         for child in node.children:
