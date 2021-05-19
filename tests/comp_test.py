@@ -380,12 +380,3 @@ END.
 ])
 def test_comment(source):
     cmp.run_program(source)
-
-
-
-@pytest.mark.parametrize('source', [
-    """
-    """,
-])
-def test_progrum_struct(source):
-    cmp.run_program(source)
