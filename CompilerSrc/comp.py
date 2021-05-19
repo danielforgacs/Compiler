@@ -245,11 +245,10 @@ def program(tokens):
 
 
 def compound_statement(tokens):
-    node = Compound()
-
     token, tokens = pop_next_token(tokens)
     assert token == BEGIN_TOKEN, f'[compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
+    node = Compound()
     tokens, node.children = statement_list(tokens)
 
     token, tokens = pop_next_token(tokens)
