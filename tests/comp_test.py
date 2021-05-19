@@ -349,7 +349,11 @@ END.
 
 
 @pytest.mark.parametrize('source', [
-    ''
+    """
+BEGIN
+{@@@@@@@@@@@}
+END.
+""",
 ])
 def test_comment(source):
     cmp.run_program(source)
