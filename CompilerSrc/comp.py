@@ -52,6 +52,7 @@ MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
+COLON_TOKEN = Token(COLON, COLON)
 SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
@@ -152,9 +153,11 @@ def tokenise(source):
             token = SEMI_TOKEN
         elif char == DOT:
             token = DOT_TOKEN
-        elif char + nextchar == ASSIGN:
-            index += 1
-            token = ASSIGN_TOKEN
+        elif char == COLON:
+            token = COLON_TOKEN
+            if nextchar == EQUAL:
+                index += 1
+                token = ASSIGN_TOKEN
         elif is_digit(char):
             token, index = find_int_token(source, index)
         elif is_alpha(char):
