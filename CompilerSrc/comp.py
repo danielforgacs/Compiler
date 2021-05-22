@@ -160,7 +160,9 @@ def tokenise(source):
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
         else:
-            raise Exception(f'[tokenise] Bad char: "{char}", ord: {ord(char)}')
+            raise Exception(
+                f'[tokenise] Bad char: "{char}", ord: {ord(char)}'
+                f' index: {index}')
 
         if token:
             tokens += (token,)
