@@ -428,4 +428,11 @@ def test_tokenise_full_program_chapter_10():
     { writeln('y = ', y); }
     END.  {Part10}
     """
-    cmp.tokenise(source=source)
+    source = source[:20]
+    expected = (
+        cmp.PROGRAM_TOKEN,
+        cmp.Token(cmp.ID, 'Part10'),
+        cmp.SEMI_TOKEN,
+        cmp.EOF_TOKEN,
+    )
+    assert cmp.tokenise(source=source) == expected
