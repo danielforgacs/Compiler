@@ -30,9 +30,14 @@ nexttoken = lambda tokens: tokens[0]
 
 
 
+class MakeDict:
+    @property
+    def asdict(self):
+        return
 
 
-class Token:
+
+class Token(MakeDict):
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
