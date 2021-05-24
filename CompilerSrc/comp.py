@@ -33,7 +33,10 @@ nexttoken = lambda tokens: tokens[0]
 class MakeDict:
     @property
     def asdict(self):
-        return
+        data = {}
+        for attrname, value in self.__dict__.items():
+            data[attrname] = value
+        return data
 
 
 
