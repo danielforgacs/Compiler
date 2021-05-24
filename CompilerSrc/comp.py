@@ -39,6 +39,19 @@ class MakeDict:
         return data
 
 
+    @classmethod
+    def from_dict(cls, data):
+        kwargs = {}
+        for idx in range(1, cls.__init__.__code__.co_argcount):
+            key = cls.__init__.__code__.co_varnames[idx]
+            kwargs[key] = data[key]
+        newinstance = cls(**kwargs)
+        for attrname, value in data.items():
+            setattr(newinstance, attrname, value)
+        return newinstance
+
+
+
 
 class Token(MakeDict):
     def __init__(self, type_, value):
