@@ -24,6 +24,7 @@ PROGRAM = 'PROGRAM'
 
 is_digit = lambda char: char in DIGITS
 is_alpha = lambda char: char in ALPHA
+is_alphanum = lambda char: char in ALPHA + DIGITS
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
 put_back_token = lambda token, tokens: (token,) + tokens
 nexttoken = lambda tokens: tokens[0]
@@ -117,7 +118,7 @@ def find_alpha_token(src, index):
     result = ''
     char = src[index]
 
-    while is_alpha(char):
+    while is_alphanum(char):
         result += char
         index += 1
 
