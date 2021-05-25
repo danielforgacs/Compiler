@@ -35,6 +35,9 @@ class MakeDict:
     def asdict(self):
         data = {}
         for attrname, value in self.__dict__.items():
+            if hasattr(value, 'asdict'):
+                attrname = '{}.{}'.format(attrname, value.__class__.__name__)
+                value = value.asdict
             data[attrname] = value
         return data
 
@@ -368,7 +371,7 @@ class Assign(AST):
         self.right = right
 
 
-class Variable(AST):
+class Variable(AST, MakeDict):
     def __init__(self, name):
         self.name = name
 

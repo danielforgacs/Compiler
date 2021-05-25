@@ -18,3 +18,17 @@ def test_Token_de_serialise():
     }
     token = comp.Token.from_dict(data=data)
     assert token == comp.EOF_TOKEN
+
+
+
+def test_Variable_node_serialise():
+    varname = 'varname'
+    token = comp.Token(comp.ID, varname)
+    variable = comp.Variable(name=token)
+    expected = {
+        'name.Token': {
+            'type_': comp.ID,
+            'value': varname,
+        }
+    }
+    assert variable.asdict == expected
