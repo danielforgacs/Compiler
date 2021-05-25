@@ -405,8 +405,28 @@ def test_begin_token(fx_src_begin):
 
 def test_tokenise_full_program_chapter_10():
     source = (
-        "PROGRAM Part10;"
-        # "PROGRAM Part10;\n"
+        "PROGRAM Part10;\n"
+        "VAR\n"
+#    number     : INTEGER;
+#    a, b, c, x : INTEGER;
+#    y          : REAL;
+#
+# BEGIN {Part10}
+#    BEGIN
+#       number := 2;
+#       a := number;
+#       b := 10 * a + 10 * number DIV 4;
+#       c := a - - b
+#    END;
+#    x := 11;
+#    y := 20 / 7 + 3.14;
+#    { writeln('a = ', a); }
+#    { writeln('b = ', b); }
+#    { writeln('c = ', c); }
+#    { writeln('number = ', number); }
+#    { writeln('x = ', x); }
+#    { writeln('y = ', y); }
+# END.  {Part10}
     )
     print()
     print()
@@ -421,6 +441,7 @@ def test_tokenise_full_program_chapter_10():
         cmp.PROGRAM_TOKEN,
         cmp.Token(cmp.ID, 'Part10'),
         cmp.SEMI_TOKEN,
+        cmp.VAR_TOKEN,
         cmp.EOF_TOKEN,
     )
     assert cmp.tokenise(source=source) == expected

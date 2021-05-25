@@ -20,6 +20,7 @@ BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
 PROGRAM = 'PROGRAM'
+VAR = 'VAR'
 
 
 is_digit = lambda char: char in DIGITS
@@ -87,6 +88,7 @@ END_TOKEN = Token(END, END)
 DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
+VAR_TOKEN = Token(VAR, VAR)
 
 
 
@@ -133,6 +135,8 @@ def find_alpha_token(src, index):
         token = END_TOKEN
     elif result == PROGRAM:
         token = PROGRAM_TOKEN
+    elif result == VAR:
+        token = VAR_TOKEN
     else:
         token = Token(ID, result)
 
@@ -445,37 +449,3 @@ def run_program(source):
     result = nodevisitor.visit(node)
     print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
     return result
-
-
-
-if __name__ == '__main__':
-    code = """
-PROGRAM Part10;
-VAR
-   number     : INTEGER;
-   a, b, c, x : INTEGER;
-   y          : REAL;
-
-BEGIN {Part10}
-   BEGIN
-      number := 2;
-      a := number;
-      b := 10 * a + 10 * number DIV 4;
-      c := a - - b
-   END;
-   x := 11;
-   y := 20 / 7 + 3.14;
-   { writeln('a = ', a); }
-   { writeln('b = ', b); }
-   { writeln('c = ', c); }
-   { writeln('number = ', number); }
-   { writeln('x = ', x); }
-   { writeln('y = ', y); }
-END.  {Part10}
-"""
-
-    tokens = tokenise(code)
-    # for token in tokens:
-    #     print(token)
-    # program(tokens)
-    # print(run_program(code))
