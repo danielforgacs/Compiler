@@ -22,6 +22,7 @@ EOF = 'EOF'
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
 INT_TYPE = 'INT_TYPE'
+REAL_TYPE = 'REAL'
 
 
 is_digit = lambda char: char in DIGITS
@@ -91,6 +92,7 @@ ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 VAR_TOKEN = Token(VAR, VAR)
 INT_TYPE_TOKEN = Token(INT_TYPE, INT_TYPE)
+REAL_TYPE_TOKEN = Token(REAL_TYPE, REAL_TYPE)
 
 
 
@@ -141,6 +143,8 @@ def find_alpha_token(src, index):
         token = VAR_TOKEN
     elif result == INTEGER:
         token = INT_TYPE_TOKEN
+    elif result == REAL_TYPE:
+        token = REAL_TYPE_TOKEN
     else:
         token = Token(ID, result)
 

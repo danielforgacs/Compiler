@@ -409,8 +409,8 @@ def test_tokenise_full_program_chapter_10():
         "VAR\n"
         "number     : INTEGER;\n"
         "a, b, c, x : INTEGER;\n"
-#    y          : REAL;
-#
+        "y          : REAL;\n"
+        "\n"
 # BEGIN {Part10}
 #    BEGIN
 #       number := 2;
@@ -457,6 +457,11 @@ def test_tokenise_full_program_chapter_10():
         cmp.Token(cmp.ID, 'x'),
         cmp.COLON_TOKEN,
         cmp.INT_TYPE_TOKEN,
+        cmp.SEMI_TOKEN,
+
+        cmp.Token(cmp.ID, 'y'),
+        cmp.COLON_TOKEN,
+        cmp.REAL_TYPE_TOKEN,
         cmp.SEMI_TOKEN,
 
 
