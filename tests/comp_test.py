@@ -408,7 +408,7 @@ def test_tokenise_full_program_chapter_10():
         "PROGRAM Part10;\n"
         "VAR\n"
         "number     : INTEGER;\n"
-#    a, b, c, x : INTEGER;
+        "a, b, c, x : INTEGER;\n"
 #    y          : REAL;
 #
 # BEGIN {Part10}
@@ -447,6 +447,18 @@ def test_tokenise_full_program_chapter_10():
         cmp.COLON_TOKEN,
         cmp.INT_TYPE_TOKEN,
         cmp.SEMI_TOKEN,
+
+        cmp.Token(cmp.ID, 'a'),
+        cmp.COMMA_TOKEN,
+        cmp.Token(cmp.ID, 'b'),
+        cmp.COMMA_TOKEN,
+        cmp.Token(cmp.ID, 'c'),
+        cmp.COMMA_TOKEN,
+        cmp.Token(cmp.ID, 'x'),
+        cmp.COLON_TOKEN,
+        cmp.INT_TYPE_TOKEN,
+        cmp.SEMI_TOKEN,
+
 
         cmp.EOF_TOKEN,
     )
