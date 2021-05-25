@@ -411,7 +411,7 @@ def test_tokenise_full_program_chapter_10():
         "a, b, c, x : INTEGER;\n"
         "y          : REAL;\n"
         "\n"
-# BEGIN {Part10}
+        "BEGIN {Part10}\n"
 #    BEGIN
 #       number := 2;
 #       a := number;
@@ -464,7 +464,7 @@ def test_tokenise_full_program_chapter_10():
         cmp.REAL_TYPE_TOKEN,
         cmp.SEMI_TOKEN,
 
-
+        cmp.BEGIN_TOKEN,
         cmp.EOF_TOKEN,
     )
     assert cmp.tokenise(source=source) == expected
