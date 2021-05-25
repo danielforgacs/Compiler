@@ -21,6 +21,7 @@ END = 'END'
 EOF = 'EOF'
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
+INT_TYPE = 'INT_TYPE'
 
 
 is_digit = lambda char: char in DIGITS
@@ -89,6 +90,7 @@ DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 VAR_TOKEN = Token(VAR, VAR)
+INT_TYPE_TOKEN = Token(INT_TYPE, INT_TYPE)
 
 
 
@@ -137,6 +139,8 @@ def find_alpha_token(src, index):
         token = PROGRAM_TOKEN
     elif result == VAR:
         token = VAR_TOKEN
+    elif result == INTEGER:
+        token = INT_TYPE_TOKEN
     else:
         token = Token(ID, result)
 

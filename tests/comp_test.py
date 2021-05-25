@@ -407,7 +407,7 @@ def test_tokenise_full_program_chapter_10():
     source = (
         "PROGRAM Part10;\n"
         "VAR\n"
-#    number     : INTEGER;
+        "number     : INTEGER;\n"
 #    a, b, c, x : INTEGER;
 #    y          : REAL;
 #
@@ -442,6 +442,12 @@ def test_tokenise_full_program_chapter_10():
         cmp.Token(cmp.ID, 'Part10'),
         cmp.SEMI_TOKEN,
         cmp.VAR_TOKEN,
+
+        cmp.Token(cmp.ID, 'number'),
+        cmp.COLON_TOKEN,
+        cmp.INT_TYPE_TOKEN,
+        cmp.SEMI_TOKEN,
+
         cmp.EOF_TOKEN,
     )
     assert cmp.tokenise(source=source) == expected
