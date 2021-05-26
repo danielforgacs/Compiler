@@ -25,7 +25,7 @@ VAR = 'VAR'
 INT_TYPE = 'INT_TYPE'
 REAL_TYPE = 'REAL'
 F_DIV = 'DIV'
-FLOAT_CONST = 'FLOAT'
+FLOAT_CONST = 'FLOAT_CONST'
 
 
 is_digit = lambda char: char in DIGITS
