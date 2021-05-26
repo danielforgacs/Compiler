@@ -10,6 +10,7 @@ COLON = ':'
 SEMICOLON = ';'
 DOT = '.'
 COMMA = ','
+QUOTE = "'"
 NEWLINE = '\n'
 
 ASSIGN = COLON + EQUAL
@@ -86,6 +87,7 @@ PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 COLON_TOKEN = Token(COLON, COLON)
 SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
 COMMA_TOKEN = Token(COMMA, COMMA)
+QUOTE_TOKEN = Token(QUOTE, QUOTE)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
@@ -215,6 +217,8 @@ def tokenise(source):
                 token = ASSIGN_TOKEN
         elif char == COMMA:
             token = COMMA_TOKEN
+        elif char == QUOTE:
+            token = QUOTE_TOKEN
         elif is_digit(char):
             token, index = find_int_token(source, index)
         elif is_alpha(char):
