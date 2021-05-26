@@ -13,19 +13,21 @@ COMMA = ','
 QUOTE = "'"
 NEWLINE = '\n'
 
+INT_DIV = 'DIV'
+
 ASSIGN = COLON + EQUAL
 
 ID = 'ID'
-INTEGER = 'INTEGER'
-BEGIN = 'BEGIN'
-END = 'END'
-EOF = 'EOF'
+INT_CONST = 'INT_CONST'
+FLOAT_CONST = 'FLOAT_CONST'
+
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
-INT_TYPE = 'INT_TYPE'
-REAL_TYPE = 'REAL'
-F_DIV = 'DIV'
-FLOAT = 'FLOAT'
+INTEGER = 'INTEGER'
+BEGIN = 'BEGIN'
+REAL = 'REAL'
+END = 'END'
+EOF = 'EOF'
 
 
 is_digit = lambda char: char in DIGITS
@@ -77,11 +79,23 @@ class Token(MakeDict):
 
 
 
+PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
+VAR_TOKEN = Token(VAR, VAR)
+BEGIN_TOKEN = Token(BEGIN, BEGIN)
+END_TOKEN = Token(END, END)
+DOT_TOKEN = Token(DOT, DOT)
 EOF_TOKEN = Token(EOF, EOF)
+
+ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
+INT_TOKEN = Token(INTEGER, INTEGER)
+REAL_TOKEN = Token(REAL, REAL)
+
 PLUS_TOKEN = Token(PLUS, PLUS)
 MINUS_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
+INT_DIV_TOKEN = Token(INT_DIV, INT_DIV)
+
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 COLON_TOKEN = Token(COLON, COLON)
@@ -89,15 +103,6 @@ SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
 COMMA_TOKEN = Token(COMMA, COMMA)
 QUOTE_TOKEN = Token(QUOTE, QUOTE)
 
-BEGIN_TOKEN = Token(BEGIN, BEGIN)
-END_TOKEN = Token(END, END)
-DOT_TOKEN = Token(DOT, DOT)
-ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
-PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
-VAR_TOKEN = Token(VAR, VAR)
-INT_TYPE_TOKEN = Token(INT_TYPE, INT_TYPE)
-REAL_TYPE_TOKEN = Token(REAL_TYPE, REAL_TYPE)
-F_DIV_TOKEN = Token(F_DIV, F_DIV)
 
 
 
@@ -124,9 +129,9 @@ def find_int_token(src, index):
             char = src[index]
 
     if is_float:
-        token = Token(FLOAT, float(result))
+        token = Token(FLOAT_CONST, float(result))
     else:
-        token = Token(INTEGER, int(result))
+        token = Token(INT_CONST, int(result))
 
     index -= 1
 
@@ -158,11 +163,11 @@ def find_alpha_token(src, index):
     elif result == VAR:
         token = VAR_TOKEN
     elif result == INTEGER:
-        token = INT_TYPE_TOKEN
-    elif result == REAL_TYPE:
-        token = REAL_TYPE_TOKEN
-    elif result == F_DIV:
-        token = F_DIV_TOKEN
+        token = INT_TOKEN
+    elif result == REAL:
+        token = REAL_TOKEN
+    elif result == INT_DIV:
+        token = INT_DIV_TOKEN
     else:
         token = Token(ID, result)
 
@@ -249,7 +254,7 @@ def factor(tokens):
     """
     token, tokens = pop_next_token(tokens)
 
-    if token.type_ == INTEGER:
+    if token.type_ == INT_CONST:
         node = Num(token)
 
     elif token == PAREN_L_TOKEN:
