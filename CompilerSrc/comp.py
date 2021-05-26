@@ -16,13 +16,13 @@ NEWLINE = '\n'
 ASSIGN = COLON + EQUAL
 
 ID = 'ID'
-INT_CONST = 'INTEGER'
+INT_CONST = 'INT_CONST'
 BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
-INT_TYPE = 'INT_TYPE'
+INT_TYPE = 'INTEGER'
 REAL_TYPE = 'REAL'
 F_DIV = 'DIV'
 FLOAT_CONST = 'FLOAT_CONST'
@@ -157,7 +157,7 @@ def find_alpha_token(src, index):
         token = PROGRAM_TOKEN
     elif result == VAR:
         token = VAR_TOKEN
-    elif result == INT_CONST:
+    elif result == INT_TYPE:
         token = INT_TYPE_TOKEN
     elif result == REAL_TYPE:
         token = REAL_TYPE_TOKEN
