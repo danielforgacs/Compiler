@@ -437,7 +437,7 @@ def test_tokenise_full_program_chapter_10():
 
         cmp.Token(cmp.ID, 'number'),
         cmp.COLON_TOKEN,
-        cmp.INT_TYPE_TOKEN,
+        cmp.INT_TOKEN,
         cmp.SEMI_TOKEN,
 
         cmp.Token(cmp.ID, 'a'),
@@ -448,12 +448,12 @@ def test_tokenise_full_program_chapter_10():
         cmp.COMMA_TOKEN,
         cmp.Token(cmp.ID, 'x'),
         cmp.COLON_TOKEN,
-        cmp.INT_TYPE_TOKEN,
+        cmp.INT_TOKEN,
         cmp.SEMI_TOKEN,
 
         cmp.Token(cmp.ID, 'y'),
         cmp.COLON_TOKEN,
-        cmp.REAL_TYPE_TOKEN,
+        cmp.REAL_TOKEN,
         cmp.SEMI_TOKEN,
 
         cmp.BEGIN_TOKEN,

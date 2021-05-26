@@ -79,7 +79,16 @@ class Token(MakeDict):
 
 
 
+PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
+VAR_TOKEN = Token(VAR, VAR)
+BEGIN_TOKEN = Token(BEGIN, BEGIN)
+END_TOKEN = Token(END, END)
+DOT_TOKEN = Token(DOT, DOT)
 EOF_TOKEN = Token(EOF, EOF)
+
+INT_TOKEN = Token(INTEGER, INTEGER)
+REAL_TOKEN = Token(REAL, REAL)
+
 PLUS_TOKEN = Token(PLUS, PLUS)
 MINUS_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
@@ -91,14 +100,7 @@ SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
 COMMA_TOKEN = Token(COMMA, COMMA)
 QUOTE_TOKEN = Token(QUOTE, QUOTE)
 
-BEGIN_TOKEN = Token(BEGIN, BEGIN)
-END_TOKEN = Token(END, END)
-DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
-PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
-VAR_TOKEN = Token(VAR, VAR)
-INT_TYPE_TOKEN = Token(INTEGER, INTEGER)
-REAL_TYPE_TOKEN = Token(REAL, REAL)
 F_DIV_TOKEN = Token(INT_DIV, INT_DIV)
 
 
@@ -160,9 +162,9 @@ def find_alpha_token(src, index):
     elif result == VAR:
         token = VAR_TOKEN
     elif result == INTEGER:
-        token = INT_TYPE_TOKEN
+        token = INT_TOKEN
     elif result == REAL:
-        token = REAL_TYPE_TOKEN
+        token = REAL_TOKEN
     elif result == INT_DIV:
         token = F_DIV_TOKEN
     else:
