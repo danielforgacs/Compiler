@@ -13,19 +13,21 @@ COMMA = ','
 QUOTE = "'"
 NEWLINE = '\n'
 
+INT_DIV = 'DIV'
+
 ASSIGN = COLON + EQUAL
 
 ID = 'ID'
 INT_CONST = 'INT_CONST'
-BEGIN = 'BEGIN'
-END = 'END'
-EOF = 'EOF'
+FLOAT_CONST = 'FLOAT_CONST'
+
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
 INTEGER = 'INTEGER'
-REAL_TYPE = 'REAL'
-F_DIV = 'DIV'
-FLOAT_CONST = 'FLOAT_CONST'
+BEGIN = 'BEGIN'
+REAL = 'REAL'
+END = 'END'
+EOF = 'EOF'
 
 
 is_digit = lambda char: char in DIGITS
@@ -96,8 +98,8 @@ ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 VAR_TOKEN = Token(VAR, VAR)
 INT_TYPE_TOKEN = Token(INTEGER, INTEGER)
-REAL_TYPE_TOKEN = Token(REAL_TYPE, REAL_TYPE)
-F_DIV_TOKEN = Token(F_DIV, F_DIV)
+REAL_TYPE_TOKEN = Token(REAL, REAL)
+F_DIV_TOKEN = Token(INT_DIV, INT_DIV)
 
 
 
@@ -159,9 +161,9 @@ def find_alpha_token(src, index):
         token = VAR_TOKEN
     elif result == INTEGER:
         token = INT_TYPE_TOKEN
-    elif result == REAL_TYPE:
+    elif result == REAL:
         token = REAL_TYPE_TOKEN
-    elif result == F_DIV:
+    elif result == INT_DIV:
         token = F_DIV_TOKEN
     else:
         token = Token(ID, result)
