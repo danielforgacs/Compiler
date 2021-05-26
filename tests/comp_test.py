@@ -420,23 +420,15 @@ def test_tokenise_full_program_chapter_10():
         "END;\n"
         "   x := 11;\n"
         "   y := 20 / 7 + 3.14;\n"
-        "   { writeln('a = ', a); }"
-        "   { writeln('b = ', b); }"
-        "   { writeln('c = ', c); }"
-        "   { writeln('number = ', number); }"
-        "   { writeln('x = ', x); }"
-        "   { writeln('y = ', y); }"
-# END.  {Part10}
+        "   { writeln('a = ', a); }\n"
+        "   { writeln('b = ', b); }\n"
+        "   { writeln('c = ', c); }\n"
+        "   { writeln('number = ', number); }\n"
+        "   { writeln('x = ', x); }\n"
+        "   { writeln('y = ', y); }\n"
+        "END. {Part10}"
     )
-    print()
-    print()
-    print()
-    print('____________________________')
-    print(source)
-    print('____________________________')
-    print()
-    print()
-    print()
+
     expected = (
         cmp.PROGRAM_TOKEN,
         cmp.Token(cmp.ID, 'Part10'),
@@ -514,7 +506,8 @@ def test_tokenise_full_program_chapter_10():
         cmp.Token(cmp.FLOAT, 3.14),
         cmp.SEMI_TOKEN,
 
-
+        cmp.END_TOKEN,
+        cmp.DOT_TOKEN,
 
         cmp.EOF_TOKEN,
     )
