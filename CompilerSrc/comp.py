@@ -22,7 +22,7 @@ END = 'END'
 EOF = 'EOF'
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
-INT_TYPE = 'INTEGER'
+INTEGER = 'INTEGER'
 REAL_TYPE = 'REAL'
 F_DIV = 'DIV'
 FLOAT_CONST = 'FLOAT_CONST'
@@ -95,7 +95,7 @@ DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 VAR_TOKEN = Token(VAR, VAR)
-INT_TYPE_TOKEN = Token(INT_TYPE, INT_TYPE)
+INT_TYPE_TOKEN = Token(INTEGER, INTEGER)
 REAL_TYPE_TOKEN = Token(REAL_TYPE, REAL_TYPE)
 F_DIV_TOKEN = Token(F_DIV, F_DIV)
 
@@ -157,7 +157,7 @@ def find_alpha_token(src, index):
         token = PROGRAM_TOKEN
     elif result == VAR:
         token = VAR_TOKEN
-    elif result == INT_TYPE:
+    elif result == INTEGER:
         token = INT_TYPE_TOKEN
     elif result == REAL_TYPE:
         token = REAL_TYPE_TOKEN
