@@ -503,7 +503,7 @@ def test_tokenise_full_program_chapter_10():
         cmp.DIV_TOKEN,
         cmp.Token(cmp.INT_CONST, 7),
         cmp.PLUS_TOKEN,
-        cmp.Token(cmp.FLOAT, 3.14),
+        cmp.Token(cmp.FLOAT_CONST, 3.14),
         cmp.SEMI_TOKEN,
 
         cmp.END_TOKEN,

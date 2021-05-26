@@ -25,7 +25,7 @@ VAR = 'VAR'
 INT_TYPE = 'INT_TYPE'
 REAL_TYPE = 'REAL'
 F_DIV = 'DIV'
-FLOAT = 'FLOAT'
+FLOAT_CONST = 'FLOAT'
 
 
 is_digit = lambda char: char in DIGITS
@@ -124,7 +124,7 @@ def find_int_token(src, index):
             char = src[index]
 
     if is_float:
-        token = Token(FLOAT, float(result))
+        token = Token(FLOAT_CONST, float(result))
     else:
         token = Token(INT_CONST, int(result))
 
