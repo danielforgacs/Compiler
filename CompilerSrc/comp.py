@@ -16,7 +16,7 @@ NEWLINE = '\n'
 ASSIGN = COLON + EQUAL
 
 ID = 'ID'
-INTEGER = 'INTEGER'
+INT_CONST = 'INTEGER'
 BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
@@ -126,7 +126,7 @@ def find_int_token(src, index):
     if is_float:
         token = Token(FLOAT, float(result))
     else:
-        token = Token(INTEGER, int(result))
+        token = Token(INT_CONST, int(result))
 
     index -= 1
 
@@ -157,7 +157,7 @@ def find_alpha_token(src, index):
         token = PROGRAM_TOKEN
     elif result == VAR:
         token = VAR_TOKEN
-    elif result == INTEGER:
+    elif result == INT_CONST:
         token = INT_TYPE_TOKEN
     elif result == REAL_TYPE:
         token = REAL_TYPE_TOKEN
@@ -249,7 +249,7 @@ def factor(tokens):
     """
     token, tokens = pop_next_token(tokens)
 
-    if token.type_ == INTEGER:
+    if token.type_ == INT_CONST:
         node = Num(token)
 
     elif token == PAREN_L_TOKEN:

@@ -14,13 +14,13 @@ def test_Token():
 
 
 @pytest.mark.parametrize('source, expected', [
-    ['0', cmp.Token(cmp.INTEGER, 0)],
-    ['1', cmp.Token(cmp.INTEGER, 1)],
-    ['10', cmp.Token(cmp.INTEGER, 10)],
-    ['10198603', cmp.Token(cmp.INTEGER, 10198603)],
-    ['10198603    ', cmp.Token(cmp.INTEGER, 10198603)],
-    ['1   0198603    ', cmp.Token(cmp.INTEGER, 1)],
-    ['101\n98603    ', cmp.Token(cmp.INTEGER, 101)],
+    ['0', cmp.Token(cmp.INT_CONST, 0)],
+    ['1', cmp.Token(cmp.INT_CONST, 1)],
+    ['10', cmp.Token(cmp.INT_CONST, 10)],
+    ['10198603', cmp.Token(cmp.INT_CONST, 10198603)],
+    ['10198603    ', cmp.Token(cmp.INT_CONST, 10198603)],
+    ['1   0198603    ', cmp.Token(cmp.INT_CONST, 1)],
+    ['101\n98603    ', cmp.Token(cmp.INT_CONST, 101)],
 ])
 def test_find_int_token(source, expected):
     token, _ = cmp.find_int_token(source, 0)
@@ -41,7 +41,7 @@ def test_find_int_token(source, expected):
             '1'
         ),
         (
-            cmp.Token(cmp.INTEGER, 1),
+            cmp.Token(cmp.INT_CONST, 1),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
@@ -50,10 +50,10 @@ def test_find_int_token(source, expected):
             '1 22  333    654987     '
         ),
         (
-            cmp.Token(cmp.INTEGER, 1),
-            cmp.Token(cmp.INTEGER, 22),
-            cmp.Token(cmp.INTEGER, 333),
-            cmp.Token(cmp.INTEGER, 654987),
+            cmp.Token(cmp.INT_CONST, 1),
+            cmp.Token(cmp.INT_CONST, 22),
+            cmp.Token(cmp.INT_CONST, 333),
+            cmp.Token(cmp.INT_CONST, 654987),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
@@ -105,16 +105,16 @@ def test_find_int_token(source, expected):
             '  1 + 22 -- 333   *   ** 456 //   /'
         ),
         (
-            cmp.Token(cmp.INTEGER, 1),
+            cmp.Token(cmp.INT_CONST, 1),
             cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.INTEGER, 22),
+            cmp.Token(cmp.INT_CONST, 22),
             cmp.Token(cmp.MINUS, cmp.MINUS),
             cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.INTEGER, 333),
+            cmp.Token(cmp.INT_CONST, 333),
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.INTEGER, 456),
+            cmp.Token(cmp.INT_CONST, 456),
             cmp.Token(cmp.DIV, cmp.DIV),
             cmp.Token(cmp.DIV, cmp.DIV),
             cmp.Token(cmp.DIV, cmp.DIV),
@@ -126,9 +126,9 @@ def test_find_int_token(source, expected):
             '123+567'
         ),
         (
-            cmp.Token(cmp.INTEGER, 123),
+            cmp.Token(cmp.INT_CONST, 123),
             cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.INTEGER, 567),
+            cmp.Token(cmp.INT_CONST, 567),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
@@ -137,7 +137,7 @@ def test_find_int_token(source, expected):
             '123+'
         ),
         (
-            cmp.Token(cmp.INTEGER, 123),
+            cmp.Token(cmp.INT_CONST, 123),
             cmp.Token(cmp.PLUS, cmp.PLUS),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
@@ -461,7 +461,7 @@ def test_tokenise_full_program_chapter_10():
 
         cmp.Token(cmp.ID, 'number'),
         cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INTEGER, 2),
+        cmp.Token(cmp.INT_CONST, 2),
         cmp.SEMI_TOKEN,
 
         cmp.Token(cmp.ID, 'a'),
@@ -471,15 +471,15 @@ def test_tokenise_full_program_chapter_10():
 
         cmp.Token(cmp.ID, 'b'),
         cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INTEGER, 10),
+        cmp.Token(cmp.INT_CONST, 10),
         cmp.MULT_TOKEN,
         cmp.Token(cmp.ID, 'a'),
         cmp.PLUS_TOKEN,
-        cmp.Token(cmp.INTEGER, 10),
+        cmp.Token(cmp.INT_CONST, 10),
         cmp.MULT_TOKEN,
         cmp.Token(cmp.ID, 'number'),
         cmp.F_DIV_TOKEN,
-        cmp.Token(cmp.INTEGER, 4),
+        cmp.Token(cmp.INT_CONST, 4),
         cmp.SEMI_TOKEN,
 
         cmp.Token(cmp.ID, 'c'),
@@ -494,14 +494,14 @@ def test_tokenise_full_program_chapter_10():
 
         cmp.Token(cmp.ID, 'x'),
         cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INTEGER, 11),
+        cmp.Token(cmp.INT_CONST, 11),
         cmp.SEMI_TOKEN,
 
         cmp.Token(cmp.ID, 'y'),
         cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INTEGER, 20),
+        cmp.Token(cmp.INT_CONST, 20),
         cmp.DIV_TOKEN,
-        cmp.Token(cmp.INTEGER, 7),
+        cmp.Token(cmp.INT_CONST, 7),
         cmp.PLUS_TOKEN,
         cmp.Token(cmp.FLOAT, 3.14),
         cmp.SEMI_TOKEN,
