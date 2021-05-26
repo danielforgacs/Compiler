@@ -24,6 +24,7 @@ VAR = 'VAR'
 INT_TYPE = 'INT_TYPE'
 REAL_TYPE = 'REAL'
 F_DIV = 'DIV'
+FLOAT = 'FLOAT'
 
 
 is_digit = lambda char: char in DIGITS
@@ -102,6 +103,7 @@ F_DIV_TOKEN = Token(F_DIV, F_DIV)
 
 def find_int_token(src, index):
     result = ''
+    is_float = False
     char = src[index]
 
     while is_digit(char):
@@ -113,7 +115,17 @@ def find_int_token(src, index):
 
         char = src[index]
 
-    token = Token(INTEGER, int(result))
+        if char == DOT:
+            is_float = True
+            result += char
+            index += 1
+            char = src[index]
+
+    if is_float:
+        token = Token(FLOAT, float(result))
+    else:
+        token = Token(INTEGER, int(result))
+
     index -= 1
 
     return token, index

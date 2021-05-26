@@ -418,8 +418,8 @@ def test_tokenise_full_program_chapter_10():
         "   b := 10 * a + 10 * number DIV 4;\n"
         "   c := a - - b\n"
         "END;\n"
-        "   x := 11;"
-#    y := 20 / 7 + 3.14;
+        "   x := 11;\n"
+        "   y := 20 / 7 + 3.14;"
 #    { writeln('a = ', a); }
 #    { writeln('b = ', b); }
 #    { writeln('c = ', c); }
@@ -504,6 +504,16 @@ def test_tokenise_full_program_chapter_10():
         cmp.ASSIGN_TOKEN,
         cmp.Token(cmp.INTEGER, 11),
         cmp.SEMI_TOKEN,
+
+        cmp.Token(cmp.ID, 'y'),
+        cmp.ASSIGN_TOKEN,
+        cmp.Token(cmp.INTEGER, 20),
+        cmp.DIV_TOKEN,
+        cmp.Token(cmp.INTEGER, 7),
+        cmp.PLUS_TOKEN,
+        cmp.Token(cmp.FLOAT, 3.14),
+        cmp.SEMI_TOKEN,
+
 
 
         cmp.EOF_TOKEN,
