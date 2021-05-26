@@ -2,7 +2,7 @@ SPACE = ' '
 DIGITS = '0123456789'
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS, MINUS = '+', '-'
-MULT, DIV = '*', '/'
+MULT, FLOAT_DIV = '*', '/'
 PAREN_L, PAREN_R = '(', ')'
 CURLY_L, CURLY_R = '{', '}'
 EQUAL = '='
@@ -93,7 +93,7 @@ REAL_TOKEN = Token(REAL, REAL)
 PLUS_TOKEN = Token(PLUS, PLUS)
 MINUS_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
-DIV_TOKEN = Token(DIV, DIV)
+DIV_TOKEN = Token(FLOAT_DIV, FLOAT_DIV)
 INT_DIV_TOKEN = Token(INT_DIV, INT_DIV)
 
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
@@ -205,7 +205,7 @@ def tokenise(source):
             token = MINUS_TOKEN
         elif char == MULT:
             token = MULT_TOKEN
-        elif char == DIV:
+        elif char == FLOAT_DIV:
             token = DIV_TOKEN
         elif char == PAREN_L:
             token = PAREN_L_TOKEN

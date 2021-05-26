@@ -90,10 +90,10 @@ def test_find_int_token(source, expected):
             cmp.Token(cmp.PLUS, cmp.PLUS),
 
             cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.DIV, cmp.DIV),
+            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
             cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.DIV, cmp.DIV),
-            cmp.Token(cmp.DIV, cmp.DIV),
+            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
+            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.MULT, cmp.MULT),
 
@@ -115,9 +115,9 @@ def test_find_int_token(source, expected):
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.MULT, cmp.MULT),
             cmp.Token(cmp.INT_CONST, 456),
-            cmp.Token(cmp.DIV, cmp.DIV),
-            cmp.Token(cmp.DIV, cmp.DIV),
-            cmp.Token(cmp.DIV, cmp.DIV),
+            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
+            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
+            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
             cmp.Token(cmp.EOF, cmp.EOF),
         )
     ],
