@@ -93,6 +93,8 @@ PLUS_TOKEN = Token(PLUS, PLUS)
 MINUS_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
+INT_DIV_TOKEN = Token(INT_DIV, INT_DIV)
+
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
 COLON_TOKEN = Token(COLON, COLON)
@@ -101,7 +103,6 @@ COMMA_TOKEN = Token(COMMA, COMMA)
 QUOTE_TOKEN = Token(QUOTE, QUOTE)
 
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
-F_DIV_TOKEN = Token(INT_DIV, INT_DIV)
 
 
 
@@ -166,7 +167,7 @@ def find_alpha_token(src, index):
     elif result == REAL:
         token = REAL_TOKEN
     elif result == INT_DIV:
-        token = F_DIV_TOKEN
+        token = INT_DIV_TOKEN
     else:
         token = Token(ID, result)
 

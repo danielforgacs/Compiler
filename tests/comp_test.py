@@ -478,7 +478,7 @@ def test_tokenise_full_program_chapter_10():
         cmp.Token(cmp.INT_CONST, 10),
         cmp.MULT_TOKEN,
         cmp.Token(cmp.ID, 'number'),
-        cmp.F_DIV_TOKEN,
+        cmp.INT_DIV_TOKEN,
         cmp.Token(cmp.INT_CONST, 4),
         cmp.SEMI_TOKEN,
 
