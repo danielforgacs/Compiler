@@ -412,8 +412,8 @@ def test_tokenise_full_program_chapter_10():
         "y          : REAL;\n"
         "\n"
         "BEGIN {Part10}\n"
-#    BEGIN
-#       number := 2;
+        "   BEGIN\n"
+        "   number := 2;\n"
 #       a := number;
 #       b := 10 * a + 10 * number DIV 4;
 #       c := a - - b
@@ -465,6 +465,14 @@ def test_tokenise_full_program_chapter_10():
         cmp.SEMI_TOKEN,
 
         cmp.BEGIN_TOKEN,
+        cmp.BEGIN_TOKEN,
+
+        cmp.Token(cmp.ID, 'number'),
+        cmp.ASSIGN_TOKEN,
+        cmp.Token(cmp.INTEGER, 2),
+        cmp.SEMI_TOKEN,
+
+
         cmp.EOF_TOKEN,
     )
     assert cmp.tokenise(source=source) == expected
