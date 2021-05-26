@@ -417,7 +417,7 @@ def test_tokenise_full_program_chapter_10():
         "   a := number;\n"
         "   b := 10 * a + 10 * number DIV 4;\n"
         "   c := a - - b\n"
-#    END;
+        "END;\n"
 #    x := 11;
 #    y := 20 / 7 + 3.14;
 #    { writeln('a = ', a); }
@@ -496,6 +496,9 @@ def test_tokenise_full_program_chapter_10():
         cmp.MINUS_TOKEN,
         cmp.MINUS_TOKEN,
         cmp.Token(cmp.ID, 'b'),
+
+        cmp.END_TOKEN,
+        cmp.SEMI_TOKEN,
 
 
         cmp.EOF_TOKEN,
