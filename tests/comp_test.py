@@ -415,7 +415,7 @@ def test_tokenise_full_program_chapter_10():
         "   BEGIN\n"
         "   number := 2;\n"
         "   a := number;\n"
-#       b := 10 * a + 10 * number DIV 4;
+        "   b := 10 * a + 10 * number DIV 4;\n"
 #       c := a - - b
 #    END;
 #    x := 11;
@@ -476,6 +476,20 @@ def test_tokenise_full_program_chapter_10():
         cmp.ASSIGN_TOKEN,
         cmp.Token(cmp.ID, 'number'),
         cmp.SEMI_TOKEN,
+
+        cmp.Token(cmp.ID, 'b'),
+        cmp.ASSIGN_TOKEN,
+        cmp.Token(cmp.INTEGER, 10),
+        cmp.MULT_TOKEN,
+        cmp.Token(cmp.ID, 'a'),
+        cmp.PLUS_TOKEN,
+        cmp.Token(cmp.INTEGER, 10),
+        cmp.MULT_TOKEN,
+        cmp.Token(cmp.ID, 'number'),
+        cmp.F_DIV_TOKEN,
+        cmp.Token(cmp.INTEGER, 4),
+        cmp.SEMI_TOKEN,
+
 
 
         cmp.EOF_TOKEN,
