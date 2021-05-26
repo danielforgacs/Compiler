@@ -9,6 +9,7 @@ EQUAL = '='
 COLON = ':'
 SEMICOLON = ';'
 DOT = '.'
+COMMA = ','
 NEWLINE = '\n'
 
 ASSIGN = COLON + EQUAL
@@ -19,19 +20,49 @@ BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
 PROGRAM = 'PROGRAM'
+VAR = 'VAR'
+INT_TYPE = 'INT_TYPE'
+REAL_TYPE = 'REAL'
+F_DIV = 'DIV'
+FLOAT = 'FLOAT'
 
 
 is_digit = lambda char: char in DIGITS
 is_alpha = lambda char: char in ALPHA
+is_alphanum = lambda char: char in ALPHA + DIGITS
 pop_next_token = lambda tokens: (tokens[0], tokens[1:])
 put_back_token = lambda token, tokens: (token,) + tokens
 nexttoken = lambda tokens: tokens[0]
 
 
 
+class MakeDict:
+    @property
+    def asdict(self):
+        data = {}
+        for attrname, value in self.__dict__.items():
+            if hasattr(value, 'asdict'):
+                attrname = '{}.{}'.format(attrname, value.__class__.__name__)
+                value = value.asdict
+            data[attrname] = value
+        return data
 
 
-class Token:
+    @classmethod
+    def from_dict(cls, data):
+        kwargs = {}
+        for idx in range(1, cls.__init__.__code__.co_argcount):
+            key = cls.__init__.__code__.co_varnames[idx]
+            kwargs[key] = data[key]
+        newinstance = cls(**kwargs)
+        for attrname, value in data.items():
+            setattr(newinstance, attrname, value)
+        return newinstance
+
+
+
+
+class Token(MakeDict):
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
@@ -52,13 +83,19 @@ MULT_TOKEN = Token(MULT, MULT)
 DIV_TOKEN = Token(DIV, DIV)
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
 PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
+COLON_TOKEN = Token(COLON, COLON)
 SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
+COMMA_TOKEN = Token(COMMA, COMMA)
 
 BEGIN_TOKEN = Token(BEGIN, BEGIN)
 END_TOKEN = Token(END, END)
 DOT_TOKEN = Token(DOT, DOT)
 ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
 PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
+VAR_TOKEN = Token(VAR, VAR)
+INT_TYPE_TOKEN = Token(INT_TYPE, INT_TYPE)
+REAL_TYPE_TOKEN = Token(REAL_TYPE, REAL_TYPE)
+F_DIV_TOKEN = Token(F_DIV, F_DIV)
 
 
 
@@ -66,6 +103,7 @@ PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
 
 def find_int_token(src, index):
     result = ''
+    is_float = False
     char = src[index]
 
     while is_digit(char):
@@ -77,7 +115,17 @@ def find_int_token(src, index):
 
         char = src[index]
 
-    token = Token(INTEGER, int(result))
+        if char == DOT:
+            is_float = True
+            result += char
+            index += 1
+            char = src[index]
+
+    if is_float:
+        token = Token(FLOAT, float(result))
+    else:
+        token = Token(INTEGER, int(result))
+
     index -= 1
 
     return token, index
@@ -90,7 +138,7 @@ def find_alpha_token(src, index):
     result = ''
     char = src[index]
 
-    while is_alpha(char):
+    while is_alphanum(char):
         result += char
         index += 1
 
@@ -105,6 +153,14 @@ def find_alpha_token(src, index):
         token = END_TOKEN
     elif result == PROGRAM:
         token = PROGRAM_TOKEN
+    elif result == VAR:
+        token = VAR_TOKEN
+    elif result == INTEGER:
+        token = INT_TYPE_TOKEN
+    elif result == REAL_TYPE:
+        token = REAL_TYPE_TOKEN
+    elif result == F_DIV:
+        token = F_DIV_TOKEN
     else:
         token = Token(ID, result)
 
@@ -152,15 +208,21 @@ def tokenise(source):
             token = SEMI_TOKEN
         elif char == DOT:
             token = DOT_TOKEN
-        elif char + nextchar == ASSIGN:
-            index += 1
-            token = ASSIGN_TOKEN
+        elif char == COLON:
+            token = COLON_TOKEN
+            if nextchar == EQUAL:
+                index += 1
+                token = ASSIGN_TOKEN
+        elif char == COMMA:
+            token = COMMA_TOKEN
         elif is_digit(char):
             token, index = find_int_token(source, index)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
         else:
-            raise Exception(f'[tokenise] Bad char: "{char}", ord: {ord(char)}')
+            raise Exception(
+                f'[tokenise] Bad char: "{char}", ord: {ord(char)}'
+                f' index: {index}')
 
         if token:
             tokens += (token,)
@@ -338,7 +400,7 @@ class Assign(AST):
         self.right = right
 
 
-class Variable(AST):
+class Variable(AST, MakeDict):
     def __init__(self, name):
         self.name = name
 
@@ -411,37 +473,3 @@ def run_program(source):
     result = nodevisitor.visit(node)
     print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
     return result
-
-
-
-if __name__ == '__main__':
-    code = """
-PROGRAM Part10;
-VAR
-   number     : INTEGER;
-   a, b, c, x : INTEGER;
-   y          : REAL;
-
-BEGIN {Part10}
-   BEGIN
-      number := 2;
-      a := number;
-      b := 10 * a + 10 * number DIV 4;
-      c := a - - b
-   END;
-   x := 11;
-   y := 20 / 7 + 3.14;
-   { writeln('a = ', a); }
-   { writeln('b = ', b); }
-   { writeln('c = ', c); }
-   { writeln('number = ', number); }
-   { writeln('x = ', x); }
-   { writeln('y = ', y); }
-END.  {Part10}
-"""
-
-    tokens = tokenise(code)
-    # for token in tokens:
-    #     print(token)
-    # program(tokens)
-    # print(run_program(code))
