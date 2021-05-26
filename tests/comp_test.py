@@ -419,13 +419,13 @@ def test_tokenise_full_program_chapter_10():
         "   c := a - - b\n"
         "END;\n"
         "   x := 11;\n"
-        "   y := 20 / 7 + 3.14;"
-#    { writeln('a = ', a); }
-#    { writeln('b = ', b); }
-#    { writeln('c = ', c); }
-#    { writeln('number = ', number); }
-#    { writeln('x = ', x); }
-#    { writeln('y = ', y); }
+        "   y := 20 / 7 + 3.14;\n"
+        "   { writeln('a = ', a); }"
+        "   { writeln('b = ', b); }"
+        "   { writeln('c = ', c); }"
+        "   { writeln('number = ', number); }"
+        "   { writeln('x = ', x); }"
+        "   { writeln('y = ', y); }"
 # END.  {Part10}
     )
     print()
