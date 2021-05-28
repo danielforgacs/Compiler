@@ -106,7 +106,7 @@ QUOTE_TOKEN = Token(QUOTE, QUOTE)
 
 
 
-def find_int_token(src, index):
+def extract_number_token(src, index):
     result = ''
     is_float = False
     char = src[index]
@@ -223,7 +223,7 @@ def tokenise(source):
         elif char == QUOTE:
             token = QUOTE_TOKEN
         elif is_digit(char):
-            token, index = find_int_token(source, index)
+            token, index = extract_number_token(source, index)
         elif is_alpha(char):
             token, index = find_alpha_token(source, index)
         else:

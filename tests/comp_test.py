@@ -23,7 +23,7 @@ def test_Token():
     ['101\n98603    ', cmp.Token(cmp.INT_CONST, 101)],
 ])
 def test_find_int_token(source, expected):
-    token, _ = cmp.find_int_token(source, 0)
+    token, _ = cmp.extract_number_token(source, 0)
     assert  token == expected
 
 
