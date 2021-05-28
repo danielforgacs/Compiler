@@ -247,9 +247,6 @@ def tokenise(source):
 
 
 def factor(tokens):
-    """
-    factor: (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
-    """
     token, tokens = pop_next_token(tokens)
 
     if token.type_ == INT_CONST:
