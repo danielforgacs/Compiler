@@ -139,7 +139,7 @@ def extract_number_token(src, index):
 
 
 
-def find_alpha_token(src, index):
+def extract_alphanumeric_token(src, index):
     result = ''
     char = src[index]
 
@@ -225,7 +225,7 @@ def tokenise(source):
         elif is_digit(char):
             token, index = extract_number_token(source, index)
         elif is_alpha(char):
-            token, index = find_alpha_token(source, index)
+            token, index = extract_alphanumeric_token(source, index)
         else:
             raise Exception(
                 f'[tokenise] Bad char: "{char}", ord: {ord(char)}'
