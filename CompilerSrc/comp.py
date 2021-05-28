@@ -418,7 +418,7 @@ class NodeVisitor:
     GLOBAL_SCOPE = {}
 
 
-    def visit(self, node):
+    def dispatch_visit(self, node):
         nodeclassname = node.__class__.__name__
         visitormethodname = 'visit_{}'.format(nodeclassname)
         if not hasattr(self, visitormethodname):
@@ -431,30 +431,30 @@ class NodeVisitor:
 
     def visit_UnaryOpNode(self, node):
         if node.operator == PLUS_TOKEN:
-            return self.visit(node.expression)
+            return self.dispatch_visit(node.expression)
         elif node.operator == MINUS_TOKEN:
-            return self.visit(node.expression) * -1
+            return self.dispatch_visit(node.expression) * -1
         else:
             raise Exception(f'[visit_UnaryOp] Bad unary op operator: {node.operator}')
 
     def visit_BinOpNode(self, node):
         if node.operator == PLUS_TOKEN:
-            return self.visit(node.node_l) + self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) + self.dispatch_visit(node.node_r)
         elif node.operator == MINUS_TOKEN:
-            return self.visit(node.node_l) - self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) - self.dispatch_visit(node.node_r)
         elif node.operator == MULT_TOKEN:
-            return self.visit(node.node_l) * self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) * self.dispatch_visit(node.node_r)
         elif node.operator == DIV_TOKEN:
-            return self.visit(node.node_l) / self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) / self.dispatch_visit(node.node_r)
         else:
             raise Exception(f'[visit_BinOp Unexpected BinOp node: {node.operator}')
 
     def visit_CompoundNode(self, node):
         for child in node.children:
-            self.visit(child)
+            self.dispatch_visit(child)
 
     def visit_AssignNode(self, node):
-        self.GLOBAL_SCOPE[node.left.name.value] = self.visit(node.right)
+        self.GLOBAL_SCOPE[node.left.name.value] = self.dispatch_visit(node.right)
 
     def visit_VariableNode(self, node):
         return self.GLOBAL_SCOPE[node.name.value]
@@ -467,7 +467,7 @@ def run(source):
     tokens = tokenise(source)
     _, node = expression(tokens)
 
-    return NodeVisitor().visit(node)
+    return NodeVisitor().dispatch_visit(node)
 
 
 def run_program(source):
@@ -475,6 +475,6 @@ def run_program(source):
     _, node = program(tokens)
 
     nodevisitor =  NodeVisitor()
-    result = nodevisitor.visit(node)
+    result = nodevisitor.dispatch_visit(node)
     print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
     return result
