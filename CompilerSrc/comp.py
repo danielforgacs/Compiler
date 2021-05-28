@@ -420,15 +420,16 @@ class NodeVisitor:
 
     def visit(self, node):
         nodeclassname = node.__class__.__name__
-        if not hasattr(self, nodeclassname):
+        visitormethodname = 'visit_{}'.format(nodeclassname)
+        if not hasattr(self, visitormethodname):
             raise Exception(f'[NodeVisitor] Unknown node to visit: {nodeclassname}')
-        visitor = getattr(self, nodeclassname)
-        return visitor(node)
+        visitormethod = getattr(self, visitormethodname)
+        return visitormethod(node)
 
-    def NumNode(self, node):
+    def visit_NumNode(self, node):
         return node.value
 
-    def UnaryOpNode(self, node):
+    def visit_UnaryOpNode(self, node):
         if node.operator == PLUS_TOKEN:
             return self.visit(node.expression)
         elif node.operator == MINUS_TOKEN:
@@ -436,7 +437,7 @@ class NodeVisitor:
         else:
             raise Exception(f'[visit_UnaryOp] Bad unary op operator: {node.operator}')
 
-    def BinOpNode(self, node):
+    def visit_BinOpNode(self, node):
         if node.operator == PLUS_TOKEN:
             return self.visit(node.node_l) + self.visit(node.node_r)
         elif node.operator == MINUS_TOKEN:
@@ -448,17 +449,17 @@ class NodeVisitor:
         else:
             raise Exception(f'[visit_BinOp Unexpected BinOp node: {node.operator}')
 
-    def CompoundNode(self, node):
+    def visit_CompoundNode(self, node):
         for child in node.children:
             self.visit(child)
 
-    def AssignNode(self, node):
+    def visit_AssignNode(self, node):
         self.GLOBAL_SCOPE[node.left.name.value] = self.visit(node.right)
 
-    def VariableNode(self, node):
+    def visit_VariableNode(self, node):
         return self.GLOBAL_SCOPE[node.name.value]
 
-    def NoOpNode(self, node):
+    def visit_NoOpNode(self, node):
         pass
 
 
