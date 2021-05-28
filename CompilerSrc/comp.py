@@ -476,5 +476,5 @@ def run_program(source):
 
     nodevisitor =  NodeVisitor()
     result = nodevisitor.dispatch_visit(node)
-    print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
+
     return result
