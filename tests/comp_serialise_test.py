@@ -24,7 +24,7 @@ def test_Token_de_serialise():
 def test_Variable_node_serialise():
     varname = 'varname'
     token = comp.Token(comp.ID, varname)
-    variable = comp.Variable(name=token)
+    variable = comp.VariableNode(name=token)
     expected = {
         'name.Token': {
             'type_': comp.ID,

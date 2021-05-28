@@ -2,7 +2,7 @@ SPACE = ' '
 DIGITS = '0123456789'
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS, MINUS = '+', '-'
-MULT, DIV = '*', '/'
+MULT, FLOAT_DIV, INT_DIV = '*', '/', 'DIV'
 PAREN_L, PAREN_R = '(', ')'
 CURLY_L, CURLY_R = '{', '}'
 EQUAL = '='
@@ -13,19 +13,17 @@ COMMA = ','
 QUOTE = "'"
 NEWLINE = '\n'
 
-INT_DIV = 'DIV'
-
-ASSIGN = COLON + EQUAL
 
 ID = 'ID'
+ASSIGN = COLON + EQUAL
 INT_CONST = 'INT_CONST'
 FLOAT_CONST = 'FLOAT_CONST'
 
 PROGRAM = 'PROGRAM'
 VAR = 'VAR'
 INTEGER = 'INTEGER'
-BEGIN = 'BEGIN'
 REAL = 'REAL'
+BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
 
@@ -39,7 +37,7 @@ nexttoken = lambda tokens: tokens[0]
 
 
 
-class MakeDict:
+class DictSerialiseBase:
     @property
     def asdict(self):
         data = {}
@@ -65,7 +63,7 @@ class MakeDict:
 
 
 
-class Token(MakeDict):
+class Token(DictSerialiseBase):
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
@@ -93,7 +91,7 @@ REAL_TOKEN = Token(REAL, REAL)
 PLUS_TOKEN = Token(PLUS, PLUS)
 MINUS_TOKEN = Token(MINUS, MINUS)
 MULT_TOKEN = Token(MULT, MULT)
-DIV_TOKEN = Token(DIV, DIV)
+DIV_TOKEN = Token(FLOAT_DIV, FLOAT_DIV)
 INT_DIV_TOKEN = Token(INT_DIV, INT_DIV)
 
 PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
@@ -108,7 +106,7 @@ QUOTE_TOKEN = Token(QUOTE, QUOTE)
 
 
 
-def find_int_token(src, index):
+def extract_number_token(src, index):
     result = ''
     is_float = False
     char = src[index]
@@ -141,7 +139,7 @@ def find_int_token(src, index):
 
 
 
-def find_alpha_token(src, index):
+def extract_alphanumeric_token(src, index):
     result = ''
     char = src[index]
 
@@ -205,7 +203,7 @@ def tokenise(source):
             token = MINUS_TOKEN
         elif char == MULT:
             token = MULT_TOKEN
-        elif char == DIV:
+        elif char == FLOAT_DIV:
             token = DIV_TOKEN
         elif char == PAREN_L:
             token = PAREN_L_TOKEN
@@ -225,9 +223,9 @@ def tokenise(source):
         elif char == QUOTE:
             token = QUOTE_TOKEN
         elif is_digit(char):
-            token, index = find_int_token(source, index)
+            token, index = extract_number_token(source, index)
         elif is_alpha(char):
-            token, index = find_alpha_token(source, index)
+            token, index = extract_alphanumeric_token(source, index)
         else:
             raise Exception(
                 f'[tokenise] Bad char: "{char}", ord: {ord(char)}'
@@ -249,13 +247,10 @@ def tokenise(source):
 
 
 def factor(tokens):
-    """
-    factor: (PLUS | MINUS) factor | INTEGER | PAREN_L expression PAREN_R
-    """
     token, tokens = pop_next_token(tokens)
 
     if token.type_ == INT_CONST:
-        node = Num(token)
+        node = NumNode(token)
 
     elif token == PAREN_L_TOKEN:
         tokens, node = expression(tokens)
@@ -264,7 +259,7 @@ def factor(tokens):
 
     elif token in [MINUS_TOKEN, PLUS_TOKEN]:
         tokens, node = factor(tokens)
-        node = UnaryOp(token, node)
+        node = UnaryOpNode(token, node)
 
     elif token.type_ == 'ID':
         tokens = put_back_token(token, tokens)
@@ -282,7 +277,7 @@ def term(tokens):
     while nexttoken(tokens) in (MULT_TOKEN, DIV_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = factor(tokens)
-        node = BinOp(node, operator, node_r)
+        node = BinOpNode(node, operator, node_r)
 
     return tokens, node
 
@@ -293,7 +288,7 @@ def expression(tokens):
     while nexttoken(tokens) in (PLUS_TOKEN, MINUS_TOKEN):
         operator, tokens = pop_next_token(tokens)
         tokens, node_r = term(tokens)
-        node = BinOp(node, operator, node_r)
+        node = BinOpNode(node, operator, node_r)
 
     return tokens, node
 
@@ -319,7 +314,7 @@ def compound_statement(tokens):
     token, tokens = pop_next_token(tokens)
     assert token == BEGIN_TOKEN, f'[compound_statement] expected: {BEGIN_TOKEN} got: {token}'
 
-    node = Compound()
+    node = CompoundNode()
     tokens, node.children = statement_list(tokens)
 
     token, tokens = pop_next_token(tokens)
@@ -348,7 +343,7 @@ def statement(tokens):
     elif nexttoken(tokens).type_ == ID:
         tokens, node = assign_statement(tokens)
     else:
-        node = NoOp()
+        node = NoOpNode()
 
     return tokens, node
 
@@ -360,7 +355,7 @@ def assign_statement(tokens):
     assert assigntoken == ASSIGN_TOKEN, (f'[assign_statement] expected:'
         f' {ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
-    node = Assign(varnode, assigntoken, expressionnode)
+    node = AssignNode(varnode, assigntoken, expressionnode)
     return tokens, node
 
 
@@ -368,53 +363,53 @@ def assign_statement(tokens):
 def do_variable(tokens):
     token, tokens = pop_next_token(tokens)
     assert token.type_ == ID, f'[do_variable] expected: {ID}, got: {token}'
-    node = Variable(token)
+    node = VariableNode(token)
 
     return tokens, node
 
 
 
-class AST:
+class ASTNodeBase:
     pass
 
 
-class BinOp(AST):
+class BinOpNode(ASTNodeBase):
     def __init__(self, node_l, operator, node_r):
         self.node_l = node_l
         self.operator = operator
         self.node_r = node_r
 
 
-class UnaryOp(AST):
+class UnaryOpNode(ASTNodeBase):
     def __init__(self, operator, expression):
         self.operator = operator
         self.expression = expression
 
 
-class Num(AST):
+class NumNode(ASTNodeBase):
     def __init__(self, token):
         self.token = token
         self.value = token.value
 
 
-class Compound(AST):
+class CompoundNode(ASTNodeBase):
     def __init__(self):
         self.children = ()
 
 
-class Assign(AST):
+class AssignNode(ASTNodeBase):
     def __init__(self, left, operator, right):
         self.left = left
         self.operator = operator
         self.right = right
 
 
-class Variable(AST, MakeDict):
+class VariableNode(ASTNodeBase, DictSerialiseBase):
     def __init__(self, name):
         self.name = name
 
 
-class NoOp(AST):
+class NoOpNode(ASTNodeBase):
     pass
 
 
@@ -423,47 +418,48 @@ class NodeVisitor:
     GLOBAL_SCOPE = {}
 
 
-    def visit(self, node):
+    def dispatch_visit(self, node):
         nodeclassname = node.__class__.__name__
-        if not hasattr(self, nodeclassname):
+        visitormethodname = 'visit_{}'.format(nodeclassname)
+        if not hasattr(self, visitormethodname):
             raise Exception(f'[NodeVisitor] Unknown node to visit: {nodeclassname}')
-        visitor = getattr(self, nodeclassname)
-        return visitor(node)
+        visitormethod = getattr(self, visitormethodname)
+        return visitormethod(node)
 
-    def Num(self, node):
+    def visit_NumNode(self, node):
         return node.value
 
-    def UnaryOp(self, node):
+    def visit_UnaryOpNode(self, node):
         if node.operator == PLUS_TOKEN:
-            return self.visit(node.expression)
+            return self.dispatch_visit(node.expression)
         elif node.operator == MINUS_TOKEN:
-            return self.visit(node.expression) * -1
+            return self.dispatch_visit(node.expression) * -1
         else:
             raise Exception(f'[visit_UnaryOp] Bad unary op operator: {node.operator}')
 
-    def BinOp(self, node):
+    def visit_BinOpNode(self, node):
         if node.operator == PLUS_TOKEN:
-            return self.visit(node.node_l) + self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) + self.dispatch_visit(node.node_r)
         elif node.operator == MINUS_TOKEN:
-            return self.visit(node.node_l) - self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) - self.dispatch_visit(node.node_r)
         elif node.operator == MULT_TOKEN:
-            return self.visit(node.node_l) * self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) * self.dispatch_visit(node.node_r)
         elif node.operator == DIV_TOKEN:
-            return self.visit(node.node_l) / self.visit(node.node_r)
+            return self.dispatch_visit(node.node_l) / self.dispatch_visit(node.node_r)
         else:
             raise Exception(f'[visit_BinOp Unexpected BinOp node: {node.operator}')
 
-    def Compound(self, node):
+    def visit_CompoundNode(self, node):
         for child in node.children:
-            self.visit(child)
+            self.dispatch_visit(child)
 
-    def Assign(self, node):
-        self.GLOBAL_SCOPE[node.left.name.value] = self.visit(node.right)
+    def visit_AssignNode(self, node):
+        self.GLOBAL_SCOPE[node.left.name.value] = self.dispatch_visit(node.right)
 
-    def Variable(self, node):
+    def visit_VariableNode(self, node):
         return self.GLOBAL_SCOPE[node.name.value]
 
-    def NoOp(self, node):
+    def visit_NoOpNode(self, node):
         pass
 
 
@@ -471,7 +467,7 @@ def run(source):
     tokens = tokenise(source)
     _, node = expression(tokens)
 
-    return NodeVisitor().visit(node)
+    return NodeVisitor().dispatch_visit(node)
 
 
 def run_program(source):
@@ -479,6 +475,6 @@ def run_program(source):
     _, node = program(tokens)
 
     nodevisitor =  NodeVisitor()
-    result = nodevisitor.visit(node)
+    result = nodevisitor.dispatch_visit(node)
     print('GLOBAL_SCOPE:', nodevisitor.GLOBAL_SCOPE)
     return result
