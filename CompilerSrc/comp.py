@@ -45,6 +45,11 @@ class DictSerialiseBase:
             if hasattr(value, 'asdict'):
                 attrname = '{}.{}'.format(attrname, value.__class__.__name__)
                 value = value.asdict
+            elif isinstance(value, list):
+                values = []
+                for item in value:
+                    values.append(item.asdict)
+                value = values
             data[attrname] = value
         return data
 
@@ -369,7 +374,7 @@ def do_variable(tokens):
 
 
 
-class ASTNodeBase:
+class ASTNodeBase(DictSerialiseBase):
     pass
 
 
@@ -478,3 +483,21 @@ def run_program(source):
     result = nodevisitor.dispatch_visit(node)
 
     return result
+
+
+
+
+
+if __name__ == '__main__':
+    source = """
+BEGIN
+    x := 123;
+END.
+"""
+    # run_program(source=source)
+    import json
+    tokens = tokenise(source)
+    print(tokens)
+    _, node = program(tokens)
+    print(node.asdict)
+    print(json.dumps(node.asdict, indent=4))
