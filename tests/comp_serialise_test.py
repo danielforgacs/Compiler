@@ -1,4 +1,3 @@
-import CompilerSrc.comp as comp
 import CompilerSrc.astnodes as astn
 import CompilerSrc.tokeniser as tok
 
