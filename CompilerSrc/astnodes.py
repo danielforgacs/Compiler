@@ -44,3 +44,28 @@ class VariableNode(ASTNodeBase, tok.DictSerialiseBase):
 
 class NoOpNode(ASTNodeBase):
     pass
+
+
+
+class ProgramNode(ASTNodeBase):
+    def __init__(self, name, block):
+        self.name = name
+        self.block = block
+
+
+
+class BlockNode(ASTNodeBase):
+    def __init__(self, declarations, compound_statement):
+        self.declarations = declarations
+        self.compound_statement = compound_statement
+
+
+class VariableDeclarationNode(ASTNodeBase):
+    def __init__(self, variablenode, typenode):
+        self.variablenode = variablenode
+        self.typenode = typenode
+
+
+class VarianleTypeNode(ASTNodeBase):
+    def __init__(self, token):
+        self.token = token
