@@ -1,29 +1,31 @@
 import pytest
 import CompilerSrc.comp as cmp
+import CompilerSrc.tokeniser as tok
+
 
 
 def test_Token():
-    token = cmp.Token('INTEGER', 123)
+    token = tok.Token('INTEGER', 123)
     assert token
 
-    token2 = cmp.Token('INTEGER', 123)
+    token2 = tok.Token('INTEGER', 123)
     assert token == token2
 
-    token3 = cmp.Token('INTEGER', 1234)
+    token3 = tok.Token('INTEGER', 1234)
     assert token != token3
 
 
 @pytest.mark.parametrize('source, expected', [
-    ['0', cmp.Token(cmp.INT_CONST, 0)],
-    ['1', cmp.Token(cmp.INT_CONST, 1)],
-    ['10', cmp.Token(cmp.INT_CONST, 10)],
-    ['10198603', cmp.Token(cmp.INT_CONST, 10198603)],
-    ['10198603    ', cmp.Token(cmp.INT_CONST, 10198603)],
-    ['1   0198603    ', cmp.Token(cmp.INT_CONST, 1)],
-    ['101\n98603    ', cmp.Token(cmp.INT_CONST, 101)],
+    ['0', tok.Token(tok.INT_CONST, 0)],
+    ['1', tok.Token(tok.INT_CONST, 1)],
+    ['10', tok.Token(tok.INT_CONST, 10)],
+    ['10198603', tok.Token(tok.INT_CONST, 10198603)],
+    ['10198603    ', tok.Token(tok.INT_CONST, 10198603)],
+    ['1   0198603    ', tok.Token(tok.INT_CONST, 1)],
+    ['101\n98603    ', tok.Token(tok.INT_CONST, 101)],
 ])
 def test_find_int_token(source, expected):
-    token, _ = cmp.extract_number_token(source, 0)
+    token, _ = tok.extract_number_token(source, 0)
     assert  token == expected
 
 
@@ -33,7 +35,7 @@ def test_find_int_token(source, expected):
             ''
         ),
         (
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -41,8 +43,8 @@ def test_find_int_token(source, expected):
             '1'
         ),
         (
-            cmp.Token(cmp.INT_CONST, 1),
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.INT_CONST, 1),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -50,11 +52,11 @@ def test_find_int_token(source, expected):
             '1 22  333    654987     '
         ),
         (
-            cmp.Token(cmp.INT_CONST, 1),
-            cmp.Token(cmp.INT_CONST, 22),
-            cmp.Token(cmp.INT_CONST, 333),
-            cmp.Token(cmp.INT_CONST, 654987),
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.INT_CONST, 1),
+            tok.Token(tok.INT_CONST, 22),
+            tok.Token(tok.INT_CONST, 333),
+            tok.Token(tok.INT_CONST, 654987),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -62,11 +64,11 @@ def test_find_int_token(source, expected):
             '+   +   ++    '
         ),
         (
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -74,30 +76,30 @@ def test_find_int_token(source, expected):
             '+   -   +--+    ++--++  */*//**   '
         ),
         (
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.MINUS, tok.MINUS),
 
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.MINUS, tok.MINUS),
+            tok.Token(tok.MINUS, tok.MINUS),
+            tok.Token(tok.PLUS, tok.PLUS),
 
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.MINUS, tok.MINUS),
+            tok.Token(tok.MINUS, tok.MINUS),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.PLUS, tok.PLUS),
 
-            cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
-            cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
-            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
-            cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.MULT, cmp.MULT),
+            tok.Token(tok.MULT, tok.MULT),
+            tok.Token(tok.FLOAT_DIV, tok.FLOAT_DIV),
+            tok.Token(tok.MULT, tok.MULT),
+            tok.Token(tok.FLOAT_DIV, tok.FLOAT_DIV),
+            tok.Token(tok.FLOAT_DIV, tok.FLOAT_DIV),
+            tok.Token(tok.MULT, tok.MULT),
+            tok.Token(tok.MULT, tok.MULT),
 
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -105,20 +107,20 @@ def test_find_int_token(source, expected):
             '  1 + 22 -- 333   *   ** 456 //   /'
         ),
         (
-            cmp.Token(cmp.INT_CONST, 1),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.INT_CONST, 22),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.MINUS, cmp.MINUS),
-            cmp.Token(cmp.INT_CONST, 333),
-            cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.MULT, cmp.MULT),
-            cmp.Token(cmp.INT_CONST, 456),
-            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
-            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
-            cmp.Token(cmp.FLOAT_DIV, cmp.FLOAT_DIV),
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.INT_CONST, 1),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.INT_CONST, 22),
+            tok.Token(tok.MINUS, tok.MINUS),
+            tok.Token(tok.MINUS, tok.MINUS),
+            tok.Token(tok.INT_CONST, 333),
+            tok.Token(tok.MULT, tok.MULT),
+            tok.Token(tok.MULT, tok.MULT),
+            tok.Token(tok.MULT, tok.MULT),
+            tok.Token(tok.INT_CONST, 456),
+            tok.Token(tok.FLOAT_DIV, tok.FLOAT_DIV),
+            tok.Token(tok.FLOAT_DIV, tok.FLOAT_DIV),
+            tok.Token(tok.FLOAT_DIV, tok.FLOAT_DIV),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -126,10 +128,10 @@ def test_find_int_token(source, expected):
             '123+567'
         ),
         (
-            cmp.Token(cmp.INT_CONST, 123),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.INT_CONST, 567),
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.INT_CONST, 123),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.INT_CONST, 567),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
     [
@@ -137,14 +139,14 @@ def test_find_int_token(source, expected):
             '123+'
         ),
         (
-            cmp.Token(cmp.INT_CONST, 123),
-            cmp.Token(cmp.PLUS, cmp.PLUS),
-            cmp.Token(cmp.EOF, cmp.EOF),
+            tok.Token(tok.INT_CONST, 123),
+            tok.Token(tok.PLUS, tok.PLUS),
+            tok.Token(tok.EOF, tok.EOF),
         )
     ],
 ])
 def test_tokenize(source, expected):
-    tokens = cmp.tokenise(source)
+    tokens = tok.tokenise(source)
     assert tokens == expected
 
 
@@ -201,46 +203,46 @@ def test_unary_op(source):
 
 
 @pytest.mark.parametrize('source, expected', [
-    ('BEGIN', (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)),
-    ('END', (cmp.END_TOKEN, cmp.EOF_TOKEN)),
-    ('.', (cmp.DOT_TOKEN, cmp.EOF_TOKEN)),
-    (':=', (cmp.ASSIGN_TOKEN, cmp.EOF_TOKEN)),
-    ('ubuntu', (cmp.Token(cmp.ID, 'ubuntu'), cmp.EOF_TOKEN)),
+    ('BEGIN', (tok.BEGIN_TOKEN, tok.EOF_TOKEN)),
+    ('END', (tok.END_TOKEN, tok.EOF_TOKEN)),
+    ('.', (tok.DOT_TOKEN, tok.EOF_TOKEN)),
+    (':=', (tok.ASSIGN_TOKEN, tok.EOF_TOKEN)),
+    ('ubuntu', (tok.Token(tok.ID, 'ubuntu'), tok.EOF_TOKEN)),
     (
         'BEGIN END.',
         (
-            cmp.BEGIN_TOKEN,
-            cmp.END_TOKEN,
-            cmp.DOT_TOKEN,
-            cmp.EOF_TOKEN
+            tok.BEGIN_TOKEN,
+            tok.END_TOKEN,
+            tok.DOT_TOKEN,
+            tok.EOF_TOKEN
         )
     ),
     (
         'BEGIN END   BEGIN    aaa  bbb  END END.BEGIN.END',
         (
-            cmp.BEGIN_TOKEN,
-            cmp.END_TOKEN,
-            cmp.BEGIN_TOKEN,
-            cmp.Token(cmp.ID, 'aaa'),
-            cmp.Token(cmp.ID, 'bbb'),
-            cmp.END_TOKEN,
-            cmp.END_TOKEN,
-            cmp.DOT_TOKEN,
-            cmp.BEGIN_TOKEN,
-            cmp.DOT_TOKEN,
-            cmp.END_TOKEN,
-            cmp.EOF_TOKEN
+            tok.BEGIN_TOKEN,
+            tok.END_TOKEN,
+            tok.BEGIN_TOKEN,
+            tok.Token(tok.ID, 'aaa'),
+            tok.Token(tok.ID, 'bbb'),
+            tok.END_TOKEN,
+            tok.END_TOKEN,
+            tok.DOT_TOKEN,
+            tok.BEGIN_TOKEN,
+            tok.DOT_TOKEN,
+            tok.END_TOKEN,
+            tok.EOF_TOKEN
         )
     ),
     (
         'PROGRAM',
-        (   cmp.PROGRAM_TOKEN,
-            cmp.EOF_TOKEN,
+        (   tok.PROGRAM_TOKEN,
+            tok.EOF_TOKEN,
         )
     ),
 ])
 def test_new_tokens(source, expected):
-    assert cmp.tokenise(source) == expected
+    assert tok.tokenise(source) == expected
 
 
 @pytest.mark.parametrize('source, expected', [
@@ -290,7 +292,7 @@ END
     ),
 ])
 def test_begin_end(source, expected):
-    cmp.program(cmp.tokenise(source))
+    cmp.program(tok.tokenise(source))
     cmp.run_program(source)
 
 
@@ -317,7 +319,7 @@ BEGIN
 END
 END.
 """
-    cmp.program(cmp.tokenise(source))
+    cmp.program(tok.tokenise(source))
     cmp.run_program(source)
 
 
@@ -334,7 +336,7 @@ BEGIN
     x := 11;
 END.
 """
-    cmp.program(cmp.tokenise(source))
+    cmp.program(tok.tokenise(source))
     cmp.run_program(source)
 
 
@@ -386,20 +388,20 @@ def test_comment(source):
 
 @pytest.fixture
 def fx_src_program():
-    return 'PROGRAM', (cmp.PROGRAM_TOKEN, cmp.EOF_TOKEN)
+    return 'PROGRAM', (tok.PROGRAM_TOKEN, tok.EOF_TOKEN)
 
 @pytest.fixture
 def fx_src_begin(fx_src_program):
     src = fx_src_program[0] + ' BEGIN'
     tokens = fx_src_program[1][:-1]
-    tokens += (cmp.BEGIN_TOKEN, cmp.EOF_TOKEN)
+    tokens += (tok.BEGIN_TOKEN, tok.EOF_TOKEN)
     return src, tokens
 
 def test_program_token(fx_src_program):
-    assert cmp.tokenise(fx_src_program[0]) == fx_src_program[1]
+    assert tok.tokenise(fx_src_program[0]) == fx_src_program[1]
 
 def test_begin_token(fx_src_begin):
-    assert cmp.tokenise(fx_src_begin[0]) == fx_src_begin[1]
+    assert tok.tokenise(fx_src_begin[0]) == fx_src_begin[1]
 
 
 
@@ -430,88 +432,88 @@ def test_tokenise_full_program_chapter_10():
     )
 
     expected = (
-        cmp.PROGRAM_TOKEN,
-        cmp.Token(cmp.ID, 'Part10'),
-        cmp.SEMI_TOKEN,
-        cmp.VAR_TOKEN,
+        tok.PROGRAM_TOKEN,
+        tok.Token(tok.ID, 'Part10'),
+        tok.SEMI_TOKEN,
+        tok.VAR_TOKEN,
 
-        cmp.Token(cmp.ID, 'number'),
-        cmp.COLON_TOKEN,
-        cmp.INT_TOKEN,
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'number'),
+        tok.COLON_TOKEN,
+        tok.INT_TOKEN,
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'a'),
-        cmp.COMMA_TOKEN,
-        cmp.Token(cmp.ID, 'b'),
-        cmp.COMMA_TOKEN,
-        cmp.Token(cmp.ID, 'c'),
-        cmp.COMMA_TOKEN,
-        cmp.Token(cmp.ID, 'x'),
-        cmp.COLON_TOKEN,
-        cmp.INT_TOKEN,
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'a'),
+        tok.COMMA_TOKEN,
+        tok.Token(tok.ID, 'b'),
+        tok.COMMA_TOKEN,
+        tok.Token(tok.ID, 'c'),
+        tok.COMMA_TOKEN,
+        tok.Token(tok.ID, 'x'),
+        tok.COLON_TOKEN,
+        tok.INT_TOKEN,
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'y'),
-        cmp.COLON_TOKEN,
-        cmp.REAL_TOKEN,
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'y'),
+        tok.COLON_TOKEN,
+        tok.REAL_TOKEN,
+        tok.SEMI_TOKEN,
 
-        cmp.BEGIN_TOKEN,
-        cmp.BEGIN_TOKEN,
+        tok.BEGIN_TOKEN,
+        tok.BEGIN_TOKEN,
 
-        cmp.Token(cmp.ID, 'number'),
-        cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INT_CONST, 2),
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'number'),
+        tok.ASSIGN_TOKEN,
+        tok.Token(tok.INT_CONST, 2),
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'a'),
-        cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.ID, 'number'),
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'a'),
+        tok.ASSIGN_TOKEN,
+        tok.Token(tok.ID, 'number'),
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'b'),
-        cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INT_CONST, 10),
-        cmp.MULT_TOKEN,
-        cmp.Token(cmp.ID, 'a'),
-        cmp.PLUS_TOKEN,
-        cmp.Token(cmp.INT_CONST, 10),
-        cmp.MULT_TOKEN,
-        cmp.Token(cmp.ID, 'number'),
-        cmp.INT_DIV_TOKEN,
-        cmp.Token(cmp.INT_CONST, 4),
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'b'),
+        tok.ASSIGN_TOKEN,
+        tok.Token(tok.INT_CONST, 10),
+        tok.MULT_TOKEN,
+        tok.Token(tok.ID, 'a'),
+        tok.PLUS_TOKEN,
+        tok.Token(tok.INT_CONST, 10),
+        tok.MULT_TOKEN,
+        tok.Token(tok.ID, 'number'),
+        tok.INT_DIV_TOKEN,
+        tok.Token(tok.INT_CONST, 4),
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'c'),
-        cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.ID, 'a'),
-        cmp.MINUS_TOKEN,
-        cmp.MINUS_TOKEN,
-        cmp.Token(cmp.ID, 'b'),
+        tok.Token(tok.ID, 'c'),
+        tok.ASSIGN_TOKEN,
+        tok.Token(tok.ID, 'a'),
+        tok.MINUS_TOKEN,
+        tok.MINUS_TOKEN,
+        tok.Token(tok.ID, 'b'),
 
-        cmp.END_TOKEN,
-        cmp.SEMI_TOKEN,
+        tok.END_TOKEN,
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'x'),
-        cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INT_CONST, 11),
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'x'),
+        tok.ASSIGN_TOKEN,
+        tok.Token(tok.INT_CONST, 11),
+        tok.SEMI_TOKEN,
 
-        cmp.Token(cmp.ID, 'y'),
-        cmp.ASSIGN_TOKEN,
-        cmp.Token(cmp.INT_CONST, 20),
-        cmp.DIV_TOKEN,
-        cmp.Token(cmp.INT_CONST, 7),
-        cmp.PLUS_TOKEN,
-        cmp.Token(cmp.FLOAT_CONST, 3.14),
-        cmp.SEMI_TOKEN,
+        tok.Token(tok.ID, 'y'),
+        tok.ASSIGN_TOKEN,
+        tok.Token(tok.INT_CONST, 20),
+        tok.DIV_TOKEN,
+        tok.Token(tok.INT_CONST, 7),
+        tok.PLUS_TOKEN,
+        tok.Token(tok.FLOAT_CONST, 3.14),
+        tok.SEMI_TOKEN,
 
-        cmp.END_TOKEN,
-        cmp.DOT_TOKEN,
+        tok.END_TOKEN,
+        tok.DOT_TOKEN,
 
-        cmp.EOF_TOKEN,
+        tok.EOF_TOKEN,
     )
-    assert cmp.tokenise(source=source) == expected
+    assert tok.tokenise(source=source) == expected
 
 
 

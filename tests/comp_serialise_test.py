@@ -1,8 +1,9 @@
 import CompilerSrc.comp as comp
+import CompilerSrc.tokeniser as tok
 
 
 def test_Token_serialise():
-    token = comp.EOF_TOKEN
+    token = tok.EOF_TOKEN
     expected = {
         'type_': 'EOF',
         'value': 'EOF',
@@ -16,18 +17,18 @@ def test_Token_de_serialise():
         'type_': 'EOF',
         'value': 'EOF',
     }
-    token = comp.Token.from_dict(data=data)
-    assert token == comp.EOF_TOKEN
+    token = tok.Token.from_dict(data=data)
+    assert token == tok.EOF_TOKEN
 
 
 
 def test_Variable_node_serialise():
     varname = 'varname'
-    token = comp.Token(comp.ID, varname)
+    token = tok.Token(tok.ID, varname)
     variable = comp.VariableNode(name=token)
     expected = {
         'name.Token': {
-            'type_': comp.ID,
+            'type_': tok.ID,
             'value': varname,
         }
     }

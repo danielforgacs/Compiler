@@ -1,273 +1,24 @@
-SPACE = ' '
-DIGITS = '0123456789'
-ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-PLUS, MINUS = '+', '-'
-MULT, FLOAT_DIV, INT_DIV = '*', '/', 'DIV'
-PAREN_L, PAREN_R = '(', ')'
-CURLY_L, CURLY_R = '{', '}'
-EQUAL = '='
-COLON = ':'
-SEMICOLON = ';'
-DOT = '.'
-COMMA = ','
-QUOTE = "'"
-NEWLINE = '\n'
-
-
-ID = 'ID'
-ASSIGN = COLON + EQUAL
-INT_CONST = 'INT_CONST'
-FLOAT_CONST = 'FLOAT_CONST'
-
-PROGRAM = 'PROGRAM'
-VAR = 'VAR'
-INTEGER = 'INTEGER'
-REAL = 'REAL'
-BEGIN = 'BEGIN'
-END = 'END'
-EOF = 'EOF'
-
-
-is_digit = lambda char: char in DIGITS
-is_alpha = lambda char: char in ALPHA
-is_alphanum = lambda char: char in ALPHA + DIGITS
-pop_next_token = lambda tokens: (tokens[0], tokens[1:])
-put_back_token = lambda token, tokens: (token,) + tokens
-nexttoken = lambda tokens: tokens[0]
-
-
-
-class DictSerialiseBase:
-    @property
-    def asdict(self):
-        data = {}
-        for attrname, value in self.__dict__.items():
-            if hasattr(value, 'asdict'):
-                attrname = '{}.{}'.format(attrname, value.__class__.__name__)
-                value = value.asdict
-            elif isinstance(value, list):
-                values = []
-                for item in value:
-                    values.append(item.asdict)
-                value = values
-            data[attrname] = value
-        return data
-
-
-    @classmethod
-    def from_dict(cls, data):
-        kwargs = {}
-        for idx in range(1, cls.__init__.__code__.co_argcount):
-            key = cls.__init__.__code__.co_varnames[idx]
-            kwargs[key] = data[key]
-        newinstance = cls(**kwargs)
-        for attrname, value in data.items():
-            setattr(newinstance, attrname, value)
-        return newinstance
-
-
-
-
-class Token(DictSerialiseBase):
-    def __init__(self, type_, value):
-        self.type_ = type_
-        self.value = value
-
-    def __eq__(self, other):
-        return (self.type_ == other.type_) and (self.value == other.value)
-
-    def __repr__(self):
-        return '<Token:{}:{}>'.format(self.type_, self.value)
-
-
-
-
-PROGRAM_TOKEN = Token(PROGRAM, PROGRAM)
-VAR_TOKEN = Token(VAR, VAR)
-BEGIN_TOKEN = Token(BEGIN, BEGIN)
-END_TOKEN = Token(END, END)
-DOT_TOKEN = Token(DOT, DOT)
-EOF_TOKEN = Token(EOF, EOF)
-
-ASSIGN_TOKEN = Token(ASSIGN, ASSIGN)
-INT_TOKEN = Token(INTEGER, INTEGER)
-REAL_TOKEN = Token(REAL, REAL)
-
-PLUS_TOKEN = Token(PLUS, PLUS)
-MINUS_TOKEN = Token(MINUS, MINUS)
-MULT_TOKEN = Token(MULT, MULT)
-DIV_TOKEN = Token(FLOAT_DIV, FLOAT_DIV)
-INT_DIV_TOKEN = Token(INT_DIV, INT_DIV)
-
-PAREN_L_TOKEN = Token(PAREN_L, PAREN_L)
-PAREN_R_TOKEN = Token(PAREN_R, PAREN_R)
-COLON_TOKEN = Token(COLON, COLON)
-SEMI_TOKEN = Token(SEMICOLON, SEMICOLON)
-COMMA_TOKEN = Token(COMMA, COMMA)
-QUOTE_TOKEN = Token(QUOTE, QUOTE)
-
-
-
-
-
-
-def extract_number_token(src, index):
-    result = ''
-    is_float = False
-    char = src[index]
-
-    while is_digit(char):
-        result += char
-        index += 1
-
-        if index == len(src):
-            break
-
-        char = src[index]
-
-        if char == DOT:
-            is_float = True
-            result += char
-            index += 1
-            char = src[index]
-
-    if is_float:
-        token = Token(FLOAT_CONST, float(result))
-    else:
-        token = Token(INT_CONST, int(result))
-
-    index -= 1
-
-    return token, index
-
-
-
-
-
-def extract_alphanumeric_token(src, index):
-    result = ''
-    char = src[index]
-
-    while is_alphanum(char):
-        result += char
-        index += 1
-
-        if index == len(src):
-            break
-
-        char = src[index]
-
-    if result == BEGIN:
-        token = BEGIN_TOKEN
-    elif result == END:
-        token = END_TOKEN
-    elif result == PROGRAM:
-        token = PROGRAM_TOKEN
-    elif result == VAR:
-        token = VAR_TOKEN
-    elif result == INTEGER:
-        token = INT_TOKEN
-    elif result == REAL:
-        token = REAL_TOKEN
-    elif result == INT_DIV:
-        token = INT_DIV_TOKEN
-    else:
-        token = Token(ID, result)
-
-    index -= 1
-
-    return token, index
-
-
-
-
-def tokenise(source):
-    index = 0
-    tokens = ()
-
-    while index < len(source):
-        if source[index] == CURLY_L:
-            index += 1
-            while source[index] != CURLY_R:
-                index += 1
-            index += 1
-
-            continue
-
-        char = source[index]
-        nextchar = ''
-
-        if index < len(source) - 1:
-            nextchar = source[index+1]
-
-        if char in [SPACE, NEWLINE]:
-            token = None
-        elif char == PLUS:
-            token = PLUS_TOKEN
-        elif char == MINUS:
-            token = MINUS_TOKEN
-        elif char == MULT:
-            token = MULT_TOKEN
-        elif char == FLOAT_DIV:
-            token = DIV_TOKEN
-        elif char == PAREN_L:
-            token = PAREN_L_TOKEN
-        elif char == PAREN_R:
-            token = PAREN_R_TOKEN
-        elif char == SEMICOLON:
-            token = SEMI_TOKEN
-        elif char == DOT:
-            token = DOT_TOKEN
-        elif char == COLON:
-            token = COLON_TOKEN
-            if nextchar == EQUAL:
-                index += 1
-                token = ASSIGN_TOKEN
-        elif char == COMMA:
-            token = COMMA_TOKEN
-        elif char == QUOTE:
-            token = QUOTE_TOKEN
-        elif is_digit(char):
-            token, index = extract_number_token(source, index)
-        elif is_alpha(char):
-            token, index = extract_alphanumeric_token(source, index)
-        else:
-            raise Exception(
-                f'[tokenise] Bad char: "{char}", ord: {ord(char)}'
-                f' index: {index}')
-
-        if token:
-            tokens += (token,)
-
-        index += 1
-
-    token = EOF_TOKEN
-    tokens += (token,)
-
-    return tokens
-
-
-
+import CompilerSrc.tokeniser as tok
 
 
 
 def factor(tokens):
-    token, tokens = pop_next_token(tokens)
+    token, tokens = tok.pop_next_token(tokens)
 
-    if token.type_ == INT_CONST:
+    if token.type_ == tok.INT_CONST:
         node = NumNode(token)
 
-    elif token == PAREN_L_TOKEN:
+    elif token == tok.PAREN_L_TOKEN:
         tokens, node = expression(tokens)
-        paren_r, tokens = pop_next_token(tokens)
-        assert paren_r == PAREN_R_TOKEN, f'[factor] expected: {PAREN_R_TOKEN} got: {paren_r}'
+        paren_r, tokens = tok.pop_next_token(tokens)
+        assert paren_r == tok.PAREN_R_TOKEN, f'[factor] expected: {tok.PAREN_R_TOKEN} got: {paren_r}'
 
-    elif token in [MINUS_TOKEN, PLUS_TOKEN]:
+    elif token in [tok.MINUS_TOKEN, tok.PLUS_TOKEN]:
         tokens, node = factor(tokens)
         node = UnaryOpNode(token, node)
 
     elif token.type_ == 'ID':
-        tokens = put_back_token(token, tokens)
+        tokens = tok.put_back_token(token, tokens)
         tokens, node = do_variable(tokens)
 
     else:
@@ -279,8 +30,8 @@ def factor(tokens):
 def term(tokens):
     tokens, node = factor(tokens)
 
-    while nexttoken(tokens) in (MULT_TOKEN, DIV_TOKEN):
-        operator, tokens = pop_next_token(tokens)
+    while tok.nexttoken(tokens) in (tok.MULT_TOKEN, tok.DIV_TOKEN):
+        operator, tokens = tok.pop_next_token(tokens)
         tokens, node_r = factor(tokens)
         node = BinOpNode(node, operator, node_r)
 
@@ -290,8 +41,8 @@ def term(tokens):
 def expression(tokens):
     tokens, node = term(tokens)
 
-    while nexttoken(tokens) in (PLUS_TOKEN, MINUS_TOKEN):
-        operator, tokens = pop_next_token(tokens)
+    while tok.nexttoken(tokens) in (tok.PLUS_TOKEN, tok.MINUS_TOKEN):
+        operator, tokens = tok.pop_next_token(tokens)
         tokens, node_r = term(tokens)
         node = BinOpNode(node, operator, node_r)
 
@@ -305,25 +56,25 @@ def expression(tokens):
 def program(tokens):
     tokens, node = compound_statement(tokens)
 
-    token, tokens = pop_next_token(tokens)
-    assert token == DOT_TOKEN, f'[Program] expected: {DOT_TOKEN} got: {token}'
+    token, tokens = tok.pop_next_token(tokens)
+    assert token == tok.DOT_TOKEN, f'[Program] expected: {tok.DOT_TOKEN} got: {token}'
 
-    token, tokens = pop_next_token(tokens)
-    assert token == EOF_TOKEN, f'[Program] expected: {EOF_TOKEN} got: {token}'
+    token, tokens = tok.pop_next_token(tokens)
+    assert token == tok.EOF_TOKEN, f'[Program] expected: {tok.EOF_TOKEN} got: {token}'
 
     return tokens, node
 
 
 
 def compound_statement(tokens):
-    token, tokens = pop_next_token(tokens)
-    assert token == BEGIN_TOKEN, f'[compound_statement] expected: {BEGIN_TOKEN} got: {token}'
+    token, tokens = tok.pop_next_token(tokens)
+    assert token == tok.BEGIN_TOKEN, f'[compound_statement] expected: {tok.BEGIN_TOKEN} got: {token}'
 
     node = CompoundNode()
     tokens, node.children = statement_list(tokens)
 
-    token, tokens = pop_next_token(tokens)
-    assert token == END_TOKEN, f'[compound_statement] expected: {END_TOKEN} got: {token}'
+    token, tokens = tok.pop_next_token(tokens)
+    assert token == tok.END_TOKEN, f'[compound_statement] expected: {tok.END_TOKEN} got: {token}'
 
     return tokens, node
 
@@ -333,8 +84,8 @@ def statement_list(tokens):
     tokens, node = statement(tokens)
     nodelist = [node]
 
-    while nexttoken(tokens) == SEMI_TOKEN:
-        _, tokens = pop_next_token(tokens)
+    while tok.nexttoken(tokens) == tok.SEMI_TOKEN:
+        _, tokens = tok.pop_next_token(tokens)
         tokens, node = statement(tokens)
         nodelist += [node]
 
@@ -343,9 +94,9 @@ def statement_list(tokens):
 
 
 def statement(tokens):
-    if nexttoken(tokens) == BEGIN_TOKEN:
+    if tok.nexttoken(tokens) == tok.BEGIN_TOKEN:
         tokens, node = compound_statement(tokens)
-    elif nexttoken(tokens).type_ == ID:
+    elif tok.nexttoken(tokens).type_ == tok.ID:
         tokens, node = assign_statement(tokens)
     else:
         node = NoOpNode()
@@ -356,9 +107,9 @@ def statement(tokens):
 
 def assign_statement(tokens):
     tokens, varnode = do_variable(tokens)
-    assigntoken, tokens = pop_next_token(tokens)
-    assert assigntoken == ASSIGN_TOKEN, (f'[assign_statement] expected:'
-        f' {ASSIGN_TOKEN} got: {assigntoken}')
+    assigntoken, tokens = tok.pop_next_token(tokens)
+    assert assigntoken == tok.ASSIGN_TOKEN, (f'[assign_statement] expected:'
+        f' {tok.ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
     node = AssignNode(varnode, assigntoken, expressionnode)
     return tokens, node
@@ -366,15 +117,15 @@ def assign_statement(tokens):
 
 
 def do_variable(tokens):
-    token, tokens = pop_next_token(tokens)
-    assert token.type_ == ID, f'[do_variable] expected: {ID}, got: {token}'
+    token, tokens = tok.pop_next_token(tokens)
+    assert token.type_ == tok.ID, f'[do_variable] expected: {tok.ID}, got: {token}'
     node = VariableNode(token)
 
     return tokens, node
 
 
 
-class ASTNodeBase(DictSerialiseBase):
+class ASTNodeBase(tok.DictSerialiseBase):
     pass
 
 
@@ -409,7 +160,7 @@ class AssignNode(ASTNodeBase):
         self.right = right
 
 
-class VariableNode(ASTNodeBase, DictSerialiseBase):
+class VariableNode(ASTNodeBase, tok.DictSerialiseBase):
     def __init__(self, name):
         self.name = name
 
@@ -435,21 +186,21 @@ class NodeVisitor:
         return node.value
 
     def visit_UnaryOpNode(self, node):
-        if node.operator == PLUS_TOKEN:
+        if node.operator == tok.PLUS_TOKEN:
             return self.dispatch_visit(node.expression)
-        elif node.operator == MINUS_TOKEN:
+        elif node.operator == tok.MINUS_TOKEN:
             return self.dispatch_visit(node.expression) * -1
         else:
             raise Exception(f'[visit_UnaryOp] Bad unary op operator: {node.operator}')
 
     def visit_BinOpNode(self, node):
-        if node.operator == PLUS_TOKEN:
+        if node.operator == tok.PLUS_TOKEN:
             return self.dispatch_visit(node.node_l) + self.dispatch_visit(node.node_r)
-        elif node.operator == MINUS_TOKEN:
+        elif node.operator == tok.MINUS_TOKEN:
             return self.dispatch_visit(node.node_l) - self.dispatch_visit(node.node_r)
-        elif node.operator == MULT_TOKEN:
+        elif node.operator == tok.MULT_TOKEN:
             return self.dispatch_visit(node.node_l) * self.dispatch_visit(node.node_r)
-        elif node.operator == DIV_TOKEN:
+        elif node.operator == tok.DIV_TOKEN:
             return self.dispatch_visit(node.node_l) / self.dispatch_visit(node.node_r)
         else:
             raise Exception(f'[visit_BinOp Unexpected BinOp node: {node.operator}')
@@ -469,14 +220,14 @@ class NodeVisitor:
 
 
 def run(source):
-    tokens = tokenise(source)
+    tokens = tok.tokenise(source)
     _, node = expression(tokens)
 
     return NodeVisitor().dispatch_visit(node)
 
 
 def run_program(source):
-    tokens = tokenise(source)
+    tokens = tok.tokenise(source)
     _, node = program(tokens)
 
     nodevisitor =  NodeVisitor()
