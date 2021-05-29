@@ -1,4 +1,5 @@
 import CompilerSrc.comp as comp
+import CompilerSrc.astnodes as astn
 import CompilerSrc.tokeniser as tok
 
 
@@ -25,7 +26,7 @@ def test_Token_de_serialise():
 def test_Variable_node_serialise():
     varname = 'varname'
     token = tok.Token(tok.ID, varname)
-    variable = comp.VariableNode(name=token)
+    variable = astn.VariableNode(name=token)
     expected = {
         'name.Token': {
             'type_': tok.ID,

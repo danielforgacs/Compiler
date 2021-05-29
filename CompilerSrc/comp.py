@@ -1,4 +1,5 @@
 import CompilerSrc.tokeniser as tok
+import CompilerSrc.astnodes as astn
 
 
 
@@ -6,7 +7,7 @@ def factor(tokens):
     token, tokens = tok.pop_next_token(tokens)
 
     if token.type_ == tok.INT_CONST:
-        node = NumNode(token)
+        node = astn.NumNode(token)
 
     elif token == tok.PAREN_L_TOKEN:
         tokens, node = expression(tokens)
@@ -15,7 +16,7 @@ def factor(tokens):
 
     elif token in [tok.MINUS_TOKEN, tok.PLUS_TOKEN]:
         tokens, node = factor(tokens)
-        node = UnaryOpNode(token, node)
+        node = astn.UnaryOpNode(token, node)
 
     elif token.type_ == 'ID':
         tokens = tok.put_back_token(token, tokens)
@@ -33,7 +34,7 @@ def term(tokens):
     while tok.nexttoken(tokens) in (tok.MULT_TOKEN, tok.DIV_TOKEN):
         operator, tokens = tok.pop_next_token(tokens)
         tokens, node_r = factor(tokens)
-        node = BinOpNode(node, operator, node_r)
+        node = astn.BinOpNode(node, operator, node_r)
 
     return tokens, node
 
@@ -44,7 +45,7 @@ def expression(tokens):
     while tok.nexttoken(tokens) in (tok.PLUS_TOKEN, tok.MINUS_TOKEN):
         operator, tokens = tok.pop_next_token(tokens)
         tokens, node_r = term(tokens)
-        node = BinOpNode(node, operator, node_r)
+        node = astn.BinOpNode(node, operator, node_r)
 
     return tokens, node
 
@@ -70,7 +71,7 @@ def compound_statement(tokens):
     token, tokens = tok.pop_next_token(tokens)
     assert token == tok.BEGIN_TOKEN, f'[compound_statement] expected: {tok.BEGIN_TOKEN} got: {token}'
 
-    node = CompoundNode()
+    node = astn.CompoundNode()
     tokens, node.children = statement_list(tokens)
 
     token, tokens = tok.pop_next_token(tokens)
@@ -99,7 +100,7 @@ def statement(tokens):
     elif tok.nexttoken(tokens).type_ == tok.ID:
         tokens, node = assign_statement(tokens)
     else:
-        node = NoOpNode()
+        node = astn.NoOpNode()
 
     return tokens, node
 
@@ -111,7 +112,7 @@ def assign_statement(tokens):
     assert assigntoken == tok.ASSIGN_TOKEN, (f'[assign_statement] expected:'
         f' {tok.ASSIGN_TOKEN} got: {assigntoken}')
     tokens, expressionnode = expression(tokens)
-    node = AssignNode(varnode, assigntoken, expressionnode)
+    node = astn.AssignNode(varnode, assigntoken, expressionnode)
     return tokens, node
 
 
@@ -119,54 +120,10 @@ def assign_statement(tokens):
 def do_variable(tokens):
     token, tokens = tok.pop_next_token(tokens)
     assert token.type_ == tok.ID, f'[do_variable] expected: {tok.ID}, got: {token}'
-    node = VariableNode(token)
+    node = astn.VariableNode(token)
 
     return tokens, node
 
-
-
-class ASTNodeBase(tok.DictSerialiseBase):
-    pass
-
-
-class BinOpNode(ASTNodeBase):
-    def __init__(self, node_l, operator, node_r):
-        self.node_l = node_l
-        self.operator = operator
-        self.node_r = node_r
-
-
-class UnaryOpNode(ASTNodeBase):
-    def __init__(self, operator, expression):
-        self.operator = operator
-        self.expression = expression
-
-
-class NumNode(ASTNodeBase):
-    def __init__(self, token):
-        self.token = token
-        self.value = token.value
-
-
-class CompoundNode(ASTNodeBase):
-    def __init__(self):
-        self.children = ()
-
-
-class AssignNode(ASTNodeBase):
-    def __init__(self, left, operator, right):
-        self.left = left
-        self.operator = operator
-        self.right = right
-
-
-class VariableNode(ASTNodeBase, tok.DictSerialiseBase):
-    def __init__(self, name):
-        self.name = name
-
-
-class NoOpNode(ASTNodeBase):
-    pass
 
 
 
