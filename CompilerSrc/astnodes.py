@@ -66,6 +66,6 @@ class VariableDeclarationNode(ASTNodeBase):
         self.typenode = typenode
 
 
-class VarianleTypeNode(ASTNodeBase):
+class VariableTypeNode(ASTNodeBase):
     def __init__(self, token):
         self.token = token

@@ -126,6 +126,23 @@ def do_variable(tokens):
 
 
 
+def get_block(tokens):
+    declaration_nodes = get_declarations(tokens)
+    compound_statement_node = get_compound_statement(tokens)
+    node = astn.BlockNode(declaration_nodes, compound_statement_node)
+
+    return tokens, node
+
+
+def get_declarations(tokens):
+    declarations = []
+
+
+
+def get_compound_statement(tokens):
+    pass
+
+
 
 class NodeVisitor:
     GLOBAL_SCOPE = {}
