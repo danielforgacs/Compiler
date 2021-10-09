@@ -55,20 +55,28 @@ fn expr(source: Source) -> i64 {
     let (left_token, source) = get_next_token(source);
     let left_value = match left_token.value {
         TokenValue::Integer(x) => x,
-        _ => { panic!("Bad left expr token value") }
+        _ => {
+            panic!(
+                "\n\n[ERROR] BAD EXPRESSION LEFT VALUE. SOURCE: '{}', INDEX: {}. TOKE VALUE: '{:?}'.\n\n",
+                 source.text, source.index, left_token.value)
+            }
     };
 
     let (op, source) = get_next_token(source);
     let op = match op.value {
         TokenValue::Plus => '+',
         TokenValue::Minus => '-',
-        _ => { panic!("Bad op expr token value") }
+        _ => { panic!("\n\n[ERROR] MISSING '-' OR '+' FROM EXPR. SOURCE: '{}', INDEX: {}.\n\n", source.text, source.index) }
     };
 
     let (right_token, source) = get_next_token(source);
     let right_value = match right_token.value {
         TokenValue::Integer(x) => x,
-        _ => { panic!("Bad right expr token value") }
+        _ => {
+            panic!(
+                "\n\n[ERROR] BAD EXPRESSION RIGHT VALUE. SOURCE: '{}', INDEX: {}. TOKE VALUE: '{:?}'.\n\n",
+                 source.text, source.index, right_token.value)
+            }
     };
 
     let mut result: i64;
@@ -119,7 +127,10 @@ fn get_next_token(mut source: Source) -> (Token, Source) {
                 value: TokenValue::Minus,
             }, source)
         }
-        _ => panic!("Illegal character."),
+        _ => panic!(
+                "\n\n[ERROR] ILLEGAL CHARACTER: '{}', SOURCE: '{}' INDEX: {}.\n\n",
+                current_char, source.text, source.index
+            ),
     };
 }
 
