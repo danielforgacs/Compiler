@@ -10,6 +10,7 @@ enum TokenType {
     INTEGER,
     OPERATOR,
     EOF,
+    Any,
 }
 
 #[derive(Debug)]
@@ -132,6 +133,7 @@ fn get_next_token(source: &mut Source, expected_type: TokenType) -> Token {
         _ => panic!("--> bad char, index: {}.", source.index),
     };
     match (&token.ttype, expected_type) {
+        (TokenType::Any, TokenType::Any) => {},
         (TokenType::INTEGER, TokenType::INTEGER) => {},
         (TokenType::OPERATOR, TokenType::OPERATOR) => {},
         _ => panic!("Unexpected next token type.")
