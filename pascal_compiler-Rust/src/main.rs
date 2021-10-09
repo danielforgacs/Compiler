@@ -2,6 +2,9 @@ const SPACE: char = ' ';
 const PLUS: char = '+';
 const MINUS: char = '-';
 
+const TOKEN_PLUS: Token = Token{ttype: TokenType::PLUS, value: TokenValue::Plus};
+const TOKEN_MINUS: Token = Token{ttype: TokenType::MINUS, value: TokenValue::Minus};
+
 enum TokenType {
     INTEGER,
     PLUS,
@@ -121,11 +124,11 @@ fn get_next_token(source: &mut Source) -> Token {
         },
         PLUS => {
             source.inc_index();
-            Token::new(TokenType::PLUS, TokenValue::Plus)
+            TOKEN_PLUS
         }
         MINUS => {
             source.inc_index();
-            Token::new(TokenType::MINUS, TokenValue::Minus)
+            TOKEN_MINUS
         }
         _ => panic!("--> bad char, index: {}.", source.index),
     };
