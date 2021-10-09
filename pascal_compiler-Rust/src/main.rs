@@ -79,13 +79,18 @@ fn expr(source: Source) -> i64 {
             }
     };
 
-    let mut result: i64;
+    let result: i64;
     if op == '+' {
         result = left_value + right_value;
     } else {
         result = left_value - right_value;
     }
     result
+}
+
+fn integer(source: &Source) -> TokenValue {
+    // source.index += 1;
+    TokenValue::Integer(100)
 }
 
 fn get_next_token(mut source: Source) -> (Token, Source) {
