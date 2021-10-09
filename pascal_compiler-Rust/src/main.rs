@@ -41,11 +41,11 @@ impl Token {
 
 fn main() {
     let source = Source::new(String::from("0"));
-    interpreter(source);
+    expr(source);
 }
 
-fn interpreter(source: Source) {
-    let (token, source) = get_next_token(source);
+fn expr(source: Source) {
+    let (left_token, source) = get_next_token(source);
     println!("source: {}", source.text);
     println!("index: {}", source.index);
 }
