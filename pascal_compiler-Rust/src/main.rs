@@ -122,14 +122,8 @@ fn get_next_token(source: &mut Source) -> Token {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
             Token::new(TokenType::INTEGER, TokenValue::Integer(integer(source)))
         },
-        PLUS => {
-            source.inc_index();
-            TOKEN_PLUS
-        }
-        MINUS => {
-            source.inc_index();
-            TOKEN_MINUS
-        }
+        PLUS => { source.inc_index(); TOKEN_PLUS }
+        MINUS => { source.inc_index(); TOKEN_MINUS }
         _ => panic!("--> bad char, index: {}.", source.index),
     };
     token
