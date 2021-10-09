@@ -64,8 +64,19 @@ fn main() {
     }
 }
 
+fn validate_token_type(token: &Token, ttype: TokenType) {
+    match (&token.ttype, ttype) {
+        (TokenType::INTEGER, TokenType::INTEGER) => {},
+        (TokenType::OPERATOR, TokenType::OPERATOR) => {},
+        (TokenType::EOF, TokenType::EOF) => {},
+        _ => panic!("Unexpected token type.")
+    }
+
+}
+
 fn expr(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
+    validate_token_type(&left_token, TokenType::INTEGER);
     let operator = get_next_token(source);
     let right_token = get_next_token(source);
 
