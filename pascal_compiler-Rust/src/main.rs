@@ -30,13 +30,6 @@ impl Source {
             index: 0,
         }
     }
-    fn set_index(&mut self, index: usize) {
-        self.index = index;
-    }
-
-    fn inc_index(&mut self) {
-        self.index += 1;
-    }
 }
 
 impl Token {
@@ -121,19 +114,18 @@ fn integer(mut source: &mut Source) -> (usize, TokenValue) {
     (source.index, TokenValue::Integer(value))
 }
 
-fn get_next_token(source: Source) -> (Token, Source) {
-    let mut source = Source::new(source.text);
-    let index = source.index;
-
-    if index >= source.text.len() {
+fn get_next_token(mut source: Source) -> (Token, Source) {
+    if source.index >= source.text.len() {
         return (Token::new(TokenType::EOF, TokenValue::Eof), source)
     }
 
     let mut current_char: char;
-
     loop {
-        current_char = source.text.chars().nth(source.index).expect("No more chars.");
-
+        current_char = source
+            .text
+            .chars()
+            .nth(source.index)
+            .expect("No more chars.");
         match current_char {
             ' ' => {source.index += 1},
             _ => {break},
