@@ -65,9 +65,9 @@ fn main() {
 }
 
 fn expr(source: &mut Source) -> i64 {
-    let left_token = get_next_token(source);
-    let operator = get_next_token(source);
-    let right_token = get_next_token(source);
+    let left_token = get_next_token(source, TokenType::INTEGER);
+    let operator = get_next_token(source, TokenType::OPERATOR);
+    let right_token = get_next_token(source, TokenType::INTEGER);
 
     let left_value = match left_token.value {
         TokenValue::Integer(x) => x,
@@ -106,9 +106,14 @@ fn integer(source: &mut Source) -> i64 {
     integer_text.to_string().parse::<i64>().unwrap()
 }
 
-fn get_next_token(source: &mut Source) -> Token {
+fn get_next_token(source: &mut Source, expected_type: TokenType) -> Token {
     if source.index >= source.text.len() {
-        return TOKEN_EOF
+        let token = TOKEN_EOF;
+        match (&token.ttype, expected_type) {
+            (TokenType::EOF, TokenType::EOF) => {},
+            _ => panic!("Did not get expected EOF token.")
+        }
+        return token
     }
     let mut current_char: char;
     loop {
@@ -118,7 +123,6 @@ fn get_next_token(source: &mut Source) -> Token {
             _ => { break },
         }
     }
-
     let token = match current_char {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
             Token::new(TokenType::INTEGER, TokenValue::Integer(integer(source)))
@@ -127,6 +131,12 @@ fn get_next_token(source: &mut Source) -> Token {
         MINUS => { source.inc_index(); TOKEN_MINUS }
         _ => panic!("--> bad char, index: {}.", source.index),
     };
+    match (&token.ttype, expected_type) {
+        (TokenType::INTEGER, TokenType::INTEGER) => {},
+        (TokenType::OPERATOR, TokenType::OPERATOR) => {},
+        _ => panic!("Unexpected next token type.")
+    }
+
     token
 }
 
@@ -138,7 +148,7 @@ fn test_token() {
 #[test]
 fn test_next_token_empty_source() {
     let mut source = Source::new(String::from(""));
-    let token = get_next_token(&mut source);
+    let token = get_next_token(&mut source, TokenType::EOF);
     assert_eq!(source.index, 0);
     match token.ttype { TokenType::EOF => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Eof => assert!(true), _ => assert!(false), };
@@ -147,19 +157,19 @@ fn test_next_token_empty_source() {
 #[test]
 fn test_next_token_gets_digit() {
     let mut source = Source::new(String::from("0"));
-    let token = get_next_token(&mut source);
+    let token = get_next_token(&mut source, TokenType::INTEGER);
     assert_eq!(source.index, 1);
     match token.ttype { TokenType::INTEGER => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Integer(0) => assert!(true), _ => assert!(false), };
 
     let mut source = Source::new(String::from("1"));
-    let token = get_next_token(&mut source);
+    let token = get_next_token(&mut source, TokenType::INTEGER);
     assert_eq!(source.index, 1);
     match token.ttype { TokenType::INTEGER => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Integer(1) => assert!(true), _ => assert!(false), };
 
     let mut source = Source::new(String::from("+"));
-    let token = get_next_token(&mut source);
+    let token = get_next_token(&mut source, TokenType::OPERATOR);
     assert_eq!(source.index, 1);
     match token.ttype { TokenType::OPERATOR => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Plus => assert!(true), _ => assert!(false), };
@@ -182,7 +192,7 @@ fn test_skip_whitespace() {
 #[test]
 fn test_multi_digit_integer_token() {
     let mut source = Source::new(String::from("1234"));
-    let token = get_next_token(&mut source);
+    let token = get_next_token(&mut source, TokenType::INTEGER);
     assert_eq!(source.index, 4);
     match token.ttype { TokenType::INTEGER => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Integer(1234) => assert!(true), _ => assert!(false), };
