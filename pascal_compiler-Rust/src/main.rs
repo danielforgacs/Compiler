@@ -40,14 +40,17 @@ impl Token {
 }
 
 fn main() {
-    let source = Source::new(String::from("0"));
+    let source = Source::new(String::from("1+2"));
     expr(source);
 }
 
 fn expr(source: Source) {
     let (left_token, source) = get_next_token(source);
-    println!("source: {}", source.text);
-    println!("index: {}", source.index);
+    println!("source: {}, index {}, token value: {:?}", source.text, source.index, left_token.value);
+    let (op, source) = get_next_token(source);
+    println!("source: {}, index {}, token value: {:?}", source.text, source.index, op.value);
+    let (right_token, source) = get_next_token(source);
+    println!("source: {}, index {}, token value: {:?}", source.text, source.index, right_token.value);
 }
 
 fn get_next_token(mut source: Source) -> (Token, Source) {
