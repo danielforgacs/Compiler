@@ -132,3 +132,10 @@ fn test_next_token_gets_digit() {
     match token.ttype { TokenType::PLUS => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Plus => assert!(true), _ => assert!(false), };
 }
+
+#[test]
+fn text_expression() {
+    assert_eq!(expr(Source::new(String::from("1+2"))), 1+2);
+    assert_eq!(expr(Source::new(String::from("3+2"))), 3+2);
+    assert_eq!(expr(Source::new(String::from("9+7"))), 9+7);
+}
