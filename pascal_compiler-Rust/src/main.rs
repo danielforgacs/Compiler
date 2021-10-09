@@ -3,13 +3,12 @@ const PLUS: char = '+';
 const MINUS: char = '-';
 
 const TOKEN_EOF: Token = Token{ttype: TokenType::EOF, value: TokenValue::Eof};
-const TOKEN_PLUS: Token = Token{ttype: TokenType::PLUS, value: TokenValue::Plus};
-const TOKEN_MINUS: Token = Token{ttype: TokenType::MINUS, value: TokenValue::Minus};
+const TOKEN_PLUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Plus};
+const TOKEN_MINUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Minus};
 
 enum TokenType {
     INTEGER,
-    PLUS,
-    MINUS,
+    OPERATOR,
     EOF,
 }
 
@@ -162,7 +161,7 @@ fn test_next_token_gets_digit() {
     let mut source = Source::new(String::from("+"));
     let token = get_next_token(&mut source);
     assert_eq!(source.index, 1);
-    match token.ttype { TokenType::PLUS => assert!(true), _ => assert!(false), };
+    match token.ttype { TokenType::OPERATOR => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Plus => assert!(true), _ => assert!(false), };
 }
 
