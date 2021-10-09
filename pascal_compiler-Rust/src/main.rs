@@ -43,12 +43,14 @@ impl Token {
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
-    let mut source = Source::new(String::from("1+2"));
-    if args.len() == 2 {
-        source.text = args[1].to_string();
+
+    if args.len() != 2 {
+        println!("No Source... Bye!");
+    } else {
+        let source = Source::new(String::from(args[1].to_string()));
+        let result = expr(source);
+        println!("result: {}", result);
     }
-    let result = expr(source);
-    println!("result: {}", result);
 }
 
 fn expr(source: Source) -> i64 {
@@ -89,10 +91,8 @@ fn expr(source: Source) -> i64 {
 }
 
 fn integer(mut source: &mut Source) -> (usize, TokenValue) {
-    // println!("EEEEEEE");
     let mut integer_text = String::new();
     loop {
-        // let mut current_char: char;
         let current_char = source
             .text
             .chars()
@@ -101,9 +101,6 @@ fn integer(mut source: &mut Source) -> (usize, TokenValue) {
         match current_char {
             '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
                 source.index += 1;
-                // integer_text = "12321";
-                // integer_text += current_char;
-                // integer_text.push_str("a");
                 integer_text.push_str((format!("{}", current_char)).as_str());
                 if source.index == source.text.len() {
                     break
@@ -113,26 +110,15 @@ fn integer(mut source: &mut Source) -> (usize, TokenValue) {
             _ => {break},
         }
     }
-    println!("integer text: \"{}\"", integer_text);
     let value = integer_text.to_string().parse::<i64>().unwrap();
-    println!("integer text value: {}", value);
     (source.index, TokenValue::Integer(value))
-}
-
-fn skip_whitespace(source: Source) -> Source {
-    source
 }
 
 fn get_next_token(mut source: Source) -> (Token, Source) {
     if source.index >= source.text.len() {
-        return (
-            Token {
-                ttype: TokenType::EOF,
-                value: TokenValue::Eof,
-            },
-            source
-        )
+        return (Token::new(TokenType::EOF, TokenValue::Eof), source)
     }
+
     let mut current_char: char;
     loop {
         current_char = source
@@ -148,29 +134,17 @@ fn get_next_token(mut source: Source) -> (Token, Source) {
 
     match current_char {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
-            // source.index += 1;
-            // let value = TokenValue::Integer(current_char.to_string().parse::<i64>().unwrap());
             let (index, value) = integer(&mut source);
             source.index = index;
-            let token = Token {
-                ttype: TokenType::INTEGER,
-                value: value,
-            };
-            return (token, source)
+            return (Token::new(TokenType::INTEGER, value), source)
         },
         '+' => {
             source.index += 1;
-            return (Token {
-                ttype: TokenType::PLUS,
-                value: TokenValue::Plus,
-            }, source)
+            return (Token::new(TokenType::PLUS, TokenValue::Plus), source)
         }
         '-' => {
             source.index += 1;
-            return (Token {
-                ttype: TokenType::MINUS,
-                value: TokenValue::Minus,
-            }, source)
+            return (Token::new(TokenType::MINUS, TokenValue::Minus), source)
         }
         _ => panic!(
                 "\n\n[ERROR] ILLEGAL CHARACTER: '{}', SOURCE: '{}' INDEX: {}.\n\n",
