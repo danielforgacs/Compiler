@@ -44,7 +44,7 @@ fn main() {
     expr(source);
 }
 
-fn expr(source: Source) {
+fn expr(source: Source) -> i64 {
     let (left_token, source) = get_next_token(source);
     let left_value = match left_token.value {
         TokenValue::Integer(x) => x,
@@ -63,8 +63,7 @@ fn expr(source: Source) {
         _ => { panic!("Bad right expr token value") }
     };
 
-    let result = left_value + right_value;
-    println!("reult: {}", result);
+    left_value + right_value
 }
 
 fn get_next_token(mut source: Source) -> (Token, Source) {
