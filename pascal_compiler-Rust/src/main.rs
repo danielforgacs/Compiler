@@ -1,3 +1,7 @@
+const SPACE: char = ' ';
+const PLUS: char = '+';
+const MINUS: char = '-';
+
 enum TokenType {
     INTEGER,
     PLUS,
@@ -81,15 +85,12 @@ fn expr(source: &mut Source) -> i64 {
 fn integer(mut source: &mut Source) -> (usize, TokenValue) {
     let mut integer_text = String::new();
     loop {
-        let current_char = source
-            .text
-            .chars()
-            .nth(source.index)
-            .expect("No more chars.");
+        let current_char = source.text.chars().nth(source.index).expect("No more chars.");
         match current_char {
             '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
                 source.index += 1;
                 integer_text.push_str((format!("{}", current_char)).as_str());
+
                 if source.index == source.text.len() {
                     break
                 }
@@ -110,7 +111,7 @@ fn get_next_token(source: &mut Source) -> Token {
     loop {
         current_char = source.text.chars().nth(source.index).expect("No more chars.");
         match current_char {
-            ' ' => { source.inc_index() },
+            SPACE => { source.inc_index() },
             _ => { break },
         }
     }
@@ -121,11 +122,11 @@ fn get_next_token(source: &mut Source) -> Token {
             source.index = index;
             return Token::new(TokenType::INTEGER, value)
         },
-        '+' => {
+        PLUS => {
             source.inc_index();
             return Token::new(TokenType::PLUS, TokenValue::Plus)
         }
-        '-' => {
+        MINUS => {
             source.inc_index();
             return Token::new(TokenType::MINUS, TokenValue::Minus)
         }
