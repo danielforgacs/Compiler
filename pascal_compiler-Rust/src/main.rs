@@ -93,6 +93,10 @@ fn integer(source: &Source) -> TokenValue {
     TokenValue::Integer(100)
 }
 
+fn skip_whitespace(source: Source) -> Source {
+    source
+}
+
 fn get_next_token(mut source: Source) -> (Token, Source) {
     if source.index >= source.text.len() {
         return (
@@ -103,19 +107,26 @@ fn get_next_token(mut source: Source) -> (Token, Source) {
             source
         )
     }
-    let current_char = source
-        .text
-        .chars()
-        .nth(source.index)
-        .expect("No more chars.");
+    let mut current_char: char;
+    loop {
+        current_char = source
+            .text
+            .chars()
+            .nth(source.index)
+            .expect("No more chars.");
+        match current_char {
+            ' ' => {source.index += 1},
+            _ => {break},
+        }
+    }
+
     match current_char {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
             source.index += 1;
+            let value = TokenValue::Integer(current_char.to_string().parse::<i64>().unwrap());
             let token = Token {
                 ttype: TokenType::INTEGER,
-                value: TokenValue::Integer(
-                    current_char.to_string().parse::<i64>().unwrap()
-                ),
+                value: value,
             };
             return (token, source)
         },
@@ -172,8 +183,15 @@ fn test_next_token_gets_digit() {
 }
 
 #[test]
-fn text_expression() {
+fn test_expression() {
     assert_eq!(expr(Source::new(String::from("1+2"))), 1+2);
     assert_eq!(expr(Source::new(String::from("3+2"))), 3+2);
     assert_eq!(expr(Source::new(String::from("9+7"))), 9+7);
+    assert_eq!(expr(Source::new(String::from("9-7"))), 9-7);
+}
+
+#[test]
+fn test_skip_whitespace() {
+    assert_eq!(expr(Source::new(String::from("9 -7"))), 9-7);
+    assert_eq!(expr(Source::new(String::from("9   -            7"))), 9-7);
 }
