@@ -45,11 +45,6 @@ impl Token {
     }
 }
 
-fn AA(source: &mut Source) {
-    source.inc_index();
-    // source
-}
-
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -57,33 +52,6 @@ fn main() {
         println!("No Source... Bye!");
     } else {
         let mut source = Source::new(String::from(args[1].to_string()));
-        // AA(&mut source);
-        // println!("index: {}", &source.index);
-        // AA(&mut source);
-        // println!("index: {}", &source.index);
-        // AA(&mut source);
-        // println!("index: {}", &source.index);
-        // AA(&mut source);
-        // println!("index: {}", &source.index);
-        // source.inc_index();
-        // println!("index: {}", &source.index);
-        // source.inc_index();
-        // println!("index: {}", &source.index);
-        // source.inc_index();
-        // println!("index: {}", &source.index);
-        // source.inc_index();
-        // println!("index: {}", &source.index);
-
-        // source.index += 3;
-        // println!("index: {}", &source.index);
-        // source.index += 3;
-        // println!("index: {}", &source.index);
-        // source.index += 3;
-        // println!("index: {}", &source.index);
-        // source.index += 3;
-        // println!("index: {}", &source.index);
-        // // AA(source);
-        // // println!("index: {}", &source.index);
         let result = expr(&mut source);
         println!("result: {}", result);
     }
