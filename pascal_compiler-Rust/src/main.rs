@@ -63,26 +63,18 @@ fn expr(source: &mut Source) -> i64 {
         TokenValue::Integer(x) => x,
         _ => { panic!("--> expr bad left value, index: {}.", source.index) }
     };
-
-    let op = get_next_token(source);
-    let op = match op.value {
-        TokenValue::Plus => '+',
-        TokenValue::Minus => '-',
-        _ => { panic!("--> expr bad op, index: {}.", source.index) }
-    };
-
+    let operator = get_next_token(source);
     let right_token = get_next_token(source);
     let right_value = match right_token.value {
         TokenValue::Integer(x) => x,
         _ => { panic!("--> expr bad right value, index: {}.", source.index) }
     };
 
-    let result: i64;
-    if op == '+' {
-        result = left_value + right_value;
-    } else {
-        result = left_value - right_value;
-    }
+    let result = match operator.value {
+        TokenValue::Plus => { left_value + right_value },
+        TokenValue::Minus => { left_value - right_value },
+        _ => { panic!("--> expr bad operator, index: {}.", source.index) }
+    };
     result
 }
 
@@ -151,7 +143,7 @@ fn get_next_token(source: &mut Source) -> Token {
 
 #[test]
 fn test_token() {
-    let tok = Token::new(TokenType::EOF, TokenValue::Eof);
+    Token::new(TokenType::EOF, TokenValue::Eof);
 }
 
 #[test]
