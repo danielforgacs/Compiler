@@ -46,11 +46,25 @@ fn main() {
 
 fn expr(source: Source) {
     let (left_token, source) = get_next_token(source);
-    println!("source: {}, index {}, token value: {:?}", source.text, source.index, left_token.value);
+    let left_value = match left_token.value {
+        TokenValue::Integer(x) => x,
+        _ => { panic!("Bad left expr token value") }
+    };
+
     let (op, source) = get_next_token(source);
-    println!("source: {}, index {}, token value: {:?}", source.text, source.index, op.value);
+    let op = match op.value {
+        TokenValue::Plus => '+',
+        _ => { panic!("Bad op expr token value") }
+    };
+
     let (right_token, source) = get_next_token(source);
-    println!("source: {}, index {}, token value: {:?}", source.text, source.index, right_token.value);
+    let right_value = match right_token.value {
+        TokenValue::Integer(x) => x,
+        _ => { panic!("Bad right expr token value") }
+    };
+
+    let result = left_value + right_value;
+    println!("reult: {}", result);
 }
 
 fn get_next_token(mut source: Source) -> (Token, Source) {
