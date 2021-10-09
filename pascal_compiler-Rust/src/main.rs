@@ -2,6 +2,7 @@ const SPACE: char = ' ';
 const PLUS: char = '+';
 const MINUS: char = '-';
 
+const TOKEN_EOF: Token = Token{ttype: TokenType::EOF, value: TokenValue::Eof};
 const TOKEN_PLUS: Token = Token{ttype: TokenType::PLUS, value: TokenValue::Plus};
 const TOKEN_MINUS: Token = Token{ttype: TokenType::MINUS, value: TokenValue::Minus};
 
@@ -66,12 +67,13 @@ fn main() {
 
 fn expr(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
+    let operator = get_next_token(source);
+    let right_token = get_next_token(source);
+
     let left_value = match left_token.value {
         TokenValue::Integer(x) => x,
         _ => { panic!("--> expr bad left value, index: {}.", source.index) }
     };
-    let operator = get_next_token(source);
-    let right_token = get_next_token(source);
     let right_value = match right_token.value {
         TokenValue::Integer(x) => x,
         _ => { panic!("--> expr bad right value, index: {}.", source.index) }
@@ -107,7 +109,7 @@ fn integer(source: &mut Source) -> i64 {
 
 fn get_next_token(source: &mut Source) -> Token {
     if source.index >= source.text.len() {
-        return Token::new(TokenType::EOF, TokenValue::Eof)
+        return TOKEN_EOF
     }
     let mut current_char: char;
     loop {
