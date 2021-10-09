@@ -61,28 +61,20 @@ fn expr(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
     let left_value = match left_token.value {
         TokenValue::Integer(x) => x,
-        _ => {
-            panic!(
-                "\n\n[ERROR] BAD EXPRESSION LEFT VALUE. SOURCE: '{}', INDEX: {}. TOKE VALUE: '{:?}'.\n\n",
-                 source.text, source.index, left_token.value)
-            }
+        _ => { panic!("--> expr bad left value, index: {}.", source.index) }
     };
 
     let op = get_next_token(source);
     let op = match op.value {
         TokenValue::Plus => '+',
         TokenValue::Minus => '-',
-        _ => { panic!("\n\n[ERROR] MISSING '-' OR '+' FROM EXPR. SOURCE: '{}', INDEX: {}.\n\n", source.text, source.index) }
+        _ => { panic!("--> expr bad op, index: {}.", source.index) }
     };
 
     let right_token = get_next_token(source);
     let right_value = match right_token.value {
         TokenValue::Integer(x) => x,
-        _ => {
-            panic!(
-                "\n\n[ERROR] BAD EXPRESSION RIGHT VALUE. SOURCE: '{}', INDEX: {}. TOKE VALUE: '{:?}'.\n\n",
-                 source.text, source.index, right_token.value)
-            }
+        _ => { panic!("--> expr bad right value, index: {}.", source.index) }
     };
 
     let result: i64;
