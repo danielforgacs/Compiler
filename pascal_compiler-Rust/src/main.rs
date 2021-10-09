@@ -82,13 +82,13 @@ fn expr(source: &mut Source) -> i64 {
     result
 }
 
-fn integer(mut source: &mut Source) -> (usize, TokenValue) {
+fn integer(source: &mut Source) -> i64 {
     let mut integer_text = String::new();
     loop {
         let current_char = source.text.chars().nth(source.index).expect("No more chars.");
         match current_char {
             '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
-                source.index += 1;
+                source.inc_index();
                 integer_text.push_str((format!("{}", current_char)).as_str());
 
                 if source.index == source.text.len() {
@@ -99,8 +99,7 @@ fn integer(mut source: &mut Source) -> (usize, TokenValue) {
             _ => {break},
         }
     }
-    let value = integer_text.to_string().parse::<i64>().unwrap();
-    (source.index, TokenValue::Integer(value))
+    integer_text.to_string().parse::<i64>().unwrap()
 }
 
 fn get_next_token(source: &mut Source) -> Token {
@@ -118,9 +117,7 @@ fn get_next_token(source: &mut Source) -> Token {
 
     match current_char {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
-            let (index, value) = integer(source);
-            source.index = index;
-            return Token::new(TokenType::INTEGER, value)
+            return Token::new(TokenType::INTEGER, TokenValue::Integer(integer(source)))
         },
         PLUS => {
             source.inc_index();
