@@ -106,17 +106,12 @@ fn get_next_token(source: &mut Source) -> Token {
     if source.index >= source.text.len() {
         return Token::new(TokenType::EOF, TokenValue::Eof)
     }
-
     let mut current_char: char;
     loop {
-        current_char = source
-            .text
-            .chars()
-            .nth(source.index)
-            .expect("No more chars.");
+        current_char = source.text.chars().nth(source.index).expect("No more chars.");
         match current_char {
-            ' ' => {source.index += 1},
-            _ => {break},
+            ' ' => { source.inc_index() },
+            _ => { break },
         }
     }
 
@@ -127,17 +122,14 @@ fn get_next_token(source: &mut Source) -> Token {
             return Token::new(TokenType::INTEGER, value)
         },
         '+' => {
-            source.index += 1;
+            source.inc_index();
             return Token::new(TokenType::PLUS, TokenValue::Plus)
         }
         '-' => {
-            source.index += 1;
+            source.inc_index();
             return Token::new(TokenType::MINUS, TokenValue::Minus)
         }
-        _ => panic!(
-                "\n\n[ERROR] ILLEGAL CHARACTER: '{}', SOURCE: '{}' INDEX: {}.\n\n",
-                current_char, source.text, source.index
-            ),
+        _ => panic!("--> bad char, index: {}.", source.index),
     };
 }
 
