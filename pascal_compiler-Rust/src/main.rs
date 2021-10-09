@@ -91,7 +91,7 @@ fn integer(source: &mut Source) -> i64 {
     loop {
         let current_char = source.text.chars().nth(source.index).expect("No more chars.");
         match current_char {
-            '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
+            '0'..='9' => {
                 source.inc_index();
                 integer_text.push_str((format!("{}", current_char)).as_str());
 
@@ -120,7 +120,7 @@ fn get_next_token(source: &mut Source) -> Token {
     }
 
     let token = match current_char {
-        '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
+        '0'..='9' => {
             Token::new(TokenType::INTEGER, TokenValue::Integer(integer(source)))
         },
         PLUS => { source.inc_index(); TOKEN_PLUS }
