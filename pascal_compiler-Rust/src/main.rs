@@ -90,7 +90,7 @@ fn expr(source: Source) -> i64 {
 
 fn integer(mut source: &mut Source) -> (usize, TokenValue) {
     // println!("EEEEEEE");
-    let mut integer_text = "";
+    let mut integer_text = String::new();
     loop {
         // let mut current_char: char;
         let current_char = source
@@ -102,7 +102,9 @@ fn integer(mut source: &mut Source) -> (usize, TokenValue) {
             '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
                 source.index += 1;
                 // integer_text = "12321";
-                integer_text += current_char;
+                // integer_text += current_char;
+                // integer_text.push_str("a");
+                integer_text.push_str((format!("{}", current_char)).as_str());
                 if source.index == source.text.len() {
                     break
                 }
@@ -228,4 +230,10 @@ fn test_multi_digit_integer_token() {
     assert_eq!(source.index, 4);
     match token.ttype { TokenType::INTEGER => assert!(true), _ => assert!(false), };
     match token.value { TokenValue::Integer(1234) => assert!(true), _ => assert!(false), };
+}
+
+#[test]
+fn test_multi_digit_integers_plus_minus() {
+    assert_eq!(expr(Source::new(String::from("123+456"))), 123+456);
+    assert_eq!(expr(Source::new(String::from("123  +       456"))), 123+456);
 }
