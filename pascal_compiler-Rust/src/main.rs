@@ -88,9 +88,33 @@ fn expr(source: Source) -> i64 {
     result
 }
 
-fn integer(source: &Source) -> TokenValue {
-    // source.index += 1;
-    TokenValue::Integer(100)
+fn integer(mut source: &mut Source) -> (usize, TokenValue) {
+    // println!("EEEEEEE");
+    let mut integer_text = "";
+    loop {
+        // let mut current_char: char;
+        let current_char = source
+            .text
+            .chars()
+            .nth(source.index)
+            .expect("No more chars.");
+        match current_char {
+            '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
+                source.index += 1;
+                // integer_text = "12321";
+                integer_text += current_char;
+                if source.index == source.text.len() {
+                    break
+                }
+
+            },
+            _ => {break},
+        }
+    }
+    println!("integer text: \"{}\"", integer_text);
+    let value = integer_text.to_string().parse::<i64>().unwrap();
+    println!("integer text value: {}", value);
+    (source.index, TokenValue::Integer(value))
 }
 
 fn skip_whitespace(source: Source) -> Source {
@@ -122,8 +146,10 @@ fn get_next_token(mut source: Source) -> (Token, Source) {
 
     match current_char {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
-            source.index += 1;
-            let value = TokenValue::Integer(current_char.to_string().parse::<i64>().unwrap());
+            // source.index += 1;
+            // let value = TokenValue::Integer(current_char.to_string().parse::<i64>().unwrap());
+            let (index, value) = integer(&mut source);
+            source.index = index;
             let token = Token {
                 ttype: TokenType::INTEGER,
                 value: value,
@@ -194,4 +220,12 @@ fn test_expression() {
 fn test_skip_whitespace() {
     assert_eq!(expr(Source::new(String::from("9 -7"))), 9-7);
     assert_eq!(expr(Source::new(String::from("9   -            7"))), 9-7);
+}
+
+#[test]
+fn test_multi_digit_integer_token() {
+    let (token, source) = get_next_token(Source::new(String::from("1234")));
+    assert_eq!(source.index, 4);
+    match token.ttype { TokenType::INTEGER => assert!(true), _ => assert!(false), };
+    match token.value { TokenValue::Integer(1234) => assert!(true), _ => assert!(false), };
 }
