@@ -40,8 +40,14 @@ impl Token {
 }
 
 fn main() {
-    let source = Source::new(String::from("1+2"));
-    expr(source);
+    let args: Vec<String> = std::env::args().collect();
+    let mut source = Source::new(String::from("1+2"));
+    if args.len() == 2 {
+        // source = Source::new(String::from(args[1]));
+        source.text = args[1].to_string();
+    }
+    let result = expr(source);
+    println!("result: {}", result);
 }
 
 fn expr(source: Source) -> i64 {
