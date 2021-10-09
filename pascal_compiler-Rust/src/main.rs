@@ -1,6 +1,7 @@
 enum TokenType {
     INTEGER,
     PLUS,
+    MINUS,
     EOF,
 }
 
@@ -8,6 +9,7 @@ enum TokenType {
 enum TokenValue {
     Integer(i64),
     Plus,
+    Minus,
     Eof,
 }
 
@@ -59,6 +61,7 @@ fn expr(source: Source) -> i64 {
     let (op, source) = get_next_token(source);
     let op = match op.value {
         TokenValue::Plus => '+',
+        TokenValue::Minus => '-',
         _ => { panic!("Bad op expr token value") }
     };
 
@@ -68,7 +71,13 @@ fn expr(source: Source) -> i64 {
         _ => { panic!("Bad right expr token value") }
     };
 
-    left_value + right_value
+    let mut result: i64;
+    if op == '+' {
+        result = left_value + right_value;
+    } else {
+        result = left_value - right_value;
+    }
+    result
 }
 
 fn get_next_token(mut source: Source) -> (Token, Source) {
@@ -101,6 +110,13 @@ fn get_next_token(mut source: Source) -> (Token, Source) {
             return (Token {
                 ttype: TokenType::PLUS,
                 value: TokenValue::Plus,
+            }, source)
+        }
+        '-' => {
+            source.index += 1;
+            return (Token {
+                ttype: TokenType::MINUS,
+                value: TokenValue::Minus,
             }, source)
         }
         _ => panic!("Illegal character."),
