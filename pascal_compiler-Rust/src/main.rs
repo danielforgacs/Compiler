@@ -111,12 +111,13 @@ fn get_next_token(mut source: Source) -> (Token, Source) {
     match current_char {
         '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => {
             source.index += 1;
-            return (Token {
+            let token = Token {
                 ttype: TokenType::INTEGER,
                 value: TokenValue::Integer(
                     current_char.to_string().parse::<i64>().unwrap()
                 ),
-            }, source)
+            };
+            return (token, source)
         },
         '+' => {
             source.index += 1;
