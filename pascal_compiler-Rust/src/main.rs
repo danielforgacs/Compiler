@@ -136,6 +136,24 @@ fn factor(source: &mut Source) -> i64 {
     result
 }
 
+fn term(source: &mut Source) -> i64 {
+    let mut result = factor(source);
+    loop {
+        let operator = get_next_token(source);
+        match operator.ttype {
+            TokenType::OPERATOR => {},
+            _ => break,
+        }
+        match operator.value {
+            TokenValue::Mult => { result *= factor(source) },
+            TokenValue::Div => { result /= factor(source) },
+            _ => { panic!("--> expr bad operator, index: {}.", source.index) }
+        };
+    }
+
+    result
+}
+
 fn expr(source: &mut Source) -> i64 {
     let mut result = factor(source);
     loop {
@@ -250,4 +268,15 @@ fn test_multi_operator_expression() {
 fn test_mult_div() {
     assert_eq!(expr(&mut Source::new(String::from("4/2"))), 4/2);
     assert_eq!(expr(&mut Source::new(String::from("400 / 3"))), 400/3);
+}
+
+#[test]
+fn test_operator_precedence() {
+    assert_eq!(expr(&mut Source::new(String::from("2+5*10"))), 2+5*10);
+}
+
+#[test]
+fn test_term() {
+    assert_eq!(term(&mut Source::new(String::from("5*10"))), 5*10);
+    assert_eq!(term(&mut Source::new(String::from("2*5*10"))), 2*5*10);
 }
