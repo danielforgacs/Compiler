@@ -1,10 +1,14 @@
 const SPACE: char = ' ';
 const PLUS: char = '+';
 const MINUS: char = '-';
+const MULT: char = '*';
+const DIV: char = '/';
 
 const TOKEN_EOF: Token = Token{ttype: TokenType::EOF, value: TokenValue::Eof};
 const TOKEN_PLUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Plus};
 const TOKEN_MINUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Minus};
+const TOKEN_MULT: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Mult};
+const TOKEN_DIV: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Div};
 
 enum TokenType {
     INTEGER,
@@ -17,6 +21,8 @@ enum TokenValue {
     Integer(i64),
     Plus,
     Minus,
+    Mult,
+    Div,
     Eof,
 }
 
@@ -113,6 +119,8 @@ fn get_next_token(source: &mut Source) -> Token {
         },
         PLUS => { source.inc_index(); TOKEN_PLUS }
         MINUS => { source.inc_index(); TOKEN_MINUS }
+        MULT => { source.inc_index(); TOKEN_MULT }
+        DIV => { source.inc_index(); TOKEN_DIV }
         _ => panic!("--> bad char, index: {}.", source.index),
     };
     token
@@ -145,6 +153,8 @@ fn expr(source: &mut Source) -> i64 {
         match operator.value {
             TokenValue::Plus => { result += right_value },
             TokenValue::Minus => { result -= right_value },
+            TokenValue::Mult => { result *= right_value },
+            TokenValue::Div => { result /= right_value },
             _ => { panic!("--> expr bad operator, index: {}.", source.index) }
         };
     }
@@ -240,4 +250,10 @@ fn test_token_mutability_and_index() {
 #[test]
 fn test_multi_operator_expression() {
     assert_eq!(expr(&mut Source::new(String::from("123  +      456 - 1 + 11    - 2   +  34"))), 123+456-1+11-2+34);
+}
+
+#[test]
+fn test_mult_div() {
+    assert_eq!(expr(&mut Source::new(String::from("4/2"))), 4/2);
+    assert_eq!(expr(&mut Source::new(String::from("400 / 3"))), 400/3);
 }
