@@ -74,35 +74,6 @@ fn validate_token_type(token: &Token, ttype: TokenType) {
 
 }
 
-fn expr(source: &mut Source) -> i64 {
-    let left_token = get_next_token(source);
-    validate_token_type(&left_token, TokenType::INTEGER);
-    let mut result = match left_token.value {
-        TokenValue::Integer(x) => x,
-        _ => { panic!("Bad token value.")},
-    };
-    loop {
-        let operator = get_next_token(source);
-        match operator.ttype {
-            TokenType::OPERATOR => {},
-            _ => break,
-        }
-        let right_token = get_next_token(source);
-        let right_value = match right_token.value {
-            TokenValue::Integer(x) => x,
-            _ => { panic!("--> expr bad right value, index: {}.", source.index) }
-        };
-
-        match operator.value {
-            TokenValue::Plus => { result += right_value },
-            TokenValue::Minus => { result -= right_value },
-            _ => { panic!("--> expr bad operator, index: {}.", source.index) }
-        };
-    }
-
-    result
-}
-
 fn chars_to_integer(source: &mut Source) -> i64 {
     let mut integer_text = String::new();
     loop {
@@ -145,6 +116,35 @@ fn get_next_token(source: &mut Source) -> Token {
         _ => panic!("--> bad char, index: {}.", source.index),
     };
     token
+}
+
+fn expr(source: &mut Source) -> i64 {
+    let left_token = get_next_token(source);
+    validate_token_type(&left_token, TokenType::INTEGER);
+    let mut result = match left_token.value {
+        TokenValue::Integer(x) => x,
+        _ => { panic!("Bad token value.")},
+    };
+    loop {
+        let operator = get_next_token(source);
+        match operator.ttype {
+            TokenType::OPERATOR => {},
+            _ => break,
+        }
+        let right_token = get_next_token(source);
+        let right_value = match right_token.value {
+            TokenValue::Integer(x) => x,
+            _ => { panic!("--> expr bad right value, index: {}.", source.index) }
+        };
+
+        match operator.value {
+            TokenValue::Plus => { result += right_value },
+            TokenValue::Minus => { result -= right_value },
+            _ => { panic!("--> expr bad operator, index: {}.", source.index) }
+        };
+    }
+
+    result
 }
 
 #[test]
