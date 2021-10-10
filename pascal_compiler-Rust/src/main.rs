@@ -118,13 +118,18 @@ fn get_next_token(source: &mut Source) -> Token {
     token
 }
 
-fn expr(source: &mut Source) -> i64 {
+fn factor(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
     validate_token_type(&left_token, TokenType::INTEGER);
-    let mut result = match left_token.value {
+    let result = match left_token.value {
         TokenValue::Integer(x) => x,
         _ => { panic!("Bad token value.")},
     };
+    result
+}
+
+fn expr(source: &mut Source) -> i64 {
+    let mut result = factor(source);
     loop {
         let operator = get_next_token(source);
         match operator.ttype {
