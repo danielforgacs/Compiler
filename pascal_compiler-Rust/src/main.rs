@@ -144,17 +144,11 @@ fn expr(source: &mut Source) -> i64 {
             TokenType::OPERATOR => {},
             _ => break,
         }
-        let right_token = get_next_token(source);
-        let right_value = match right_token.value {
-            TokenValue::Integer(x) => x,
-            _ => { panic!("--> expr bad right value, index: {}.", source.index) }
-        };
-
         match operator.value {
-            TokenValue::Plus => { result += right_value },
-            TokenValue::Minus => { result -= right_value },
-            TokenValue::Mult => { result *= right_value },
-            TokenValue::Div => { result /= right_value },
+            TokenValue::Plus => { result += factor(source) },
+            TokenValue::Minus => { result -= factor(source) },
+            TokenValue::Mult => { result *= factor(source) },
+            TokenValue::Div => { result /= factor(source) },
             _ => { panic!("--> expr bad operator, index: {}.", source.index) }
         };
     }
