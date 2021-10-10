@@ -12,7 +12,7 @@ const TOKEN_MINUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::
 const TOKEN_MULT: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Mult};
 const TOKEN_DIV: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Div};
 const TOKEN_PAREN_L: Token = Token{ttype: TokenType::PAREN, value: TokenValue::ParenL};
-const TOKEN_PAREN_r: Token = Token{ttype: TokenType::PAREN, value: TokenValue::ParenR};
+const TOKEN_PAREN_R: Token = Token{ttype: TokenType::PAREN, value: TokenValue::ParenR};
 
 enum TokenType {
     INTEGER,
@@ -81,6 +81,7 @@ fn validate_token_type(token: &Token, ttype: TokenType) {
     match (&token.ttype, ttype) {
         (TokenType::INTEGER, TokenType::INTEGER) => {},
         (TokenType::OPERATOR, TokenType::OPERATOR) => {},
+        (TokenType::PAREN, TokenType::PAREN) => {},
         (TokenType::EOF, TokenType::EOF) => {},
         _ => panic!("Unexpected token type.")
     }
@@ -128,6 +129,8 @@ fn get_next_token(source: &mut Source) -> Token {
         MINUS => { source.inc_index(); TOKEN_MINUS }
         MULT => { source.inc_index(); TOKEN_MULT }
         DIV => { source.inc_index(); TOKEN_DIV }
+        PAREN_L => {source.inc_index(); TOKEN_PAREN_L}
+        PAREN_R => {source.inc_index(); TOKEN_PAREN_R}
         _ => panic!("--> bad char, index: {}.", source.index),
     };
     token
@@ -135,9 +138,14 @@ fn get_next_token(source: &mut Source) -> Token {
 
 fn factor(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
-    validate_token_type(&left_token, TokenType::INTEGER);
     let result = match left_token.value {
         TokenValue::Integer(x) => x,
+        TokenValue::ParenL => {
+            let result = expr(source);
+            let token = get_next_token(source);
+            validate_token_type(&token, TokenType::PAREN);
+            result
+        }
         _ => { panic!("Bad token value.")},
     };
     result
@@ -273,4 +281,9 @@ fn test_mult_div() {
 fn test_plus_minus_mult_div_operator_precedence() {
     assert_eq!(expr(&mut Source::new(String::from("1+1*10"))), 1+1*10);
     assert_eq!(expr(&mut Source::new(String::from("1+0*10-5"))), 1+0*10-5);
+}
+
+#[test]
+fn test_parenthesis() {
+    assert_eq!(expr(&mut Source::new(String::from("(1)"))), 1);
 }
