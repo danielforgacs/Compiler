@@ -77,23 +77,29 @@ fn validate_token_type(token: &Token, ttype: TokenType) {
 fn expr(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
     validate_token_type(&left_token, TokenType::INTEGER);
-    let operator = get_next_token(source);
-    let right_token = get_next_token(source);
-
-    let left_value = match left_token.value {
+    let mut result = match left_token.value {
         TokenValue::Integer(x) => x,
-        _ => { panic!("--> expr bad left value, index: {}.", source.index) }
+        _ => { panic!("Bad token value.")},
     };
-    let right_value = match right_token.value {
-        TokenValue::Integer(x) => x,
-        _ => { panic!("--> expr bad right value, index: {}.", source.index) }
-    };
+    loop {
+        let operator = get_next_token(source);
+        match operator.ttype {
+            TokenType::OPERATOR => {},
+            _ => break,
+        }
+        let right_token = get_next_token(source);
+        let right_value = match right_token.value {
+            TokenValue::Integer(x) => x,
+            _ => { panic!("--> expr bad right value, index: {}.", source.index) }
+        };
 
-    let result = match operator.value {
-        TokenValue::Plus => { left_value + right_value },
-        TokenValue::Minus => { left_value - right_value },
-        _ => { panic!("--> expr bad operator, index: {}.", source.index) }
-    };
+        match operator.value {
+            TokenValue::Plus => { result += right_value },
+            TokenValue::Minus => { result -= right_value },
+            _ => { panic!("--> expr bad operator, index: {}.", source.index) }
+        };
+    }
+
     result
 }
 
@@ -224,4 +230,9 @@ fn test_token_mutability_and_index() {
     assert_eq!(source.index, 30);
     source.index = 40;
     assert_eq!(source.index, 40);
+}
+
+#[test]
+fn test_multi_operator_expression() {
+    assert_eq!(expr(&mut Source::new(String::from("123  +      456 - 1 + 11    - 2   +  34"))), 123+456-1+11-2+34);
 }
