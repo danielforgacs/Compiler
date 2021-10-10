@@ -3,16 +3,21 @@ const PLUS: char = '+';
 const MINUS: char = '-';
 const MULT: char = '*';
 const DIV: char = '/';
+const PAREN_L: char = '(';
+const PAREN_R: char = ')';
 
 const TOKEN_EOF: Token = Token{ttype: TokenType::EOF, value: TokenValue::Eof};
 const TOKEN_PLUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Plus};
 const TOKEN_MINUS: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Minus};
 const TOKEN_MULT: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Mult};
 const TOKEN_DIV: Token = Token{ttype: TokenType::OPERATOR, value: TokenValue::Div};
+const TOKEN_PAREN_L: Token = Token{ttype: TokenType::PAREN, value: TokenValue::ParenL};
+const TOKEN_PAREN_r: Token = Token{ttype: TokenType::PAREN, value: TokenValue::ParenR};
 
 enum TokenType {
     INTEGER,
     OPERATOR,
+    PAREN,
     EOF,
 }
 
@@ -24,6 +29,8 @@ enum TokenValue {
     Mult,
     Div,
     Eof,
+    ParenL,
+    ParenR,
 }
 
 struct Token {
