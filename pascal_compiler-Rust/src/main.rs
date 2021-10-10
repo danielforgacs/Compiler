@@ -103,7 +103,7 @@ fn expr(source: &mut Source) -> i64 {
     result
 }
 
-fn term_integer(source: &mut Source) -> i64 {
+fn chars_to_integer(source: &mut Source) -> i64 {
     let mut integer_text = String::new();
     loop {
         let current_char = source.text.chars().nth(source.index).expect("No more chars.");
@@ -138,7 +138,7 @@ fn get_next_token(source: &mut Source) -> Token {
 
     let token = match current_char {
         '0'..='9' => {
-            Token::new(TokenType::INTEGER, TokenValue::Integer(term_integer(source)))
+            Token::new(TokenType::INTEGER, TokenValue::Integer(chars_to_integer(source)))
         },
         PLUS => { source.inc_index(); TOKEN_PLUS }
         MINUS => { source.inc_index(); TOKEN_MINUS }
