@@ -136,6 +136,35 @@ fn get_next_token(source: &mut Source) -> Token {
     token
 }
 
+enum AST_node {
+    Num(Number),
+    BinOp(BinOp),
+}
+
+struct Number {
+    token: Token,
+}
+
+struct BinOp {
+    left_token: Token,
+    op: Token,
+    right_token: Token,
+}
+
+fn factor_2(source: &mut Source) -> AST_node {
+    let token = get_next_token(source);
+    let node = match token.ttype {
+        TokenType::INTEGER => { AST_node::Num(Number { token: token })}
+        TokenType::PAREN => { AST_node::BinOp(BinOp  {
+            left_token: token,
+            op: get_next_token(source),
+            right_token: get_next_token(source),
+        }) }
+        _ => panic!("Bad token type.")
+    };
+    node
+}
+
 fn factor(source: &mut Source) -> i64 {
     let left_token = get_next_token(source);
     let result = match left_token.value {
