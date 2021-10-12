@@ -146,20 +146,22 @@ struct Number {
 }
 
 struct BinOp {
-    left_token: Token,
+    left_token: Number,
     op: Token,
-    right_token: Token,
+    right_token: Number,
 }
 
 fn factor_2(source: &mut Source) -> AST_node {
     let token = get_next_token(source);
     let node = match token.ttype {
         TokenType::INTEGER => { AST_node::Num(Number { token: token })}
-        TokenType::PAREN => { AST_node::BinOp(BinOp  {
-            left_token: token,
-            op: get_next_token(source),
-            right_token: get_next_token(source),
-        }) }
+        TokenType::PAREN => { AST_node::BinOp(
+            BinOp  {
+                left_token: Number{ token: token},
+                op: get_next_token(source),
+                right_token: Number {token: get_next_token(source)},
+            })
+        }
         _ => panic!("Bad token type.")
     };
     node
