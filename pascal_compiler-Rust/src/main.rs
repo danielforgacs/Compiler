@@ -193,8 +193,11 @@ fn term(source: &mut Source) -> i64 {
             _ => {source.index = index; break },
         };
     }
-
     result
+}
+
+fn term_2(source: &mut Source) {
+    let node = factor_2(source);
 }
 
 fn expr(source: &mut Source) -> i64 {
@@ -317,4 +320,19 @@ fn test_plus_minus_mult_div_operator_precedence() {
 #[test]
 fn test_parenthesis() {
     assert_eq!(expr(&mut Source::new(String::from("(1)"))), 1);
+}
+
+#[test]
+fn test_node_based_funcs() {
+    let mut source = Source::new(String::from("123"));
+    let node = factor_2(&mut source);
+    match node {
+        AST_node::Num(num) => {
+            match num.token.value {
+                TokenValue::Integer(x) => { assert_eq!(123, x); }
+                _ => {}
+            }
+        }
+        _ => {}
+    }
 }
