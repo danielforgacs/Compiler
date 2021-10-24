@@ -196,8 +196,21 @@ fn term(source: &mut Source) -> i64 {
     result
 }
 
-fn term_2(source: &mut Source) {
+fn term_2(source: &mut Source) -> AST_node {
     let node = factor_2(source);
+    loop {
+        let token = get_next_token(source);
+        match token.value {
+            TokenValue::Mult => {
+                let node = BinOp { left_token: node, op: token, right_token: factor_2(source) };
+            }
+            // TokenValue::Div => {
+            //     let node = BinOp {left_token: node, op: token, right_token: factor_2(source)}
+            // }
+            _ => { break }
+        }
+    }
+    node
 }
 
 fn expr(source: &mut Source) -> i64 {
@@ -325,7 +338,8 @@ fn test_parenthesis() {
 #[test]
 fn test_node_based_funcs() {
     let mut source = Source::new(String::from("123"));
-    let node = factor_2(&mut source);
+    // let node = factor_2(&mut source);
+    let node = term_2(&mut source);
     match node {
         AST_node::Num(num) => {
             match num.token.value {
